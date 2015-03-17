@@ -1,0 +1,100 @@
+/* Base stylesheet with useful cross-project defaults */
+
+body {
+    background: white;
+    color: #333333;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 92%;  /* adjust from default 16px (!) to 11pt (@ 96ppi) */
+    line-height: 1.6;
+    margin: 0 auto; /* equal l/r margins */
+    max-width: 1024px; /* subject to design; if unlimited, put eg max 48em on eg main */
+    padding: 0 0.4em; /* small margin is good for phones */
+}
+
+/* links: underline on hover only (normally colour used to indicate links) */
+a       { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* forms: useful defaults */
+form               { margin: 1em 0; }
+fieldset           { border-radius: 5px; }
+legend             { margin-left: 1em; padding: 0.5em; }
+label              { display: inline-block; font-style: italic; width: 8em; }
+input[type=number] { text-align: right; }
+input + label      { font-style: normal; width: auto; } /* eg radio/checkbox labels */
+form ul            { list-style: none; padding: 0; }
+form li            { margin: 0.5em 1em; }
+
+/* nav */
+nav ul { list-style: none; padding: 0; }
+nav li { display: inline-block; margin: 0.5em 1em; }
+
+/* tables: useful defaults */
+tr     { vertical-align: baseline; }
+td, th { padding: 0.2em; }
+th     { color: #666666; font-style: italic; font-weight: normal; text-align: left; }
+
+
+/* standard short-hand styles */
+.align-center   { text-align: center; }
+.align-left     { text-align: left; }
+.align-right    { text-align: right; }
+.align-justify  { text-align: justify; }
+.align-top      { vertical-align: top; }
+.align-middle   { vertical-align: middle; }
+.align-bottom   { vertical-align: bottom; }
+.border-none    { border: none; }
+.clear-floats   { clear:both; }
+.display-inline { display: inline; }
+.display-none   { display: none; }
+.float-left     { float: left; }
+.float-right    { float: right; }
+.hyphens-auto   { hyphens: auto; }
+.hyphens-manual { hyphens: manual; }
+.hyphens-none   { hyphens: none; }
+.margin-0       { margin: 0; }
+.margin-b0      { margin-bottom: 0; } /* eg p.margin-b0 allows ul to go directly below */
+.nowrap         { white-space: nowrap; }
+.padding-0      { padding: 0; }
+.small-caps     { font-variant: small-caps; }
+.width-auto     { width: auto; }
+.width-full     { width: 100%; }
+
+/* useful classes */
+.alert         { color: #990000; font-size: 1.2em; font-weight: bold; }
+.error-msg     { color: #990000; }
+.grey          { color: #999999; }
+.pale-grey     { color: #cccccc; }
+.required      { color: #990000; } /* for required form field indicator */
+.rule-above    { border-top: 1px solid #999999; }
+.rule-above td { border-top: 1px solid #999999; } /* to apply to tr */
+.small         { font-size: 80%; } /* like <small> */
+
+/* form input widths */
+.w2  { width: 2em;  }
+.w3  { width: 3em;  }  /* eg time */
+.w4  { width: 4em;  }
+.w6  { width: 6em;  }  /* eg date, postcode */
+.w8  { width: 8em;  }  /* eg first/last name, town, phone  */
+.w12 { width: 12em; }  /* eg addr1/2 */
+.w16 { width: 16em; }  /* eg email */
+.w24 { width: 24em; }
+.w36 { width: 36em; }
+.w48 { width: 48em; }
+
+/* show/hide */
+.show            { display: block; }
+.hide            { display: none; }
+/* show: over-ride for specific display types */
+a.show           { display: inline; }
+button.show      { display: inline-block; }
+li.show          { display: list-item; }
+table.show       { display: table; }
+tr.show          { display: table-row; }
+td.show, th.show { display: table-cell; }
+span.show        { display: inline; }
+
+/* no need for nav on printouts */
+@media print {
+    nav { display: none; }
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Koa Sample App contact page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
+	<link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/www.css">
+</head>
+<body>
+
+<h1>Koa Sample App contact page</h1>
+
+{{>navpartial}}
+
+<main>
+
+{{#if email}}
+
+<p>Dear {{email}},</p>
+<p>Thank you for your interest, but unfortunately this page does nothing but mirror back your message:</p>
+<pre>{{message}}</pre>
+
+{{else}}
+
+<form method="post">
+    <fieldset><legend>Contact</legend>
+        <ul>
+            <li><label for="email">E-mail</label> <input type="email" name="email" id="email" required></li>
+            <li><label for="message">Message</label> <textarea name="message" id="message" required></textarea></li>
+            <li><label></label> <button type="submit">Send</button></li>
+        </ul>
+    </fieldset>
+</form>
+
+{{/if}}
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+/* Stylesheet for koa-sample-web-app-api-mysql admin section */
+
+body { max-width: 48em; }
+
+a, a:visited { color: #660000; }
+a.grey { color: #999999; }
+
+.green { color: #006600; }
+.red   { color: #660000; }

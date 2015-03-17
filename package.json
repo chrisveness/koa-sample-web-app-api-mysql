@@ -1,0 +1,75 @@
+{
+  "name": "koa-sample-web-app-api-mysql",
+  "description": "Koa Sample App (handlebars templating + RESTful API using MySQL, on Node.js)",
+  "author": "Chris Veness",
+  "license": "MIT",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/chrisveness/koa-sample-web-app-api-mysql.git"
+  },
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon -e js,json,html app.js",
+    "test": "mocha test/admin.js test/api.js",
+    "lint": "eslint ."
+  },
+  "engines": {
+    "iojs": "^1.5.1"
+  },
+  "dependencies": {
+    "basic-auth": "^1.0.0",
+    "bunyan": "^1.3.4",
+    "co": "^4.4.0",
+    "co-bcrypt": "^1.0.0",
+    "co-child-process": "^0.0.3",
+    "co-fs": "^1.2.0",
+    "js-yaml": "^3.2.7",
+    "koa": "^0.18.1",
+    "koa-body-parser": "^1.1.1",
+    "koa-bunyan": "0.0.2",
+    "koa-compose": "^2.3.0",
+    "koa-compress": "^1.0.8",
+    "koa-flash": "^0.1.0",
+    "koa-handlebars": "^0.5.2",
+    "koa-helmet": "0.0.3",
+    "koa-passport": "^1.1.4",
+    "koa-request": "^1.0.0",
+    "koa-router": "^4.2.0",
+    "koa-session": "^3.1.0",
+    "koa-static": "^1.4.9",
+    "markdown-it": "^4.0.1",
+    "mysql-co": "0.0.4",
+    "passport-local": "^1.0.0",
+    "xmlify": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^2.1.2",
+    "cheerio": "^0.18.0",
+    "eslint": "^0.17.0",
+    "mocha": "^2.2.1",
+    "nodemon": "^1.3.7",
+    "npm-check-updates": "^1.5.1",
+    "supertest": "^0.15.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "comma-dangle": "always",
+      "curly": [ 2, "multi-line" ],
+      "eqeqeq": 0,
+      "quotes": [ 2, "single", "avoid-escape" ],
+      "generator-star": [ 2, "start" ],
+      "key-spacing": 0,
+      "new-cap": [ 2, { "capIsNew": 2, "capIsNewExceptions": ["ModelError"] } ],
+      "no-multi-spaces": 0,
+      "no-proto": 1,
+      "no-underscore-dangle": 0,
+      "no-shadow": 1,
+      "space-infix-ops": 0
+    }
+  }
+}

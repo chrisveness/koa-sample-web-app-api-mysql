@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Edit member</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/admin.css">
+	<style> form { display: inline-block; margin: 0; } /* for add team forms */ </style>
+</head>
+<body>
+
+<h1>Edit member</h1>
+
+{{>navpartial}}
+{{>errpartial}}
+
+<main>
+
+<form method="post">
+	<ul>
+		<li>
+			<label for="Firstname">First name</label>
+			<input name="Firstname" id="Firstname" value="{{Firstname}}" autofocus>
+		</li>
+		<li>
+			<label for="Lastname">Last name</label>
+			<input name="Lastname" id="Lastname" value="{{Lastname}}">
+		</li>
+        <li>
+            <label for="Email">E-mail</label>
+            <input name="Email" id="Email" value="{{Email}}" required>
+        </li>
+		<li>
+			<label></label>
+			<button type="submit" class="fa fa-check-square-o green" title="Update"></button>
+		</li>
+	</ul>
+</form>
+
+<h2>Teams</h2>
+
+<ul>
+	{{#memberOfTeams}}
+	<li id="{{TeamMemberId}}">
+		{{Name}}
+		<form method="post">
+			<button type="submit" name="del-team" id="del-team" value="{{TeamMemberId}}" class="fa fa-trash red" title="Remove"></button>
+		</form>
+	</li>
+	{{/memberOfTeams}}
+</ul>
+
+
+{{#if notMemberOfTeams}}
+<form method="post">
+	<label for="add-team" class="width-auto">Add</label>
+	<select name="add-team" id="add-team" required>
+		<option></option>
+		{{#notMemberOfTeams}}
+		<option value="{{TeamId}}">{{Name}}</option>
+		{{/notMemberOfTeams}}
+	</select>
+	<button type="submit" class="fa fa-plus green" title="Add"></button>
+</form>
+{{/if}}
+
+</main>
+
+</body>
+</html>

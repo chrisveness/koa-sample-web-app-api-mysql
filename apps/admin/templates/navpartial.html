@@ -1,0 +1,17 @@
+{{#if @koa.passport.user}}
+<nav>
+    <ul>
+        <li><a href="/">/</a></li>
+        <li><a href="/members">members</a></li>
+        <li><a href="/teams">teams</a></li>
+        <li><a href="/logout" title="currently logged in as {{@koa.passport.user.Firstname}} {{@koa.passport.user.Lastname}}">logout</a></li>
+    </ul>
+</nav>
+{{else}}
+<nav>
+    <ul>
+        <li><a href="/">/</a></li>
+        <li><a href="/login">login</a></li>
+    </ul>
+</nav>
+{{/if}}

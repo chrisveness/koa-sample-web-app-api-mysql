@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+	<title>{{Firstname}} {{Lastname}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<h1>{{Firstname}} {{Lastname}}</h1>
+
+{{>navpartial}}
+
+<main>
+
+<h2>Details</h2>
+
+<table>
+    <tr>
+        <th>First name:</th>
+        <td>{{Firstname}}</td>
+    </tr>
+    <tr>
+        <th>Last name:</th>
+        <td>{{Lastname}}</td>
+    </tr>
+    <tr>
+        <th>E-mail:</th>
+        <td>{{Email}}</td>
+    </tr>
+</table>
+
+{{#if teams}}
+<p>Member of teams:
+    {{#teams}}
+    <a href="/teams/{{TeamId}}">{{Name}}{{#unless @last}},{{/unless}}</a>
+    {{/teams}}
+</p>
+{{else}}
+<p>Not member of any teams.</p>
+{{/if}}
+
+</main>
+
+</body>
+</html>

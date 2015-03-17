@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Members</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <style>
+        td, th { padding: 0.2em 0.4em 0 0; }
+        td.teams { padding: 0 0.4em 0 2em; }
+    </style>
+</head>
+<body>
+
+<h1>Members</h1>
+
+{{>navpartial}}
+
+<main>
+
+<table>
+	<tr>
+		<td></td>
+        <td></td>
+		<td></td>
+		<td><a href="/members/add" class="fa fa-plus small grey" title="add member"></a>
+	</tr>
+	{{#members}}
+	<tr id="{{MemberId}}">
+		<td><a href="/members/{{MemberId}}">{{Firstname}}</a></td>
+		<td><a href="/members/{{MemberId}}">{{Lastname}}</a></td>
+		<td><a href="/members/{{MemberId}}/edit" class="fa fa-pencil small grey" title="edit member"></a>
+		<td><a href="/members/{{MemberId}}/delete" class="fa fa-trash-o small grey" title="delete member"></a>
+	</tr>
+	{{/members}}
+</table>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Oops!</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
+	<link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<h1>:(</h1>
+
+{{>navpartial}}
+
+<main>
+
+{{#if msg}}
+<p>{{msg}}.</p>
+{{else}}
+<p>Couldn’t find that one!...</p>
+{{/if}}
+
+{{#if e}}
+<pre class="small grey">{{e.stack}}.</pre>
+{{/if}}
+
+</main>
+
+</body>
+</html>
