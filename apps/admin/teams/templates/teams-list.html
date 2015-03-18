@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>Teams</title>
+    <title>Teams</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/admin.css">
     <style>
         td, th { padding: 0.2em 0.4em 0 0; }
@@ -22,18 +22,18 @@
 <main>
 
 <table>
-	<tr>
-		<td></td>
-		<td></td>
-		<td><a href="/teams/add" class="fa fa-plus small grey" title="add team"></a>
-	</tr>
-	{{#teams}}
-	<tr id="{{TeamId}}">
-		<td><a href="/teams/{{TeamId}}">{{Name}}</a></td>
-		<td><a href="/teams/{{TeamId}}/edit" class="fa fa-pencil small grey" title="edit team"></a>
-		<td><a href="/teams/{{TeamId}}/delete" class="fa fa-trash-o small grey" title="delete team"></a>
-	</tr>
-	{{/teams}}
+    <tr>
+        <td></td>
+        <td></td>
+        <td><a href="/teams/add" class="fa fa-plus small grey" title="add team"></a>
+    </tr>
+    {{#teams}}
+    <tr id="{{TeamId}}">
+        <td><a href="/teams/{{TeamId}}">{{Name}}</a></td>
+        <td><a href="/teams/{{TeamId}}/edit" class="fa fa-pencil small grey" title="edit team"></a>
+        <td><a href="/teams/{{TeamId}}/delete" class="fa fa-trash-o small grey" title="delete team"></a>
+    </tr>
+    {{/teams}}
 </table>
 
 </main>

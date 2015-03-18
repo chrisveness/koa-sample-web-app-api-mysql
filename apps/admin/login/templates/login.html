@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>Login</title>
+    <title>Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
@@ -24,11 +24,11 @@
 <main>
 
 <form method="post">
-	<ul>
-		<li>
-			<label for="username">E-mail</label>
-			<input name="username" id="username" type="email" value="{{username}}" required autofocus>
-		</li>
+    <ul>
+        <li>
+            <label for="username">E-mail</label>
+            <input name="username" id="username" type="email" value="{{username}}" required autofocus>
+        </li>
         <li>
             <label for="password">Password</label>
             <input name="password" id="password" type="password" required>
@@ -38,12 +38,12 @@
             <input type="checkbox" name="remember-me" id="remember-me">
             <label for="remember-me" class="grey">remember me</label>
         </li>
-		<li>
-			<label></label>
-			<button type="submit" class="fa fa-check-square-o green" title="Login"></button>
+        <li>
+            <label></label>
+            <button type="submit" class="fa fa-check-square-o green" title="Login"></button>
             {{#if @koa.flash.loginfailmsg}}<span class="error-msg">{{@koa.flash.loginfailmsg}}</span>{{/if}}
-		</li>
-	</ul>
+        </li>
+    </ul>
 </form>
 
 <p>Test logins:</p>

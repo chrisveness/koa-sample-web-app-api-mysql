@@ -124,7 +124,7 @@ members.delete = function*() {
 members.processAdd = function*() {
     if (this.passport.user.Role != 'admin') return this.redirect('/login'+this.url);
 
-	try {
+    try {
 
         let id = yield Member.insert(this.request.body);
         this.set('X-Insert-Id', id); // for integration tests

@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>Edit team</title>
+    <title>Edit team</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/admin.css">
-	<style>
+    <style>
         form { display: inline-block; margin: 0; } /* for add team forms */
     </style>
 </head>
@@ -22,42 +22,42 @@
 <main>
 
 <form method="post">
-	<ul>
-		<li>
+    <ul>
+        <li>
             <label for="Name">Name</label>
             <input name="Name" id="Name" value="{{Name}}" required autofocus>
-		</li>
-		<li>
-			<label></label>
-			<button type="submit" class="fa fa-check-square-o green" title="Update"></button>
-		</li>
-	</ul>
+        </li>
+        <li>
+            <label></label>
+            <button type="submit" class="fa fa-check-square-o green" title="Update"></button>
+        </li>
+    </ul>
 </form>
 
 <h2>Members</h2>
 
 <ul>
-	{{#teamMembers}}
-	<li id="{{MemberId}}">
-		{{Firstname}} {{Lastname}}
-		<form method="post">
-			<button type="submit" name="del-member" id="del-member" value="{{TeamMemberId}}" class="fa fa-trash red" title="Remove"></button>
-		</form>
-	</li>
-	{{/teamMembers}}
+    {{#teamMembers}}
+    <li id="{{MemberId}}">
+        {{Firstname}} {{Lastname}}
+        <form method="post">
+            <button type="submit" name="del-member" id="del-member" value="{{TeamMemberId}}" class="fa fa-trash red" title="Remove"></button>
+        </form>
+    </li>
+    {{/teamMembers}}
 </ul>
 
 
 {{#if notTeamMembers}}
 <form method="post">
-	<label for="add-member" class="width-auto">Add</label>
-	<select name="add-member" id="add-member" required>
-		<option></option>
-		{{#notTeamMembers}}
-		<option value="{{MemberId}}">{{Firstname}} {{Lastname}}</option>
-		{{/notTeamMembers}}
-	</select>
-	<button type="submit" class="fa fa-plus green" title="Add"></button>
+    <label for="add-member" class="width-auto">Add</label>
+    <select name="add-member" id="add-member" required>
+        <option></option>
+        {{#notTeamMembers}}
+        <option value="{{MemberId}}">{{Firstname}} {{Lastname}}</option>
+        {{/notTeamMembers}}
+    </select>
+    <button type="submit" class="fa fa-plus green" title="Add"></button>
 </form>
 {{/if}}
 
