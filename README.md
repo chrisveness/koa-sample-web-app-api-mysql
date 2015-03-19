@@ -1,4 +1,4 @@
-# koa-sample-web-app-api-mysql
+# Koa Sample App (handlebars templating + RESTful API using MySQL, on Node.js)
 
 This is the result of a self-learning exercise on how to put together a complete Node.js/io.js
 MySQL-driven [Koa](http://koajs.com) app.
