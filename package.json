@@ -67,7 +67,6 @@
       "key-spacing": 0,
       "new-cap": [ 2, { "capIsNew": 2, "capIsNewExceptions": ["ModelError"] } ],
       "no-multi-spaces": 0,
-      "no-proto": 1,
       "no-underscore-dangle": 0,
       "no-shadow": 1,
       "space-infix-ops": 0
