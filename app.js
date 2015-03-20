@@ -9,26 +9,20 @@
 
 'use strict';
 
-let koa        = require('koa');             // Koa framework
-let bodyParser = require('koa-body-parser'); // body parser
-let compose    = require('koa-compose');     // middleware composer
-let compress   = require('koa-compress');    // HTML compression
-let session    = require('koa-session');     // session for passport login, flash messages
-let serve      = require('koa-static');      // static file serving middleware
-let mysql      = require('mysql-co');        // MySQL (co wrapper for mysql2)
+let koa          = require('koa');               // Koa framework
+let bodyParser   = require('koa-body-parser');   // body parser
+let compose      = require('koa-compose');       // middleware composer
+let compress     = require('koa-compress');      // HTML compression
+let responseTime = require('koa-response-time'); // X-Response-Time middleware
+let session      = require('koa-session');       // session for passport login, flash messages
+let serve        = require('koa-static');        // static file serving middleware
+let mysql        = require('mysql-co');          // MySQL (co wrapper for mysql2)
 
 let app = module.exports = koa();
 
 
-// return response time in header
-app.use(function* responseTime(next) {
-    let start = Date.now();
-
-    yield next;
-
-    let ms = Date.now() - start;
-    this.set('X-Response-Time', ms+'ms');
-});
+// return response time in X-Response-Time header
+app.use(responseTime());
 
 
 // HTML compression
