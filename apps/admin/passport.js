@@ -29,7 +29,7 @@ passport.deserializeUser(function(id, done) {
     co(function*() {
         // lookup user
         let user = yield User.get(id);
-        return user;
+        return user || null;
     }).then(function(result) { done(null, result); }, done);
 });
 
