@@ -55,7 +55,9 @@ JavaScript handlers for GET, POST, PATCH, DELETE requests.
 
 The highly-structured applications I work on require ACID SQL databases with referential integrity,
 so MongoDb was out for me. MySQL and PostgreSQL should be pretty similar, but PostgreSQL is not yet
-so well supported for Koa.
+so well supported for Koa. (Actually, one of my first Koa applications is using MongoDB/monk; there
+are few changes – the models replicate monk functions, but add functionality to those functions
+which update the database).
 
 For some people, a JavaScript framework will work better. If you’re happy to plan out your own
 preferred structure, designing your own patterns means one less component to learn / conform to.
