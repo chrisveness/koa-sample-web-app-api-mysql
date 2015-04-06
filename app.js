@@ -10,7 +10,7 @@
 'use strict';
 
 let koa          = require('koa');               // Koa framework
-let bodyParser   = require('koa-body-parser');   // body parser
+let body         = require('koa-body');          // body parser
 let compose      = require('koa-compose');       // middleware composer
 let compress     = require('koa-compress');      // HTML compression
 let responseTime = require('koa-response-time'); // X-Response-Time middleware
@@ -34,7 +34,7 @@ app.use(serve('public', { maxage: 1000*60*60 }));
 
 
 // parse request body into ctx.request.body
-app.use(bodyParser());
+app.use(body());
 
 
 // session for passport login, flash messages
