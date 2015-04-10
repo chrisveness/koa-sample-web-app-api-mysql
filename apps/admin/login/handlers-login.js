@@ -68,7 +68,7 @@ handler.postLogin = function* postLogin(next) {
         }).call(this, next);
 
     } catch (e) {
-        this.throw(e.status);
+        this.throw(e);
     }
 };
 

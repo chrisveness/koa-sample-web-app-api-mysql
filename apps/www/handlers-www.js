@@ -22,7 +22,7 @@ www.getIndex = function*() {
         let context = { content: content };
         yield this.render('templates/index', context);
     } catch (e) {
-        this.throw(e.status);
+        this.throw(e);
     }
 };
 
