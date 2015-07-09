@@ -30,7 +30,7 @@ router.all(/\/ajax\/(.*)/, function* getAjax() {
         method: this.method,
         url:    this.protocol+'://'+host+'/'+resource,
         form:   this.request.body,
-        auth:   { user: user, pass: pass }
+        auth:   { user: user, pass: pass },
     };
 
     try {
