@@ -180,7 +180,7 @@ teams.processEdit = function*() {
 
         } catch (e) {
             // stay on same page to report error
-            this.flash = { _error: e.message };
+            this.flash = { formdata: this.request.body, _error: e.message };
             this.redirect(this.url);
         }
     }
