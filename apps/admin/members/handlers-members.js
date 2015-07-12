@@ -69,7 +69,7 @@ members.view = function*() {
  */
 members.add = function*() {
     let context = this.flash.formdata || {}; // failed validation? fill in previous values
-    yield this.render('members/templates/members-add.html', context);
+    yield this.render('members/templates/members-add', context);
 };
 
 

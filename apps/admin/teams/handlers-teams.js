@@ -69,7 +69,7 @@ teams.view = function*() {
  */
 teams.add = function*() {
     let context = this.flash.formdata || {}; // failed validation? fill in previous values
-    yield this.render('teams/templates/teams-add.html', context);
+    yield this.render('teams/templates/teams-add', context);
 };
 
 
