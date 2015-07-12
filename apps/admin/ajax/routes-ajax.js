@@ -4,7 +4,7 @@
 
 'use strict';
 
-var router  = require('koa-router')(); // router middleware for koa
+let router  = require('koa-router')(); // router middleware for koa
 
 let request = require('koa-request');  // simplified HTTP request client
 let crypto  = require('crypto');       // nodejs.org/api/crypto.html

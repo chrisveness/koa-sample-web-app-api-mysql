@@ -1,12 +1,12 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-/*  Members routes                                                                                */
+/*  Login routes                                                                                  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 'use strict';
 
-var router = require('koa-router')(); // router middleware for koa
+let router = require('koa-router')(); // router middleware for koa
 
-var login = require('./handlers-login.js');
+let login = require('./handlers-login.js');
 
 
 // note url allowed after '/login' to redirect to after successful login

@@ -4,7 +4,7 @@
 
 'use strict';
 
-var router  = require('koa-router')();     // router middleware for koa
+let router  = require('koa-router')();     // router middleware for koa
 
 let spawn   = require('co-child-process'); // spawn a child process using co
 let path    = require('path');             // nodejs.org/api/path.html

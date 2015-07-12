@@ -4,9 +4,9 @@
 
 'use strict';
 
-var router = require('koa-router')(); // router middleware for koa
+let router = require('koa-router')(); // router middleware for koa
 
-var www = require('./handlers-www.js');
+let www = require('./handlers-www.js');
 
 
 router.get( '/',        www.getIndex);    // render index page
