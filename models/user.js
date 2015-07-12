@@ -45,7 +45,7 @@ User.getBy = function*(field, value) {
 
     } catch (e) {
         switch (e.code) {
-            case 'ER_BAD_FIELD_ERROR': throw ModelError(406, 'Unrecognised search term');
+            case 'ER_BAD_FIELD_ERROR': throw ModelError(406, 'Unrecognised User field '+field);
             default: Lib.logException('User.getBy', e); throw ModelError(500, e.message);
         }
     }
