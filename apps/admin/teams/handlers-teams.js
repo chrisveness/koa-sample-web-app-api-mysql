@@ -135,7 +135,7 @@ teams.processAdd = function*() {
     } catch (e) {
         // stay on same page to report error (with current filled fields)
         this.flash = { formdata: this.request.body, _error: e.message };
-        this.redirect('/teams/add');
+        this.redirect(this.url);
     }
 };
 
