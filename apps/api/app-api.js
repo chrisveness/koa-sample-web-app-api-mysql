@@ -36,7 +36,7 @@ app.use(function* mysqlConnection(next) {
 });
 
 
-// 500 status for thrown or uncaught exceptions anywhere down the line
+// handle thrown or uncaught exceptions anywhere down the line
 app.use(function* handleErrors(next) {
     try {
 
@@ -44,11 +44,14 @@ app.use(function* handleErrors(next) {
 
     } catch (e) {
         switch (e.status) {
+            case 204: // No Content
+                this.status = e.status;
+                break;
             case 401: // Unauthorized
                 this.status = e.status;
                 this.set('WWW-Authenticate', 'Basic');
                 break;
-            default:
+            default: // report 500 Internal Server Error
                 this.status = e.status || 500;
                 this.body = app.env=='development' ? e.stack : e.message;
                 this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js

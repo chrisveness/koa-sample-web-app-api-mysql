@@ -3,6 +3,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 'use strict';
+/*eslint no-unused-expressions:0 */ /* (for expect().to.be.empty ) */
 
 let supertest = require('co-supertest'); // SuperAgent-driven library for testing HTTP servers
 let expect    = require('chai').expect;  // BDD/TDD assertion library
@@ -97,6 +98,11 @@ describe('API'+' ('+app.env+'/'+require('../config/db-'+app.env+'.json').db.data
                 if (response.status != 200) console.log(response.status, response.text);
                 expect(response.body).to.be.an('array');
                 expect(response.body).to.have.length(1);
+            });
+
+            it('handles empty members list', function*() {
+                let response = yield request.get('/members?firstname=nomatch').set(headers).auth(userId, userPw).expect(204).end();
+                expect(response.body).to.be.empty;
             });
 
             it('updates a member', function*() {

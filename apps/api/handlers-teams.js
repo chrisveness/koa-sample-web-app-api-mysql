@@ -29,7 +29,7 @@ handler.getTeams = function*() {
         let result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
         let teams = result[0];
 
-        if (!teams) this.throw(204); // No Content
+        if (teams.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
 
         // just id & uri attributes in list
         for (let m=0; m<teams.length; m++) {

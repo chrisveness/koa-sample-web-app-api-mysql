@@ -29,7 +29,7 @@ handler.getMembers = function*() {
         let result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
         let members = result[0];
 
-        if (!members) this.throw(204); // No Content
+        if (members.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
 
         // just id & uri attributes in list
         for (let m=0; m<members.length; m++) {
