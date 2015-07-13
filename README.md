@@ -254,4 +254,34 @@ create table User (
 ) engine=InnoDB charset=utf8 auto_increment=100001;
 ```
 
+## Test data
+
+```sql
+-- Test data for ‘koa-sample-web-app-api-mysql’ app
+
+INSERT INTO Member VALUES 
+ (100001,'Juan Manuel','Fangio','juan-manuel@fangio.com'),
+ (100002,'Ayrton','Senna','ayrton@senna.com'),
+ (100003,'Michael','Schumacher','michael@schumacher.com'),
+ (100004,'Lewis','Hamilton','lewis@hamilton.com');
+
+INSERT INTO Team VALUES 
+ (100001,'Ferrari'),
+ (100002,'Mercedes'),
+ (100003,'McLaren');
+ 
+INSERT INTO TeamMember VALUES 
+ (100001,100001,100001,'1956-01-22'),
+ (100002,100001,100002,'1954-01-17'),
+ (100003,100002,100003,'1988-04-03'),
+ (100004,100003,100001,'1996-03-10'),
+ (100005,100003,100002,'2010-03-14'),
+ (100006,100004,100002,'2007-03-18'),
+ (100007,100004,100003,'2013-03-17');
+ 
+INSERT INTO User VALUES
+  (100001,'Guest','User','guest@user.com','$2a$12$G5op7sX70HUXfFbI8tPQuuhnWz4bwqbWQeIN9KFyklH5OhLgQbnU6',null,'guest'),
+  (100002,'Admin','User','admin@user.com','$2a$12$jEG0N4wNwuc20WQxN1VzduijVnlzLgBNn2N6Uq1pNjN45VhUyNf4W',null,'admin');
+```
+
 The full sample app is around 1,000 lines of JavaScript.
