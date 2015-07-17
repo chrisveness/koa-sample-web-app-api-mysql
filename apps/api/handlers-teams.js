@@ -42,7 +42,7 @@ handler.getTeams = function*() {
     } catch (e) {
         switch (e.code) {
             case 'ER_BAD_FIELD_ERROR': this.throw(406, 'Unrecognised Team field'); break;
-            default: throw e;
+            default: this.throw(e.status||500, e.message);
         }
     }
 };
@@ -90,8 +90,7 @@ handler.postTeams = function*() {
         this.status = 201; // Created
 
     } catch (e) {
-        this.body = { error: e.message };
-        this.status = e.status;
+        this.throw(e.status||500, e.message);
     }
 };
 
@@ -115,8 +114,7 @@ handler.patchTeamById = function*() {
         this.body.root = 'Team';
 
     } catch (e) {
-        this.body = { error: e.message };
-        this.status = e.status;
+        this.throw(e.status||500, e.message);
     }
 };
 
@@ -142,8 +140,7 @@ handler.deleteTeamById = function*() {
         this.body.root = 'Team';
 
     } catch (e) {
-        this.body = { error: e.message };
-        this.status = e.status;
+        this.throw(e.status||500, e.message);
     }
 };
 

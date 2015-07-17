@@ -42,7 +42,7 @@ handler.getMembers = function*() {
     } catch (e) {
         switch (e.code) {
             case 'ER_BAD_FIELD_ERROR': this.throw(406, 'Unrecognised Member field'); break;
-            default: throw e;
+            default: this.throw(e.status||500, e.message);
         }
     }
 };
@@ -90,8 +90,7 @@ handler.postMembers = function*() {
         this.status = 201; // Created
 
     } catch (e) {
-        this.body = { error: e.message };
-        this.status = e.status;
+        this.throw(e.status||500, e.message);
     }
 };
 
@@ -115,8 +114,7 @@ handler.patchMemberById = function*() {
         this.body.root = 'Member';
 
     } catch (e) {
-        this.body = { error: e.message };
-        this.status = e.status;
+        this.throw(e.status||500, e.message);
     }
 };
 
@@ -142,8 +140,7 @@ handler.deleteMemberById = function*() {
         this.body.root = 'Member';
 
     } catch (e) {
-        this.body = { error: e.message };
-        this.status = e.status;
+        this.throw(e.status||500, e.message);
     }
 };
 
