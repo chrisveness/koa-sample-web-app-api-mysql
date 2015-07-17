@@ -41,7 +41,7 @@ handler.getMembers = function*() {
 
     } catch (e) {
         switch (e.code) {
-            case 'ER_BAD_FIELD_ERROR': this.throw(406, 'Unrecognised search term'); break;
+            case 'ER_BAD_FIELD_ERROR': this.throw(406, 'Unrecognised Member field'); break;
             default: throw e;
         }
     }
