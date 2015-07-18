@@ -51,6 +51,12 @@ app.use(function* handleErrors(next) {
                 this.status = e.status;
                 this.set('WWW-Authenticate', 'Basic');
                 break;
+            case 403: // Forbidden
+            case 406: // Not Acceptable
+            case 409: // Conflict
+                this.status = e.status;
+                this.body = { error: e.message };
+                break;
             default: // report 500 Internal Server Error
                 this.status = e.status || 500;
                 this.body = app.env=='development' ? e.stack : e.message;

@@ -116,8 +116,8 @@ describe('API'+' ('+app.env+'/'+require('../config/db-'+app.env+'.json').db.data
 
             it('fails to add member with duplicate e-mail', function*() {
                 let values = { Firstname: 'Test', Lastname: 'User', Email: 'test@user.com' };
-                let response = yield request.post('/members').set(headers).auth(userId, userPw).send(values).expect(403).end();
-                if (response.status != 403) console.log(response.status, response.text);
+                let response = yield request.post('/members').set(headers).auth(userId, userPw).send(values).expect(409).end();
+                if (response.status != 409) console.log(response.status, response.text);
                 expect(response.body.error).to.equal("Duplicate entry 'test@user.com' for key 'Email'");
             });
 

@@ -56,9 +56,9 @@ app.use(function* handleErrors(next) {
                 context = { msg: e.message=='Not Found'?null:e.message };
                 yield this.render('templates/404-not-found', context );
                 break;
-            case 406: // Not Acceptable
-                context = { msg: e.message=='Not Acceptable'?null:e.message };
-                yield this.render('templates/406-not-acceptable', context );
+            case 403: // Forbidden
+            case 409: // Conflict
+                yield this.render('templates/400-bad-request', e);
                 break;
             case 500: // Internal Server Error
                 context = app.env=='production' ? {} : { e: e };

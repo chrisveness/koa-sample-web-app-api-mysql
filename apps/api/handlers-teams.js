@@ -41,7 +41,7 @@ handler.getTeams = function*() {
 
     } catch (e) {
         switch (e.code) {
-            case 'ER_BAD_FIELD_ERROR': this.throw(406, 'Unrecognised Team field'); break;
+            case 'ER_BAD_FIELD_ERROR': this.throw(403, 'Unrecognised Team field'); break;
             default: this.throw(e.status||500, e.message);
         }
     }

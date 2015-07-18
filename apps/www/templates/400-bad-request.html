@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
     <link rel="stylesheet" href="/css/base.css">
-    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/ctrl-s.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/js/ctrl-s.js"></script>
 </head>
 <body>
 
@@ -16,11 +18,7 @@
 
 <main>
 
-{{#if msg}}
-<p>{{msg}}.</p>
-{{else}}
-<p>Sorry, can’t do that for you!...</p>
-{{/if}}
+<p>Sorry, can’t do that for you!... <span class="small grey">({{status}} {{message}}</span></p>
 
 {{#if e}}
 <pre class="small grey">{{e.stack}}.</pre>

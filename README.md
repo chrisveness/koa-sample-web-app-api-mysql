@@ -156,8 +156,8 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 │   │   │   ├── handlers-teams.js
 │   │   │   └── routes-teams.js
 │   │   ├── templates
+│   │   │   ├── 400-bad-request.html
 │   │   │   ├── 404-not-found.html
-│   │   │   ├── 406-not-acceptable.html
 │   │   │   ├── 500-internal-server-error.html
 │   │   │   ├── errpartial.html
 │   │   │   └── navpartial.html
