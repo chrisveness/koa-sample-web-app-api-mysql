@@ -47,7 +47,7 @@ handler.postLogin = function* postLogin(next) {
         let ctx = this; // capture 'this' to pass into callback
 
         yield* passport.authenticate('local', function*(err, user) {
-            if (err) throw err;
+            if (err) this.throw(err.status||500, err.message);
             if (user) {
                 // passport successfully authenticated user: log them in
                 yield ctx.login(user);
@@ -68,7 +68,7 @@ handler.postLogin = function* postLogin(next) {
         }).call(this, next);
 
     } catch (e) {
-        this.throw(e);
+        this.throw(e.status||500, e.message);
     }
 };
 
