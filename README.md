@@ -1,6 +1,6 @@
 # Koa Sample App (handlebars templating + RESTful API using MySQL, on Node.js)
 
-This is the result of a self-learning exercise on how to put together a complete Node.js/io.js
+This is the result of a self-learning exercise on how to put together a complete Node.js
 MySQL-driven [Koa](http://koajs.com) app.
 
 When I started with Node.js (using Express), I found plenty of tutorials & examples on individual
@@ -44,9 +44,8 @@ callback-style Node.js with Express. *Yield* may be just a stepping-stone to ES7
 works. JavaScript may be looked down on ([misunderstood?](http://davidwalsh.name/javascript-objects))
 in some quarters, but I do find it vastly better to work with than PHP :)
 
-With ~~Node.js v0.12 (stable) out, and io.js as an alternative~~ Node.js v4 (stable) out and Koa on
-v1, I believe Koa can now be considered[*](http://hueniverse.com/2015/03/02/the-node-version-dilemma)
-for production use.
+With Node.js v4 (stable) out, and Koa on v1, I believe Koa can now be 
+considered[*](http://hueniverse.com/2015/03/02/the-node-version-dilemma) for production use.
 
 The app is built with a modular approach. There are three (*composed*) sub-apps: the bare bones of a
 public site, a web-based password-protected admin system using handlebars-templated html pages, and
@@ -55,12 +54,12 @@ handlers to handle GET and POST requests, and a set of handlebars templates; eac
 JavaScript handlers for GET, POST, PATCH, DELETE requests.
 
 The highly-structured applications I work on require ACID SQL databases with referential integrity,
-so MongoDb was out for me. MySQL and PostgreSQL should be pretty similar, but PostgreSQL is not yet
+so MongoDB was out for me. MySQL and PostgreSQL should be pretty similar, but PostgreSQL is not yet
 so well supported for Koa. (Actually, one of my first Koa applications is using MongoDB/monk; there
 are few changes – the models replicate monk functions, but add functionality to those functions
 which update the database).
 
-For some people, a JavaScript framework will work better. If you’re happy to plan out your own
+For some people, a full JavaScript framework will work better. If you’re happy to plan out your own
 preferred structure, designing your own patterns means one less component to learn / conform to.
 
 There’s always things others would do differently. If you have better ways of doing things, it will
@@ -105,12 +104,12 @@ SQL queries).
 
 While very basic, this sample app incorporates together many of the components of a real application;
 as well as handlebars templates & MySQL, there’s static file serving, body-parser for post data,
-compression,*passport* logins with remember-me, logging, flash messages, etc, and mocha/chai/cheerio
+compression, *passport* logins with remember-me, logging, flash messages, etc, and mocha/chai/cheerio
 for testing (I’ve ignored i18n which would introduce considerable complexity).
 
 Note that if you wish to set this up locally, you will need e.g. admin.localhost, api.localhost, and
-www.localhost set up in /etc/hosts. Currently, io.js is required as Node.js v12.0 doesn’t yet support
-template strings.
+www.localhost set up in /etc/hosts. Either Node.js v4+ or io.js is required as Node.js v0.12 doesn’t
+support template strings.
 
 ### Demo
 
