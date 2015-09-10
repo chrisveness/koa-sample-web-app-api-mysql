@@ -69,7 +69,7 @@ app.use(flash());
 
 
 // helmet security headers
-app.use(helmet.defaults());
+app.use(helmet());
 
 
 // routing

@@ -3,7 +3,8 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 'use strict';
-/*eslint no-unused-expressions:0 */ /* (for expect().to.be.empty ) */
+/* eslint no-console: 0 */
+/* eslint no-unused-expressions:0 */ /* (for expect().to.be.empty ) */
 
 let supertest = require('co-supertest'); // SuperAgent-driven library for testing HTTP servers
 let expect    = require('chai').expect;  // BDD/TDD assertion library

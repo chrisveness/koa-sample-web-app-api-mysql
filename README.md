@@ -44,8 +44,9 @@ callback-style Node.js with Express. *Yield* may be just a stepping-stone to ES7
 works. JavaScript may be looked down on ([misunderstood?](http://davidwalsh.name/javascript-objects))
 in some quarters, but I do find it vastly better to work with than PHP :)
 
-With Node.js v12.0 (stable) out, and io.js as an alternative, I believe Koa can now be
-considered[*](http://hueniverse.com/2015/03/02/the-node-version-dilemma) for production use.
+With ~~Node.js v0.12 (stable) out, and io.js as an alternative~~ Node.js v4 (stable) out and Koa on
+v1, I believe Koa can now be considered[*](http://hueniverse.com/2015/03/02/the-node-version-dilemma)
+for production use.
 
 The app is built with a modular approach. There are three (*composed*) sub-apps: the bare bones of a
 public site, a web-based password-protected admin system using handlebars-templated html pages, and

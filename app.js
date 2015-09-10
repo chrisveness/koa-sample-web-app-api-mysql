@@ -8,6 +8,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 'use strict';
+/* eslint "no-shadow":0 *//* app is already declared in the upper scope */
 
 let koa          = require('koa');               // Koa framework
 let body         = require('koa-body');          // body parser
@@ -76,6 +77,7 @@ function composer(app) {
 
 
 if (!module.parent) {
+    /* eslint no-console: 0 */
     app.listen(process.env.PORT||3000);
     let db = require('./config/db-'+app.env+'.json').db.database;
     console.log(process.version+' listening on port '+(process.env.PORT||3000)+' ('+app.env+'/'+db+')');
