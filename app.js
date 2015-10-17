@@ -16,7 +16,6 @@ let compose      = require('koa-compose');       // middleware composer
 let compress     = require('koa-compress');      // HTML compression
 let responseTime = require('koa-response-time'); // X-Response-Time middleware
 let session      = require('koa-session');       // session for passport login, flash messages
-let serve        = require('koa-static');        // static file serving middleware
 let mysql        = require('mysql-co');          // MySQL (co wrapper for mysql2)
 
 let app = module.exports = koa();
@@ -28,10 +27,6 @@ app.use(responseTime());
 
 // HTML compression
 app.use(compress({}));
-
-
-// serve static files (html, css, js); allow browser to cache for 1 hour
-app.use(serve('public', { maxage: 1000*60*60 }));
 
 
 // parse request body into ctx.request.body

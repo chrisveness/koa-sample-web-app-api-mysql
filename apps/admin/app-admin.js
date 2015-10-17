@@ -108,6 +108,9 @@ app.use(function* ctxAddDomain(next) {
 
 // ------------ routing
 
+// serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
+app.use(serve('public', { maxage: 1000*60*60 }));
+
 // public (unsecured) modules first
 
 app.use(require('./index/routes-index.js'));

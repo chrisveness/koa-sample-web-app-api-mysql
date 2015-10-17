@@ -9,6 +9,7 @@ let koa        = require('koa');            // koa framework
 let handlebars = require('koa-handlebars'); // handlebars templating
 let flash      = require('koa-flash');      // flash messages
 let helmet     = require('koa-helmet');     // security header middleware
+let serve      = require('koa-static');     // static file serving middleware
 let bunyan     = require('bunyan');         // logging
 let koaLogger  = require('koa-bunyan');     // logging
 
@@ -72,7 +73,10 @@ app.use(flash());
 app.use(helmet());
 
 
-// routing
+// ------------ routing
+
+// serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
+app.use(serve('public', { maxage: 1000*60*60 }));
 
 app.use(require('./routes-www.js'));
 
