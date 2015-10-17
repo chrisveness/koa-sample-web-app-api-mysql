@@ -5,7 +5,6 @@
 'use strict';
 
 let koa       = require('koa');        // Koa framework
-let basicAuth = require('basic-auth'); // basic access authentication
 let xmlify    = require('xmlify');     // JS object to XML
 let yaml      = require('js-yaml');    // JS object to YAML
 let bunyan    = require('bunyan');     // logging
@@ -33,6 +32,40 @@ app.use(function* mysqlConnection(next) {
     yield next;
 
     this.db.release();
+});
+
+
+// content negotiation: api will respond with json, xml, or yaml
+app.use(function* contentNegotiation(next) {
+
+    yield next;
+
+    if (!this.body) return; // no content to return
+
+    // check Accept header for preferred response type
+    let type = this.accepts('json', 'xml', 'yaml', 'text');
+
+    switch (type) {
+        case 'json':
+        default:
+            delete this.body.root; // xml root element
+            break; // ... koa takes care of type
+        case 'xml':
+            this.type = type;
+            var root = this.body.root; // xml root element
+            delete this.body.root;
+            this.body = xmlify(this.body, root);
+            break;
+        case 'yaml':
+        case 'text':
+            delete this.body.root; // xml root element
+            this.type = 'yaml';
+            this.body = yaml.dump(this.body);
+            break;
+        case false:
+            this.throw(406); // "Not acceptable" - can't furnish whatever was requested
+            break;
+    }
 });
 
 
@@ -66,77 +99,20 @@ app.use(function* handleErrors(next) {
 });
 
 
-// content negotiation: api will respond with json, xml, or yaml
-app.use(function* contentNegotiation(next) {
-
-    yield next;
-
-    if (!this.body) return; // no content to return
-
-    // check Accept header for preferred response type
-    let type = this.accepts('json', 'xml', 'text');
-
-    switch (type) {
-        case false:
-            this.throw(406); // "Not acceptable" - can't furnish whatever was requested
-            break;
-        case 'json':
-            delete this.body.root; // xml root element
-            break; // ... koa takes care of type
-        case 'xml':
-            this.type = type;
-            var root = this.body.root; // xml root element
-            delete this.body.root;
-            this.body = xmlify(this.body, root);
-            break;
-        case 'text':
-        default:
-            delete this.body.root; // xml root element
-            this.type = 'yaml'; // TODO yaml or just text? depends?
-            this.body = yaml.dump(this.body);
-            break;
-    }
-});
-
-
 // ------------ routing
 
 // public (unsecured) modules first
 
 app.use(require('./routes-root.js'));
 
-// verify basic access authentication; for production use, this should always be over SSL (note
-// digest access authentication is not suitable due to password hash constraints: see e.g.
-// stackoverflow.com/questions/18551954#answer-18828089)
+// if requested url is /auth, require 'user' basic auth (e-mail + password)
 
-app.use(function* confirmBasicAuth(next) {
-    let user = null;
-
-    // basic auth headers provided?
-    let credentials = basicAuth(this.request);
-    if (!credentials) this.throw(401); // Unauthorized
-
-    if (this.url == '/auth') {
-        // /auth authenticates off email + cleartext password
-        user = yield validate.userByEmail(credentials.name, credentials.pass);
-        if (!user) this.throw(401); // Unauthorized
-    } else {
-        // all other resources authenticate off id + token (following auth request)
-        user = yield validate.userById(credentials.name, credentials.pass);
-        if (!user) this.throw(401); // Unauthorized
-    }
-
-    // ok - record authenticated user in this.auth.user
-    this.auth = { user: user };
-
-    // and continue on
-    yield next;
-
-});
-
-// subsequent modules require authentication
-
+app.use(validate.confirmBasicAuthUser('/auth')); // (only applies to /auth)
 app.use(require('./routes-auth.js'));
+
+// remaining routes require 'token' basic auth (obtained from /auth)
+
+app.use(validate.confirmBasicAuthToken());
 app.use(require('./routes-members.js'));
 app.use(require('./routes-teams.js'));
 

@@ -4,8 +4,9 @@
 
 'use strict';
 
-let bcrypt = require('co-bcrypt'); // bcrypt library
-let crypto = require('crypto');    // nodejs.org/api/crypto.html
+let basicAuth = require('basic-auth'); // basic access authentication
+let bcrypt    = require('co-bcrypt'); // bcrypt library
+let crypto    = require('crypto');    // nodejs.org/api/crypto.html
 
 let User   = require('../../models/user.js');
 
@@ -13,7 +14,72 @@ let validate = module.exports = {};
 
 
 /**
- * Validate user identified by 'username' validates against 'password'; returns user record for
+ * Middleware to verify basic access user authentication; if this url is in urls, subsequent
+ * middleware will require authentication by e-mail & password.
+ *
+ * This is used for initial authentication as it performs a (slow) bcrypt hash. It then leaves the
+ * user record in this.auth.user.
+ *
+ * For production use, this should always be over SSL (note digest access authentication is not suitable
+ * due to password hash constraints: see e.g. stackoverflow.com/questions/18551954#answer-18828089)
+ */
+validate.confirmBasicAuthUser = function(urls) {
+    return function*(next) {
+        // only apply this test to specified url(s) (others pass through to subsequent checks)
+        if (typeof urls == 'string' && urls != this.request.url) { yield next; return; }
+        if (urls instanceof Array && urls.indexOf(this.request.url) == -1) { yield next; return; }
+        // TODO: regular expressions?
+
+        // basic auth headers provided?
+        let credentials = basicAuth(this.request);
+        if (!credentials) this.throw(401); // Unauthorized
+
+        // authenticates off email + cleartext password - this is slow as it requires bcrypt hashing
+        let user = yield validate.userByEmail(credentials.name, credentials.pass);
+        if (!user) this.throw(401); // Unauthorized
+
+        // ok - record authenticated user in this.auth.user
+        this.auth = { user: user };
+
+        // and continue on
+        yield next;
+    };
+};
+
+
+/**
+ * Middleware to verify basic access token authentication; subsequent middleware will require
+ * authentication by user id & authentication token.
+ *
+ * This is used for subsequent authentication as there is no (slow) bcrypt hash required, just a
+ * (fast) SHA-1 hash.
+ *
+ * For production use, this should always be over SSL (note digest access authentication is not suitable
+ * due to password hash constraints: see e.g. stackoverflow.com/questions/18551954#answer-18828089)
+ */
+validate.confirmBasicAuthToken = function() {
+    return function*(next) {
+        let user = null;
+
+        // basic auth headers provided?
+        let credentials = basicAuth(this.request);
+        if (!credentials) this.throw(401); // Unauthorized
+
+        // authenticate off id + token (following auth request) - fast as no bcrypt hash required
+        user = yield validate.userById(credentials.name, credentials.pass);
+        if (!user) this.throw(401); // Unauthorized
+
+        // ok - record authenticated user in this.auth.user
+        this.auth = { user: user };
+
+        // and continue on
+        yield next;
+    };
+};
+
+
+/**
+ * Validate user identified by 'username' validated against 'password'; returns user record for
  * successful validation, or null for failed validation.
  *
  * This is slow as it does bcrypt.compare() on supplied password; it is used for / and /auth only.
@@ -44,7 +110,7 @@ validate.userByEmail = function*(username, password) {
  * Validate user 'id' has api token 'pw'; returns user record for successful validation,
  * or null for failed validation.
  *
- * This is fast as it uses primary key and string comparison on api token.
+ * This is fast as it uses primary key lookup, SHA-1 hash, and string comparison on api token.
  */
 validate.userById = function*(id, pw) {
     // lookup user
