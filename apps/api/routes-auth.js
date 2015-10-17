@@ -9,14 +9,21 @@ let crypto = require('crypto');       // nodejs.org/api/crypto.html
 
 
 /**
- * Get user authentication token {id, token} for subsequent API requests.
+ * @api {get} /auth Get authentication token for subsequent API requests
+ * @apiName   GetAuth
+ * @apiGroup  Auth
  *
- * The token is simply a hash of the timestamp the token was issued.
+ * @apiDescription Subsequent requests are made with basic auth username = id, password = token.
  *
- * Subsequent requests will be made with basic auth username = id, password = token.
+ *   Note validation for /auth is by email+pw using bcrypt.compare which is slow, so auth is done once
+ *   and token is retained temporarily by client; subsequent requests have a fast check of the token.
  *
- * Note validation for /auth is by email+pw using bcrypt.compare which is slow, so auth is done once
- * and token is retained temporarily by client; subsequent requests have a fast check of the token.
+ *   The token has a 24-hour limited lifetime.
+ *
+ * @apiHeader  Authorization            Basic Access Authentication {email, password}
+ * @apiHeader  [Accept=application/xml] application/json, application/xml.
+ * @apiSuccess id                       Id to be used for subsequent Authorization header ‘username’
+ * @apiSuccess token                    Token to be used for subsequent Authorization header ‘password’
  */
 router.get('/auth', function* getAuth() {
     // (middleware has already validated user at this point, just return the hashed token timestamp)

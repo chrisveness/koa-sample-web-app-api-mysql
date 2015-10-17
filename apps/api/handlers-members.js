@@ -10,21 +10,30 @@ let handler = module.exports = {};
 
 
 /**
- * GET /members - return list of members.
+ * @api {get} /members List members
+ * @apiName   GetMembers
+ * @apiGroup  Members
  *
- * args: fieldname=match to filter by field name eg /members?email=fred@bloggs.com
- * returns: 200 OK, 204 No Content
+ * @apiDescription Summary list of members.
+ *
+ * @apiParam   -filter-field-              Field to be filtered on (eg /members?firstname=fred)
+ * @apiHeader  Authorization               Basic Access Authentication token.
+ * @apiHeader  [Accept=application/json]   application/json, application/xml, text/yaml, text/plain.
+ * @apiSuccess (Success 2xx) 200/OK        List of members with id, uri attributes.
+ * @apiSuccess (Success 2xx) 204/NoContent No matching members found.
+ * @apiError   403/Forbidden               Unrecognised Member field in query.
+ * @apiError   401/Unauthorized            Invalid basic auth credentials supplied.
  */
 handler.getMembers = function*() {
-    let sql = 'Select * From Member';
-    // query-string filters?
-    if (this.querystring) {
-        let filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
-        sql += ' Where '+filter;
-    }
-    sql +=  ' Order By Firstname, Lastname';
-
     try {
+
+        let sql = 'Select * From Member';
+        // query-string filters?
+        if (this.querystring) {
+            let filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+            sql += ' Where '+filter;
+        }
+        sql +=  ' Order By Firstname, Lastname';
 
         let result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
         let members = result[0];
@@ -49,9 +58,15 @@ handler.getMembers = function*() {
 
 
 /**
- * GET /members/:id - return member details (including team memberships).
+ * @api {get} /members/:id Get details of member (including team memberships).
+ * @apiName   GetMembersId
+ * @apiGroup  Members
  *
- * returns: 200 OK, 404 Not Found
+ * @apiHeader  Authorization            Basic Access Authentication token.
+ * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+ * @apiSuccess (Success 2xx) 200/OK     Full details of specified member.
+ * @apiError   401/Unauthorized         Invalid basic auth credentials supplied.
+ * @apiError   404/NotFound             Member not found.
  */
 handler.getMemberById = function*() {
     let member = yield Member.get(this.params.id);
@@ -73,9 +88,18 @@ handler.getMemberById = function*() {
 
 
 /**
- * POST /members - create new member
+ * @api {post} /members Create new member
+ * @apiName    PostMembers
+ * @apiGroup   Members
  *
- * returns: 201 OK, 403 Forbidden
+ * @apiParam   ...                       [as per get].
+ * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+ * @apiHeader  Authorization             Basic Access Authentication token.
+ * @apiHeader  Content-Type              application/x-www-form-urlencoded.
+ * @apiSuccess (Success 2xx) 201/Created Details of newly created member.
+ * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+ * @apiError   403/Forbidden             Admin auth required.
+ * @apiError   404/NotFound              Member not found.
  */
 handler.postMembers = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
@@ -96,9 +120,17 @@ handler.postMembers = function*() {
 
 
 /**
- * PATCH /members - update member details
+ * @api {patch} /members/:id Update member details
+ * @apiName     PatchMembers
+ * @apiGroup    Members
  *
- * returns: 200 OK, 403 Forbidden, 404 Not Found
+ * @apiHeader  Authorization             Basic Access Authentication token.
+ * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+ * @apiHeader  Content-Type              application/x-www-form-urlencoded.
+ * @apiSuccess (Success 2xx) 200/OK      Updated member details.
+ * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+ * @apiError   403/Forbidden             Admin auth required.
+ * @apiError   404/NotFound              Member not found.
  */
 handler.patchMemberById = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
@@ -120,9 +152,15 @@ handler.patchMemberById = function*() {
 
 
 /**
- * DELETE /members - delete member
+ * @api {delete} /members/:id Delete member
+ * @apiName      DeleteMember
+ * @apiGroup     Members
  *
- * returns: 200 OK, 403 Forbidden, 404 Not Found
+ * @apiHeader  Authorization        Basic Access Authentication token.
+ * @apiSuccess (Success 2xx) 200/OK Full details of deleted member.
+ * @apiError   401/Unauthorized     Invalid basic auth credentials supplied.
+ * @apiError   403/Forbidden        Admin auth required.
+ * @apiError   404/NotFound         Member not found.
  */
 handler.deleteMemberById = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden

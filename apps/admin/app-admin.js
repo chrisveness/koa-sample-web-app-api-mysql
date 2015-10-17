@@ -10,6 +10,7 @@ let flash      = require('koa-flash');      // flash messages
 let handlebars = require('koa-handlebars'); // handlebars templating
 let helmet     = require('koa-helmet');     // security header middleware
 let passport   = require('koa-passport');   // authentication
+let serve      = require('koa-static');     // static file serving middleware
 let bunyan     = require('bunyan');         // logging
 let koaLogger  = require('koa-bunyan');     // logging
 
@@ -128,6 +129,10 @@ app.use(require('./members/routes-members.js'));
 app.use(require('./teams/routes-teams.js'));
 app.use(require('./ajax/routes-ajax.js'));
 app.use(require('./logs/routes-logs.js'));
+
+
+// serve static apidoc files (http://admin.localhost/apidoc) (note login required)
+app.use(serve('apps/api/apidoc', { maxage: 1000*60*60 }));
 
 
 // end of the line: 404 status for any resource not found

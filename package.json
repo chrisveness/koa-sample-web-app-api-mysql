@@ -12,7 +12,8 @@
   "scripts": {
     "start": "nodemon -e js,json,html app.js",
     "test": "mocha test/admin.js test/api.js",
-    "lint": "eslint ."
+    "lint": "eslint --ignore-pattern apps/api/apidoc .",
+    "apidoc": "apidoc -i apps/api -o apps/api/apidoc/apidoc"
   },
   "engines": {
     "node": "^4.0.0"
@@ -45,6 +46,7 @@
     "xmlify": "^1.0.0"
   },
   "devDependencies": {
+    "apidoc": "^0.13.1",
     "chai": "^3.2.0",
     "cheerio": "^0.19.0",
     "co-mocha": "^1.1.2",

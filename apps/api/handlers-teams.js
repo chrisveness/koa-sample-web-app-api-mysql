@@ -10,21 +10,30 @@ let handler = module.exports = {};
 
 
 /**
- * GET /teams - return list of teams
+ * @api {get} /teams List teams
+ * @apiName   GetTeams
+ * @apiGroup  Teams
  *
- * args: fieldname=match to filter by fieldname eg /teams?name=brainiacs
- * returns: 200 OK, 204 No Content
+ * @apiDescription Summary list of teams.
+ *
+ * @apiParam   -filter-field-              Field to be filtered on (eg /teams?name=brainiacs)
+ * @apiHeader  Authorization               Basic Access Authentication token.
+ * @apiHeader  [Accept=application/json]   application/json, application/xml, text/yaml, text/plain.
+ * @apiSuccess (Success 2xx) 200/OK        List of teams with id, uri attributes.
+ * @apiSuccess (Success 2xx) 204/NoContent No matching teams found.
+ * @apiError   403/Forbidden               Unrecognised Team field in query.
+ * @apiError   401/Unauthorized            Invalid basic auth credentials supplied.
  */
 handler.getTeams = function*() {
-    let sql = 'Select * From Team';
-    // query-string filters?
-    if (this.querystring) {
-        let filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
-        sql += ' Where '+filter;
-    }
-    sql +=  ' Order By Name';
-
     try {
+
+        let sql = 'Select * From Team';
+        // query-string filters?
+        if (this.querystring) {
+            let filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+            sql += ' Where '+filter;
+        }
+        sql +=  ' Order By Name';
 
         let result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
         let teams = result[0];
@@ -49,9 +58,15 @@ handler.getTeams = function*() {
 
 
 /**
- * GET /teams/:id - return team details (including team memberships)
+ * @api {get} /teams/:id Get details of team (including team memberships).
+ * @apiName   GetTeamsId
+ * @apiGroup  Teams
  *
- * returns: 200 OK, 404 Not Found
+ * @apiHeader  Authorization             Basic Access Authentication token.
+ * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+ * @apiSuccess (Success 2xx) 200/OK      Full details of specified team.
+ * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+ * @apiError   404/NotFound              Team not found.
  */
 handler.getTeamById = function*() {
     let team = yield Team.get(this.params.id);
@@ -73,9 +88,18 @@ handler.getTeamById = function*() {
 
 
 /**
- * POST /teams - create new team
+ * @api {post} /teams Create new team
+ * @apiName    PostTeams
+ * @apiGroup   Teams
  *
- * returns: 201 OK, 403 Forbidden
+ * @apiParam   ...                       [as per get].
+ * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+ * @apiHeader  Authorization             Basic Access Authentication token.
+ * @apiHeader  Content-Type              application/x-www-form-urlencoded.
+ * @apiSuccess (Success 2xx) 201/Created Details of newly created team.
+ * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+ * @apiError   403/Forbidden             Admin auth required.
+ * @apiError   404/NotFound              Team not found.
  */
 handler.postTeams = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
@@ -96,9 +120,17 @@ handler.postTeams = function*() {
 
 
 /**
- * PATCH /teams - update team details
+ * @api {patch} /teams/:id Update team details
+ * @apiName     PatchTeams
+ * @apiGroup    Teams
  *
- * returns: 200 OK, 403 Forbidden, 404 Not Found
+ * @apiHeader  Authorization             Basic Access Authentication token.
+ * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+ * @apiHeader  Content-Type              application/x-www-form-urlencoded.
+ * @apiSuccess (Success 2xx) 200/OK      Updated team details.
+ * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+ * @apiError   403/Forbidden             Admin auth required.
+ * @apiError   404/NotFound              Team not found.
  */
 handler.patchTeamById = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
@@ -120,9 +152,15 @@ handler.patchTeamById = function*() {
 
 
 /**
- * DELETE /teams - delete team
+ * @api {delete} /teams/:id Delete team
+ * @apiName      DeleteTeam
+ * @apiGroup     Teams
  *
- * returns: 200 OK, 403 Forbidden, 404 Not Found
+ * @apiHeader  Authorization        Basic Access Authentication token.
+ * @apiSuccess (Success 2xx) 200/OK Full details of deleted team.
+ * @apiError   401/Unauthorized     Invalid basic auth credentials supplied.
+ * @apiError   403/Forbidden        Admin auth required.
+ * @apiError   404/NotFound         Team not found.
  */
 handler.deleteTeamById = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
