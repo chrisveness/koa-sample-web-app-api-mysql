@@ -22,7 +22,7 @@ of a complete system: in this case, basic interactive tools for viewing, adding,
 deleting ([CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)), with *passport*
 login/authentication, and a matching
 [REST](http://en.wikipedia.org/wiki/Representational_state_transfer)ful API to do the same (using
-basic access authentication). Many system may not require an API, but the API nicely doubles-up for
+basic access authentication). Many systems may not require an API, but the API nicely doubles-up for
 ajax functions. Of course, real systems do much more, but generally build on these core functions.
 
 The database includes a couple of tables with related data and referential integrity – one step
@@ -44,7 +44,7 @@ callback-style Node.js with Express. *Yield* may be just a stepping-stone to ES7
 works. JavaScript may be looked down on ([misunderstood?](http://davidwalsh.name/javascript-objects))
 in some quarters, but I do find it vastly better to work with than PHP :)
 
-With Node.js v4 (stable) out, and Koa on v1, I believe Koa can now be 
+With Node.js v4 (stable LTS) out, I believe Koa can now be 
 considered[*](http://hueniverse.com/2015/03/02/the-node-version-dilemma) for production use.
 
 The app is built with a modular approach. There are three (*composed*) sub-apps: the bare bones of a
