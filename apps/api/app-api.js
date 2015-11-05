@@ -78,6 +78,7 @@ app.use(function* handleErrors(next) {
     } catch (e) {
         switch (e.status) {
             case 204: // No Content
+            case 404: // Not Found
                 this.status = e.status;
                 break;
             case 401: // Unauthorized
