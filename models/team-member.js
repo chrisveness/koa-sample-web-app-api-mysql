@@ -7,10 +7,10 @@
 'use strict';
 
 
-let Lib        = require('../lib/lib.js');
-let ModelError = require('./modelerror.js');
+const Lib        = require('../lib/lib.js');
+const ModelError = require('./modelerror.js');
 
-let TeamMember = module.exports = {};
+const TeamMember = module.exports = {};
 
 
 /**
@@ -20,8 +20,8 @@ let TeamMember = module.exports = {};
  * @returns {Object} TeamMember details.
  */
 TeamMember.get = function*(id) {
-    let result = yield GLOBAL.db.query('Select * From TeamMember Where TeamMemberId = ?', id);
-    let teamMember = result[0];
+    const result = yield GLOBAL.db.query('Select * From TeamMember Where TeamMemberId = ?', id);
+    const teamMember = result[0];
     return teamMember[0];
 };
 
@@ -40,7 +40,7 @@ TeamMember.insert = function*(values) {
 
     try {
 
-        let result = yield GLOBAL.db.query('Insert Into TeamMember Set ?', values);
+        const result = yield GLOBAL.db.query('Insert Into TeamMember Set ?', values);
         //console.log('TeamMember.insert', result.insertId, new Date); // eg audit trail?
         return result[0].insertId;
 
@@ -70,7 +70,7 @@ TeamMember.insert = function*(values) {
 TeamMember.update = function*(id, values) {
     try {
 
-        let result = yield GLOBAL.db.query('Update TeamMember Set ? Where TeamMemberId = ?', [values, id]);
+        const result = yield GLOBAL.db.query('Update TeamMember Set ? Where TeamMemberId = ?', [values, id]);
         if (result.affectedRows == 0) return; // not found
         //console.log('TeamMember.update', id, new Date); // eg audit trail?
 

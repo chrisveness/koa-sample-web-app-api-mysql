@@ -10,15 +10,15 @@
 'use strict';
 /* eslint "no-shadow":0 *//* app is already declared in the upper scope */
 
-let koa          = require('koa');               // Koa framework
-let body         = require('koa-body');          // body parser
-let compose      = require('koa-compose');       // middleware composer
-let compress     = require('koa-compress');      // HTML compression
-let responseTime = require('koa-response-time'); // X-Response-Time middleware
-let session      = require('koa-session');       // session for passport login, flash messages
-let mysql        = require('mysql-co');          // MySQL (co wrapper for mysql2)
+const koa          = require('koa');               // Koa framework
+const body         = require('koa-body');          // body parser
+const compose      = require('koa-compose');       // middleware composer
+const compress     = require('koa-compress');      // HTML compression
+const responseTime = require('koa-response-time'); // X-Response-Time middleware
+const session      = require('koa-session');       // session for passport login, flash messages
+const mysql        = require('mysql-co');          // MySQL (co wrapper for mysql2)
 
-let app = module.exports = koa();
+const app = module.exports = koa();
 
 
 // return response time in X-Response-Time header
@@ -39,7 +39,7 @@ app.use(session(app));
 
 
 // MySQL connection pool TODO: how to catch connection exception eg invalid password?
-let config = require('./config/db-'+app.env+'.json');
+const config = require('./config/db-'+app.env+'.json');
 GLOBAL.connectionPool = mysql.createPool(config.db); // put in GLOBAL to pass to sub-apps
 
 
@@ -47,17 +47,17 @@ GLOBAL.connectionPool = mysql.createPool(config.db); // put in GLOBAL to pass to
 // qv github.com/koajs/examples/tree/master/vhost
 app.use(function* subApp(next) {
     // use subdomain to determine which app to serve: www. as default, or admin. or api
-    let subapp = this.hostname.split('.')[0]; // subdomain = part before first '.' of hostname
+    const subapp = this.hostname.split('.')[0]; // subdomain = part before first '.' of hostname
 
     switch (subapp) {
         case 'admin':
-            var adminApp = composer(require('./apps/admin/app-admin.js'));
+            const adminApp = composer(require('./apps/admin/app-admin.js'));
             return yield adminApp.call(this, next);
         case 'api':
-            var apiApp   = composer(require('./apps/api/app-api.js'));
+            const apiApp   = composer(require('./apps/api/app-api.js'));
             return yield apiApp.call(this, next);
         case 'www':
-            var wwwApp   = composer(require('./apps/www/app-www.js'));
+            const wwwApp   = composer(require('./apps/www/app-www.js'));
             return yield wwwApp.call(this, next);
         default: // no subdomain? canonicalise hostname to www.hostname
             this.redirect(this.protocol+'://'+'www.'+this.host+this.path+this.search);
@@ -66,7 +66,7 @@ app.use(function* subApp(next) {
 });
 // composer for sub-apps: github.com/koajs/examples/blob/master/vhost
 function composer(app) {
-    let middleware = app instanceof koa ? app.middleware : app;
+    const middleware = app instanceof koa ? app.middleware : app;
     return compose(middleware);
 }
 
@@ -74,7 +74,7 @@ function composer(app) {
 if (!module.parent) {
     /* eslint no-console: 0 */
     app.listen(process.env.PORT||3000);
-    let db = require('./config/db-'+app.env+'.json').db.database;
+    const db = require('./config/db-'+app.env+'.json').db.database;
     console.log(process.version+' listening on port '+(process.env.PORT||3000)+' ('+app.env+'/'+db+')');
 }
 

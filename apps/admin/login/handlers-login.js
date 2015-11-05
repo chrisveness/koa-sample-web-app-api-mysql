@@ -6,9 +6,9 @@
 
 'use strict';
 
-let passport = require('koa-passport'); // authentication
+const passport = require('koa-passport'); // authentication
 
-let handler = module.exports = {};
+const handler = module.exports = {};
 
 
 /**
@@ -17,7 +17,7 @@ let handler = module.exports = {};
  * Allow url after the 'login', to specify a redirect after a successful login
  */
 handler.getLogin = function*() {
-    let context = this.flash.formdata || {}; // failed login? fill in previous values
+    const context = this.flash.formdata || {}; // failed login? fill in previous values
 
     yield this.render('login/templates/login', context);
 };
@@ -44,7 +44,7 @@ handler.postLogin = function* postLogin(next) {
         // qv github.com/rkusa/koa-passport/blob/master/test/authenticate.js
         // for remember-me function, qv examples in github.com/jaredhanson/passport-local
 
-        let ctx = this; // capture 'this' to pass into callback
+        const ctx = this; // capture 'this' to pass into callback
 
         yield* passport.authenticate('local', function*(err, user) {
             if (err) this.throw(err.status||500, err.message);
@@ -61,7 +61,7 @@ handler.postLogin = function* postLogin(next) {
                 ctx.redirect(url);
             } else {
                 // login failed: redisplay login page with login fail message
-                let loginfailmsg = 'E-mail / password not recognised';
+                const loginfailmsg = 'E-mail / password not recognised';
                 ctx.flash = { formdata: ctx.request.body, loginfailmsg: loginfailmsg };
                 ctx.redirect(ctx.url);
             }

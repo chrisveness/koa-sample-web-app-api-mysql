@@ -4,9 +4,9 @@
 
 'use strict';
 
-let router = require('koa-router')(); // router middleware for koa
+const router = require('koa-router')(); // router middleware for koa
 
-let members = require('./handlers-members.js');
+const members = require('./handlers-members.js');
 
 
 router.get('/members',             members.list);          // render list members page

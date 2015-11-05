@@ -6,10 +6,10 @@
 
 'use strict';
 
-let Member     = require('../../../models/member.js');
-let TeamMember = require('../../../models/team-member.js');
+const Member     = require('../../../models/member.js');
+const TeamMember = require('../../../models/team-member.js');
 
-let members = module.exports = {};
+const members = module.exports = {};
 
 
 /**
@@ -22,17 +22,17 @@ members.list = function*() {
     // "Where field1 = :field1 And field2 = :field2"
     let sql = 'Select * From Member';
     if (this.querystring) {
-        let filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+        const filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
         sql += ' Where '+filter;
     }
     sql +=  ' Order By Firstname, Lastname';
 
     try {
 
-        let result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
-        let members = result[0];
+        const result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
+        const members = result[0];
 
-        let context = { members: members };
+        const context = { members: members };
         yield this.render('members/templates/members-list', context);
 
     } catch (e) {
@@ -48,17 +48,17 @@ members.list = function*() {
  * GET /members/:id - render view-member page
  */
 members.view = function*() {
-    let member = yield Member.get(this.params.id);
+    const member = yield Member.get(this.params.id);
     if (!member) this.throw(404, 'Member not found');
 
     // team membership
-    let sql = `Select TeamMemberId, TeamId, Name
-               From TeamMember Inner Join Team Using (TeamId)
-               Where MemberId = ?`;
-    let result = yield this.db.query(sql, this.params.id);
-    let teams = result[0];
+    const sql = `Select TeamMemberId, TeamId, Name
+                 From TeamMember Inner Join Team Using (TeamId)
+                 Where MemberId = ?`;
+    const result = yield this.db.query(sql, this.params.id);
+    const teams = result[0];
 
-    let context = member;
+    const context = member;
     context.teams = teams;
     yield this.render('members/templates/members-view', context);
 };
@@ -68,7 +68,7 @@ members.view = function*() {
  * GET /members/add - render add-member page
  */
 members.add = function*() {
-    let context = this.flash.formdata || {}; // failed validation? fill in previous values
+    const context = this.flash.formdata || {}; // failed validation? fill in previous values
     yield this.render('members/templates/members-add', context);
 };
 
@@ -77,28 +77,26 @@ members.add = function*() {
  * GET /members/:id/edit - render edit-member page
  */
 members.edit = function*() {
-    let sql = null, result = null;
-
     // member details
     let member = yield Member.get(this.params.id);
     if (!member) this.throw(404, 'Member not found');
     if (this.flash.formdata) member = this.flash.formdata; // failed validation? fill in previous values
 
     // team membership
-    sql = `Select TeamMemberId, TeamId, Name
-           From TeamMember Inner Join Team Using (TeamId)
-           Where MemberId = ?`;
-    result = yield this.db.query(sql, this.params.id);
-    member.memberOfTeams = result[0];
+    const sqlT = `Select TeamMemberId, TeamId, Name
+                  From TeamMember Inner Join Team Using (TeamId)
+                  Where MemberId = ?`;
+    const resultT = yield this.db.query(sqlT, this.params.id);
+    member.memberOfTeams = resultT[0];
 
     // teams this member is not a member of (for add picklist)
     let teams = member.memberOfTeams.map(function(t) { return t.TeamId; }); // array of id's
     if (teams.length == 0) teams = [0]; // dummy to satisfy sql 'in' syntax
-    sql = `Select TeamId, Name From Team Where TeamId Not In (`+teams.join(',')+`) Order By Name`;
-    result = yield this.db.query(sql, teams);
-    member.notMemberOfTeams = result[0];
+    const sqlM = `Select TeamId, Name From Team Where TeamId Not In (`+teams.join(',')+`) Order By Name`;
+    const resultM = yield this.db.query(sqlM, teams);
+    member.notMemberOfTeams = resultM[0];
 
-    let context = member;
+    const context = member;
     yield this.render('members/templates/members-edit', context);
 };
 
@@ -107,10 +105,10 @@ members.edit = function*() {
  * GET /members/:id/delete - render delete-member page
  */
 members.delete = function*() {
-    let member = yield Member.get(this.params.id);
+    const member = yield Member.get(this.params.id);
     if (!member) this.throw(404, 'Member not found');
 
-    let context = member;
+    const context = member;
     yield this.render('members/templates/members-delete', context);
 };
 
@@ -126,7 +124,7 @@ members.processAdd = function*() {
 
     try {
 
-        let id = yield Member.insert(this.request.body);
+        const id = yield Member.insert(this.request.body);
         this.set('X-Insert-Id', id); // for integration tests
 
         // return to list of members
@@ -164,7 +162,7 @@ members.processEdit = function*() {
 
     // add member to team
     if ('add-team' in this.request.body) {
-        let values = {
+        const values = {
             MemberId: this.params.id,
             TeamId:   this.request.body['add-team'],
             JoinedOn: new Date().toISOString().replace('T', ' ').split('.')[0],
@@ -172,7 +170,7 @@ members.processEdit = function*() {
 
         try {
 
-            let id = yield TeamMember.insert(values);
+            const id = yield TeamMember.insert(values);
             this.set('X-Insert-Id', id); // for integration tests
 
             // stay on same page showing new team member

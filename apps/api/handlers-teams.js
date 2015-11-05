@@ -4,9 +4,9 @@
 
 'use strict';
 
-let Team = require('../../models/team.js');
+const Team = require('../../models/team.js');
 
-let handler = module.exports = {};
+const handler = module.exports = {};
 
 
 /**
@@ -30,13 +30,13 @@ handler.getTeams = function*() {
         let sql = 'Select * From Team';
         // query-string filters?
         if (this.querystring) {
-            let filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+            const filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
             sql += ' Where '+filter;
         }
         sql +=  ' Order By Name';
 
-        let result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
-        let teams = result[0];
+        const result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
+        const teams = result[0];
 
         if (teams.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
 
@@ -69,7 +69,7 @@ handler.getTeams = function*() {
  * @apiError   404/NotFound              Team not found.
  */
 handler.getTeamById = function*() {
-    let team = yield Team.get(this.params.id);
+    const team = yield Team.get(this.params.id);
 
     if (!team) this.throw(404); // Not Found
 
@@ -77,9 +77,9 @@ handler.getTeamById = function*() {
     team._id = team.TeamId;
 
     // team membership
-    let sql = `Select MemberId As _id, concat('/members/',MemberId) As _uri From TeamMember Where TeamId = ?`;
-    let result = yield this.db.query(sql, this.params.id);
-    let members = result[0];
+    const sql = `Select MemberId As _id, concat('/members/',MemberId) As _uri From TeamMember Where TeamId = ?`;
+    const result = yield this.db.query(sql, this.params.id);
+    const members = result[0];
     team.Members = members;
 
     this.body = team;
@@ -105,7 +105,7 @@ handler.postTeams = function*() {
 
     try {
 
-        let id = yield Team.insert(this.request.body);
+        const id = yield Team.insert(this.request.body);
 
         this.body = yield Team.get(id); // return created team details
         this.body.root = 'Team';
@@ -168,7 +168,7 @@ handler.deleteTeamById = function*() {
     try {
 
         // return deleted team details
-        let team = yield Team.get(this.params.id);
+        const team = yield Team.get(this.params.id);
 
         if (!team) this.throw(404); // Not Found
 

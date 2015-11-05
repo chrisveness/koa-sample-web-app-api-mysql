@@ -7,10 +7,10 @@
 'use strict';
 
 
-let Lib        = require('../lib/lib.js');
-let ModelError = require('./modelerror.js');
+const Lib        = require('../lib/lib.js');
+const ModelError = require('./modelerror.js');
 
-let User = module.exports = {};
+const User = module.exports = {};
 
 
 /**
@@ -20,8 +20,8 @@ let User = module.exports = {};
  * @returns {Object} User details.
  */
 User.get = function*(id) {
-    let result = yield GLOBAL.db.query('Select * From User Where UserId = ?', id);
-    let users = result[0];
+    const result = yield GLOBAL.db.query('Select * From User Where UserId = ?', id);
+    const users = result[0];
     return users[0];
 };
 
@@ -36,10 +36,10 @@ User.get = function*(id) {
 User.getBy = function*(field, value) {
     try {
 
-        let sql = `Select * From User Where ${field} = ? Order By Firstname, Lastname`;
+        const sql = `Select * From User Where ${field} = ? Order By Firstname, Lastname`;
 
-        let result = yield GLOBAL.db.query(sql, value);
-        let users = result[0];
+        const result = yield GLOBAL.db.query(sql, value);
+        const users = result[0];
 
         return users;
 
@@ -62,7 +62,7 @@ User.getBy = function*(field, value) {
 User.insert = function*(values) {
     try {
 
-        let result = yield GLOBAL.db.query('Insert Into User Set ?', values);
+        const result = yield GLOBAL.db.query('Insert Into User Set ?', values);
         //console.log('User.insert', result.insertId, new Date); // eg audit trail?
         return result[0].insertId;
 

@@ -7,10 +7,10 @@
 'use strict';
 
 
-let Lib        = require('../lib/lib.js');
-let ModelError = require('./modelerror.js');
+const Lib        = require('../lib/lib.js');
+const ModelError = require('./modelerror.js');
 
-let Team = module.exports = {};
+const Team = module.exports = {};
 
 
 /**
@@ -20,8 +20,8 @@ let Team = module.exports = {};
  * @returns {Object} Team details.
  */
 Team.get = function*(id) {
-    let result = yield GLOBAL.db.query('Select * From Team Where TeamId = ?', id);
-    let teams = result[0];
+    const result = yield GLOBAL.db.query('Select * From Team Where TeamId = ?', id);
+    const teams = result[0];
     return teams[0];
 };
 
@@ -36,10 +36,10 @@ Team.get = function*(id) {
 Team.getBy = function*(field, value) {
     try {
 
-        let sql = `Select * From Team Where ${field} = ? Order By Name`;
+        const sql = `Select * From Team Where ${field} = ? Order By Name`;
 
-        let result = yield GLOBAL.db.query(sql, value);
-        let teams = result[0];
+        const result = yield GLOBAL.db.query(sql, value);
+        const teams = result[0];
 
         return teams;
 
@@ -62,7 +62,7 @@ Team.getBy = function*(field, value) {
 Team.insert = function*(values) {
     try {
 
-        let result = yield GLOBAL.db.query('Insert Into Team Set ?', values);
+        const result = yield GLOBAL.db.query('Insert Into Team Set ?', values);
         //console.log('Team.insert', result.insertId, new Date); // eg audit trail?
         return result[0].insertId;
 

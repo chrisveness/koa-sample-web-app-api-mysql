@@ -5,21 +5,21 @@
 'use strict';
 
 
-let koa        = require('koa');            // koa framework
-let handlebars = require('koa-handlebars'); // handlebars templating
-let flash      = require('koa-flash');      // flash messages
-let helmet     = require('koa-helmet');     // security header middleware
-let serve      = require('koa-static');     // static file serving middleware
-let bunyan     = require('bunyan');         // logging
-let koaLogger  = require('koa-bunyan');     // logging
+const koa        = require('koa');            // koa framework
+const handlebars = require('koa-handlebars'); // handlebars templating
+const flash      = require('koa-flash');      // flash messages
+const helmet     = require('koa-helmet');     // security header middleware
+const serve      = require('koa-static');     // static file serving middleware
+const bunyan     = require('bunyan');         // logging
+const koaLogger  = require('koa-bunyan');     // logging
 
-let app = module.exports = koa(); // API app
+const app = module.exports = koa(); // API app
 
 
 // logging
-let access = { type: 'rotating-file', path: './logs/www-access.log', level: 'trace', period: '1d', count: 4 };
-let error  = { type: 'rotating-file', path: './logs/www-error.log',  level: 'error', period: '1d', count: 4 };
-let logger = bunyan.createLogger({ name: 'www', streams: [ access, error ] });
+const access = { type: 'rotating-file', path: './logs/www-access.log', level: 'trace', period: '1d', count: 4 };
+const error  = { type: 'rotating-file', path: './logs/www-error.log',  level: 'error', period: '1d', count: 4 };
+const logger = bunyan.createLogger({ name: 'www', streams: [ access, error ] });
 app.use(koaLogger(logger, {}));
 
 
@@ -31,7 +31,7 @@ app.use(function* handleErrors(next) {
 
     } catch (e) {
         this.status = e.status || 500;
-        let context = app.env=='development' ? { e: e } : {};
+        const context = app.env=='development' ? { e: e } : {};
         yield this.render('templates/500-internal-server-error', context);
         this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
     }
@@ -56,7 +56,7 @@ app.use(handlebars({
 // clean up post data - trim & convert blank fields to null
 app.use(function* cleanPost(next) {
     if (this.request.body !== undefined) {
-        for (let key in this.request.body) {
+        for (const key in this.request.body) {
             this.request.body[key] = this.request.body[key].trim();
             if (this.request.body[key] == '') this.request.body[key] = null;
         }

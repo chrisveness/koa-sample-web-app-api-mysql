@@ -7,10 +7,10 @@
 'use strict';
 
 
-let Lib        = require('../lib/lib.js');
-let ModelError = require('./modelerror.js');
+const Lib        = require('../lib/lib.js');
+const ModelError = require('./modelerror.js');
 
-let Member = module.exports = {};
+const Member = module.exports = {};
 
 
 /**
@@ -20,8 +20,8 @@ let Member = module.exports = {};
  * @returns {Object} Member details.
  */
 Member.get = function*(id) {
-    let result = yield GLOBAL.db.query('Select * From Member Where MemberId = ?', id);
-    let members = result[0];
+    const result = yield GLOBAL.db.query('Select * From Member Where MemberId = ?', id);
+    const members = result[0];
     return members[0];
 };
 
@@ -36,10 +36,10 @@ Member.get = function*(id) {
 Member.getBy = function*(field, value) {
     try {
 
-        let sql = `Select * From Member Where ${field} = ? Order By Firstname, Lastname`;
+        const sql = `Select * From Member Where ${field} = ? Order By Firstname, Lastname`;
 
-        let result = yield GLOBAL.db.query(sql, value);
-        let members = result[0];
+        const result = yield GLOBAL.db.query(sql, value);
+        const members = result[0];
 
         return members;
 
@@ -67,7 +67,7 @@ Member.insert = function*(values) {
 
     try {
 
-        let result = yield GLOBAL.db.query('Insert Into Member Set ?', values);
+        const result = yield GLOBAL.db.query('Insert Into Member Set ?', values);
         //console.log('Member.insert', result.insertId, new Date); // eg audit trail?
         return result[0].insertId;
 

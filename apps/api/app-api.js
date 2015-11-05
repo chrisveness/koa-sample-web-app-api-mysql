@@ -4,21 +4,21 @@
 
 'use strict';
 
-let koa       = require('koa');        // Koa framework
-let xmlify    = require('xmlify');     // JS object to XML
-let yaml      = require('js-yaml');    // JS object to YAML
-let bunyan    = require('bunyan');     // logging
-let koaLogger = require('koa-bunyan'); // logging
+const koa       = require('koa');        // Koa framework
+const xmlify    = require('xmlify');     // JS object to XML
+const yaml      = require('js-yaml');    // JS object to YAML
+const bunyan    = require('bunyan');     // logging
+const koaLogger = require('koa-bunyan'); // logging
 
-let validate  = require('./validate.js');
+const validate  = require('./validate.js');
 
-let app = module.exports = koa();
+const app = module.exports = koa();
 
 
 // logging
-let access = { type: 'rotating-file', path: './logs/api-access.log', level: 'trace', period: '1d', count: 4 };
-let error  = { type: 'rotating-file', path: './logs/api-error.log',  level: 'error', period: '1d', count: 4 };
-let logger = bunyan.createLogger({ name: 'api', streams: [ access, error ] });
+const access = { type: 'rotating-file', path: './logs/api-access.log', level: 'trace', period: '1d', count: 4 };
+const error  = { type: 'rotating-file', path: './logs/api-error.log',  level: 'error', period: '1d', count: 4 };
+const logger = bunyan.createLogger({ name: 'api', streams: [ access, error ] });
 app.use(koaLogger(logger, {}));
 
 
@@ -43,7 +43,7 @@ app.use(function* contentNegotiation(next) {
     if (!this.body) return; // no content to return
 
     // check Accept header for preferred response type
-    let type = this.accepts('json', 'xml', 'yaml', 'text');
+    const type = this.accepts('json', 'xml', 'yaml', 'text');
 
     switch (type) {
         case 'json':
@@ -52,7 +52,7 @@ app.use(function* contentNegotiation(next) {
             break; // ... koa takes care of type
         case 'xml':
             this.type = type;
-            var root = this.body.root; // xml root element
+            const root = this.body.root; // xml root element
             delete this.body.root;
             this.body = xmlify(this.body, root);
             break;

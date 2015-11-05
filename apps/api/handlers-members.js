@@ -4,9 +4,9 @@
 
 'use strict';
 
-let Member = require('../../models/member.js');
+const Member = require('../../models/member.js');
 
-let handler = module.exports = {};
+const handler = module.exports = {};
 
 
 /**
@@ -30,13 +30,13 @@ handler.getMembers = function*() {
         let sql = 'Select * From Member';
         // query-string filters?
         if (this.querystring) {
-            let filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+            const filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
             sql += ' Where '+filter;
         }
         sql +=  ' Order By Firstname, Lastname';
 
-        let result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
-        let members = result[0];
+        const result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
+        const members = result[0];
 
         if (members.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
 
@@ -69,7 +69,7 @@ handler.getMembers = function*() {
  * @apiError   404/NotFound             Member not found.
  */
 handler.getMemberById = function*() {
-    let member = yield Member.get(this.params.id);
+    const member = yield Member.get(this.params.id);
 
     if (!member) this.throw(404); // Not Found
 
@@ -77,9 +77,9 @@ handler.getMemberById = function*() {
     member._id = member.MemberId;
 
     // team membership
-    let sql = `Select TeamId As _id, concat('/teams/',TeamId) As _uri From TeamMember Where MemberId = ?`;
-    let result = yield this.db.query(sql, this.params.id);
-    let teams = result[0];
+    const sql = `Select TeamId As _id, concat('/teams/',TeamId) As _uri From TeamMember Where MemberId = ?`;
+    const result = yield this.db.query(sql, this.params.id);
+    const teams = result[0];
     member.Teams = teams;
 
     this.body = member;
@@ -105,7 +105,7 @@ handler.postMembers = function*() {
 
     try {
 
-        let id = yield Member.insert(this.request.body);
+        const id = yield Member.insert(this.request.body);
 
         this.body = yield Member.get(id); // return created member details
         this.body.root = 'Member';
@@ -168,7 +168,7 @@ handler.deleteMemberById = function*() {
     try {
 
         // return deleted member details
-        let member = yield Member.get(this.params.id);
+        const member = yield Member.get(this.params.id);
 
         if (!member) this.throw(404); // Not Found
 

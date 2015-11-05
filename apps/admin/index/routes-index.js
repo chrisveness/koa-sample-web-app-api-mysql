@@ -4,7 +4,7 @@
 
 'use strict';
 
-let router = require('koa-router')(); // router middleware for koa
+const router = require('koa-router')(); // router middleware for koa
 
 
 router.get('/', function* getIndexPage() {

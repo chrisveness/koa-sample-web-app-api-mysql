@@ -4,9 +4,9 @@
 
 'use strict';
 
-let router = require('koa-router')(); // router middleware for koa
+const router = require('koa-router')(); // router middleware for koa
 
-let login = require('./handlers-login.js');
+const login = require('./handlers-login.js');
 
 
 // note url allowed after '/login' to redirect to after successful login

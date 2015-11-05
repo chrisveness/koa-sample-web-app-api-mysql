@@ -5,22 +5,22 @@
 'use strict';
 
 
-let koa        = require('koa');            // koa framework
-let flash      = require('koa-flash');      // flash messages
-let handlebars = require('koa-handlebars'); // handlebars templating
-let helmet     = require('koa-helmet');     // security header middleware
-let passport   = require('koa-passport');   // authentication
-let serve      = require('koa-static');     // static file serving middleware
-let bunyan     = require('bunyan');         // logging
-let koaLogger  = require('koa-bunyan');     // logging
+const koa        = require('koa');            // koa framework
+const flash      = require('koa-flash');      // flash messages
+const handlebars = require('koa-handlebars'); // handlebars templating
+const helmet     = require('koa-helmet');     // security header middleware
+const passport   = require('koa-passport');   // authentication
+const serve      = require('koa-static');     // static file serving middleware
+const bunyan     = require('bunyan');         // logging
+const koaLogger  = require('koa-bunyan');     // logging
 
-let app = module.exports = koa(); // API app
+const app = module.exports = koa(); // API app
 
 
 // logging
-let access = { type: 'rotating-file', path: './logs/admin-access.log', level: 'trace', period: '1d', count: 4 };
-let error  = { type: 'rotating-file', path: './logs/admin-error.log',  level: 'error', period: '1d', count: 4 };
-let logger = bunyan.createLogger({ name: 'admin', streams: [ access, error ] });
+const access = { type: 'rotating-file', path: './logs/admin-access.log', level: 'trace', period: '1d', count: 4 };
+const error  = { type: 'rotating-file', path: './logs/admin-error.log',  level: 'error', period: '1d', count: 4 };
+const logger = bunyan.createLogger({ name: 'admin', streams: [ access, error ] });
 app.use(koaLogger(logger, {}));
 
 
@@ -82,7 +82,7 @@ app.use(handlebars({
 // clean up post data - trim & convert blank fields to null
 app.use(function* cleanPost(next) {
     if (this.request.body !== undefined) {
-        for (let key in this.request.body) {
+        for (const key in this.request.body) {
             this.request.body[key] = this.request.body[key].trim();
             if (this.request.body[key] == '') this.request.body[key] = null;
         }

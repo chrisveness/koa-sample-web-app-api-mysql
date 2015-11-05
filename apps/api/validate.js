@@ -4,13 +4,13 @@
 
 'use strict';
 
-let basicAuth = require('basic-auth'); // basic access authentication
-let bcrypt    = require('co-bcrypt'); // bcrypt library
-let crypto    = require('crypto');    // nodejs.org/api/crypto.html
+const basicAuth = require('basic-auth'); // basic access authentication
+const bcrypt    = require('co-bcrypt'); // bcrypt library
+const crypto    = require('crypto');    // nodejs.org/api/crypto.html
 
-let User   = require('../../models/user.js');
+const User   = require('../../models/user.js');
 
-let validate = module.exports = {};
+const validate = module.exports = {};
 
 
 /**
@@ -31,11 +31,11 @@ validate.confirmBasicAuthUser = function(urls) {
         // TODO: regular expressions?
 
         // basic auth headers provided?
-        let credentials = basicAuth(this.request);
+        const credentials = basicAuth(this.request);
         if (!credentials) this.throw(401); // Unauthorized
 
         // authenticates off email + cleartext password - this is slow as it requires bcrypt hashing
-        let user = yield validate.userByEmail(credentials.name, credentials.pass);
+        const user = yield validate.userByEmail(credentials.name, credentials.pass);
         if (!user) this.throw(401); // Unauthorized
 
         // ok - record authenticated user in this.auth.user
@@ -59,14 +59,12 @@ validate.confirmBasicAuthUser = function(urls) {
  */
 validate.confirmBasicAuthToken = function() {
     return function*(next) {
-        let user = null;
-
         // basic auth headers provided?
-        let credentials = basicAuth(this.request);
+        const credentials = basicAuth(this.request);
         if (!credentials) this.throw(401); // Unauthorized
 
         // authenticate off id + token (following auth request) - fast as no bcrypt hash required
-        user = yield validate.userById(credentials.name, credentials.pass);
+        const user = yield validate.userById(credentials.name, credentials.pass);
         if (!user) this.throw(401); // Unauthorized
 
         // ok - record authenticated user in this.auth.user
@@ -88,12 +86,12 @@ validate.confirmBasicAuthToken = function() {
  */
 validate.userByEmail = function*(username, password) {
     // lookup user
-    let users = yield User.getBy('Email', username);
+    const users = yield User.getBy('Email', username);
     if (users.length == 0) return null;
-    let user = users[0];
+    const user = users[0];
 
     // check password
-    let match = yield bcrypt.compare(password, user.Password);
+    const match = yield bcrypt.compare(password, user.Password);
     if (!match) return null;
 
     // validates ok - record api token for subsequent api requests; the stored api token is the
@@ -114,14 +112,14 @@ validate.userByEmail = function*(username, password) {
  */
 validate.userById = function*(id, pw) {
     // lookup user
-    let user = yield User.get(id);
+    const user = yield User.get(id);
     if (!user) return null;
     if (user.ApiToken == null) return null;
 
     // api token less than 24 hours old?
     if (Date.now() - Date.parse(user.ApiToken) > 1000*60*60*24) return null;
 
-    let token = crypto.createHash('sha1').update(user.ApiToken).digest('hex');
+    const token = crypto.createHash('sha1').update(user.ApiToken).digest('hex');
     if (pw !== token) return null;
 
     // validates ok - return user record

@@ -77,6 +77,8 @@
       "no-redeclare": 1,
       "no-shadow": 1,
       "no-unused-vars": [1, {"vars": "all", "args": "after-used"}],
+      "no-var": 2,
+      "prefer-const": 2,
       "object-curly-spacing": [ 2, "always" ],
       "quotes": [ 2, "single", "avoid-escape" ],
       "strict": [ 2, "global" ]

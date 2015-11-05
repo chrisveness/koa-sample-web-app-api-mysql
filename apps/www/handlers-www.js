@@ -6,10 +6,10 @@
 
 'use strict';
 
-let fs = require('co-fs');         // co wrappers for Node core fs functions
-let md = require('markdown-it')(); // markdown parser
+const fs = require('co-fs');         // co wrappers for Node core fs functions
+const md = require('markdown-it')(); // markdown parser
 
-let www = module.exports = {};
+const www = module.exports = {};
 
 
 /**
@@ -17,9 +17,9 @@ let www = module.exports = {};
  */
 www.index = function*() {
     try {
-        let readme = yield fs.readFile('README.md', 'utf8');
-        let content = md.render(readme);
-        let context = { content: content };
+        const readme = yield fs.readFile('README.md', 'utf8');
+        const content = md.render(readme);
+        const context = { content: content };
         yield this.render('templates/index', context);
     } catch (e) {
         this.throw(e);
