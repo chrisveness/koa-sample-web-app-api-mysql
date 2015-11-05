@@ -15,7 +15,7 @@ let www = module.exports = {};
 /**
  * GET / - render index page, including README.md.
  */
-www.getIndex = function*() {
+www.index = function*() {
     try {
         let readme = yield fs.readFile('README.md', 'utf8');
         let content = md.render(readme);
@@ -30,15 +30,18 @@ www.getIndex = function*() {
 /**
  * GET /contact - render contact page, either with contact form or submitted message
  */
-www.getContact = function*() {
+www.contact = function*() {
     yield this.render('templates/contact', this.flash);
 };
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 
 /**
  * POST /contact - process contact page
  */
-www.postContact = function*() {
+www.processContact = function*() {
     // just an illustration - a real app would log/notify the contact request
     this.flash = this.request.body;
     this.redirect('/contact');
