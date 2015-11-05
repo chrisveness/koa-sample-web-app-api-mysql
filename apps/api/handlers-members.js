@@ -93,13 +93,12 @@ handler.getMemberById = function*() {
  * @apiGroup   Members
  *
  * @apiParam   ...                       [as per get].
- * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
  * @apiHeader  Authorization             Basic Access Authentication token.
+ * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
  * @apiHeader  Content-Type              application/x-www-form-urlencoded.
  * @apiSuccess (Success 2xx) 201/Created Details of newly created member.
  * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
  * @apiError   403/Forbidden             Admin auth required.
- * @apiError   404/NotFound              Member not found.
  */
 handler.postMembers = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
@@ -124,6 +123,7 @@ handler.postMembers = function*() {
  * @apiName     PatchMembers
  * @apiGroup    Members
  *
+ * @apiParam   ...                       [as per get].
  * @apiHeader  Authorization             Basic Access Authentication token.
  * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
  * @apiHeader  Content-Type              application/x-www-form-urlencoded.
@@ -153,7 +153,7 @@ handler.patchMemberById = function*() {
 
 /**
  * @api {delete} /members/:id Delete member
- * @apiName      DeleteMember
+ * @apiName      DeleteMembers
  * @apiGroup     Members
  *
  * @apiHeader  Authorization        Basic Access Authentication token.

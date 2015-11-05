@@ -99,7 +99,6 @@ handler.getTeamById = function*() {
  * @apiSuccess (Success 2xx) 201/Created Details of newly created team.
  * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
  * @apiError   403/Forbidden             Admin auth required.
- * @apiError   404/NotFound              Team not found.
  */
 handler.postTeams = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
@@ -124,6 +123,7 @@ handler.postTeams = function*() {
  * @apiName     PatchTeams
  * @apiGroup    Teams
  *
+ * @apiParam   ...                       [as per get].
  * @apiHeader  Authorization             Basic Access Authentication token.
  * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
  * @apiHeader  Content-Type              application/x-www-form-urlencoded.
@@ -153,7 +153,7 @@ handler.patchTeamById = function*() {
 
 /**
  * @api {delete} /teams/:id Delete team
- * @apiName      DeleteTeam
+ * @apiName      DeleteTeams
  * @apiGroup     Teams
  *
  * @apiHeader  Authorization        Basic Access Authentication token.
