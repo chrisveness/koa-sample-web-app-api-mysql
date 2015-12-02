@@ -29,7 +29,7 @@ app.use(function* mysqlConnection(next) {
     // keep copy of this.db in GLOBAL for access from models
     this.db = GLOBAL.db = yield GLOBAL.connectionPool.getConnection();
     // MySQL strict mode (as per v5.6) to ensure not null is respected for unsupplied fields
-    yield this.db.query(`SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'`);
+    yield this.db.query(`SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES,NO_ZERO_DATE'`);
 
     yield next;
 
