@@ -213,6 +213,11 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 └─ README.md
 ```
 
+I structured this in a modular fashion as suggested by [TJ](https://vimeo.com/56166857), but I’ve 
+since found it more convenient to work with a flatter structure where eg `apps/admin` just contains 
+folders `apps/admin/handlers`, `apps/admin/routes`, and `apps/admin/templates` (heresy!). Go with 
+what works for you.
+
 ## Database schema
 
 ```sql
