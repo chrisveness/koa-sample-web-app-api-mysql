@@ -107,9 +107,14 @@ as well as handlebars templates & MySQL, there’s static file serving, body-par
 compression, *passport* logins with remember-me, logging, flash messages, etc, and mocha/chai/cheerio
 for testing (I’ve ignored i18n which would introduce considerable complexity).
 
-Note that if you wish to set this up locally, you will need e.g. admin.localhost, api.localhost, and
-www.localhost set up in /etc/hosts. Either Node.js v4+ or io.js is required as Node.js v0.12 doesn’t
-support template strings.
+Note that if you wish to set this up locally, you will need `admin.`, `api.`, and `www.` subdomains
+available. To do this, add a line with eg
+
+    127.0.0.1 www.localhost api.localhost admin.localhost
+
+to /etc/hosts (on Unix/Mac), or \Windows\System32\drivers\etc\hosts (on Windows).
+
+Either Node.js v4+ or io.js is required as Node.js v0.12 doesn’t support template strings.
 
 ### Demo
 
