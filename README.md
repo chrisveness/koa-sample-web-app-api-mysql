@@ -109,8 +109,10 @@ for testing (I’ve ignored i18n which would introduce considerable complexity).
 
 Note that if you wish to set this up locally, you will need `admin.`, `api.`, and `www.` subdomains
 available. To do this, add a line such as `127.0.0.1 www.localhost api.localhost admin.localhost`
-to /etc/hosts (on Unix/Mac), or \Windows\System32\drivers\etc\hosts (on Windows). The app will then 
+to `/etc/hosts` (on Unix/Mac), or `\Windows\System32\drivers\etc\hosts` (on Windows). The app will then 
 be available at www.localhost:3000.
+
+It uses the database set out below, with connection details as per `/config/db-development.json`.
 
 Either Node.js v4+ or io.js is required as Node.js v0.12 doesn’t support template strings.
 
