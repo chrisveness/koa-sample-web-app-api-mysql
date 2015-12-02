@@ -10,7 +10,7 @@
 'use strict';
 
 const co            = require('co');           // generator async control flow goodness
-const passport      = require('koa-passport'); // authentication
+const passport      = require('koa-passport'); // authentication [note 1.x.x req'd for koa 1.x.x]
 const bcrypt        = require('co-bcrypt');    // bcrypt library
 const LocalStrategy = require('passport-local').Strategy;
 

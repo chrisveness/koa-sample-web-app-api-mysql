@@ -6,7 +6,7 @@
 
 'use strict';
 
-const passport = require('koa-passport'); // authentication
+const passport = require('koa-passport'); // authentication [note 1.x.x req'd for koa 1.x.x]
 
 const handler = module.exports = {};
 
