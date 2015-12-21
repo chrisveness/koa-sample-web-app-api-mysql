@@ -12,8 +12,8 @@
 
 const koa          = require('koa');               // Koa framework
 const body         = require('koa-body');          // body parser
-const compose      = require('koa-compose');       // middleware composer [note 2.3.0 req'd for koa 1.x.x]
-const compress     = require('koa-compress');      // HTML compression
+const compose      = require('koa-compose');       // middleware composer
+const compress     = require('koa-compress');      // HTTP compression
 const responseTime = require('koa-response-time'); // X-Response-Time middleware
 const session      = require('koa-session');       // session for passport login, flash messages
 const mysql        = require('mysql-co');          // MySQL (co wrapper for mysql2)
