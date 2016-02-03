@@ -55,7 +55,7 @@ app.use(function* handleErrors(next) {
         switch (this.status) {
             case 404: // Not Found
                 context = { msg: e.message=='Not Found'?null:e.message };
-                yield this.render('templates/404-not-found', context );
+                yield this.render('templates/404-not-found', context);
                 break;
             case 403: // Forbidden
             case 409: // Conflict
@@ -63,7 +63,7 @@ app.use(function* handleErrors(next) {
                 break;
             case 500: // Internal Server Error
                 context = app.env=='production' ? {} : { e: e };
-                yield this.render('templates/500-internal-server-error', context );
+                yield this.render('templates/500-internal-server-error', context);
                 this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
                 break;
         }

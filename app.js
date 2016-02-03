@@ -58,7 +58,8 @@ app.use(function* subApp(next) {
         case 'www':
             yield compose(require('./apps/www/app-www.js').middleware);
             break;
-        default: // no subdomain? canonicalise hostname to www.hostname
+        default: // no (recognised) subdomain? canonicalise host to www.host
+            // note switch must include all registered subdomains to avoid potential redirect loop
             this.redirect(this.protocol+'://'+'www.'+this.host+this.path+this.search);
             break;
     }
