@@ -127,58 +127,50 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 .
 ├── apps
 │   ├── admin
-│   │   ├── ajax
-│   │   │   └── routes-ajax.js
-│   │   ├── index
-│   │   │   ├── templates
-│   │   │   │   └── index.html
-│   │   │   └── routes-index.js
-│   │   ├── login
-│   │   │   ├── templates
-│   │   │   │   └── login.html
-│   │   │   ├── handlers-login.js
-│   │   │   └── routes-login.js
-│   │   ├── logs
-│   │   │   ├── templates
-│   │   │   │   └── logs.html
-│   │   │   └── routes-logs.js
-│   │   ├── members
-│   │   │   ├── templates
-│   │   │   │   ├── members-add.html
-│   │   │   │   ├── members-delete.html
-│   │   │   │   ├── members-edit.html
-│   │   │   │   ├── members-list.html
-│   │   │   │   └── members-view.html
-│   │   │   ├── handlers-members.js
-│   │   │   └── routes-members.js
-│   │   ├── teams
-│   │   │   ├── templates
-│   │   │   │   ├── teams-add.html
-│   │   │   │   ├── teams-delete.html
-│   │   │   │   ├── teams-edit.html
-│   │   │   │   ├── teams-list.html
-│   │   │   │   └── teams-view.html
-│   │   │   ├── handlers-teams.js
-│   │   │   └── routes-teams.js
+│   │   ├── handlers
+│   │   │   ├── login.js
+│   │   │   ├── members.js
+│   │   │   └── teams.js
+│   │   ├── routes
+│   │   │   ├── ajax-routes.js
+│   │   │   ├── index-routes.js
+│   │   │   ├── login-routes.js
+│   │   │   ├── logs-routes.js
+│   │   │   ├── members-routes.js
+│   │   │   └── teams-routes.js
 │   │   ├── templates
-│   │   │   ├── 400-bad-request.html
+│   │   │   ├── partials
+│   │   │   │   ├── errpartial.html
+│   │   │   │   └── navpartial.html
 │   │   │   ├── 404-not-found.html
 │   │   │   ├── 500-internal-server-error.html
-│   │   │   ├── errpartial.html
-│   │   │   └── navpartial.html
+│   │   │   ├── index.html
+│   │   │   ├── login.html
+│   │   │   ├── logs.html
+│   │   │   ├── members-add.html
+│   │   │   ├── members-delete.html
+│   │   │   ├── members-edit.html
+│   │   │   ├── members-list.html
+│   │   │   ├── members-view.html
+│   │   │   ├── teams-add.html
+│   │   │   ├── teams-delete.html
+│   │   │   ├── teams-edit.html
+│   │   │   ├── teams-list.html
+│   │   │   └── teams-view.html
 │   │   ├── app-admin.js
 │   │   └── passport.js
 │   ├── api
 │   │   ├── app-api.js
-│   │   ├── handlers-members.js
-│   │   ├── handlers-teams.js
+│   │   ├── members.js
 │   │   ├── routes-auth.js
 │   │   ├── routes-members.js
 │   │   ├── routes-root.js
 │   │   ├── routes-teams.js
+│   │   ├── teams.js
 │   │   └── validate.js
 │   └── www
 │       ├── templates
+│       │   ├── 400-bad-request.html
 │       │   ├── 404-not-found.html
 │       │   ├── 500-internal-server-error.html
 │       │   ├── contact.html
@@ -213,10 +205,9 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 └─ README.md
 ```
 
-I structured this in a modular fashion as suggested by [TJ](https://vimeo.com/56166857), but I’ve 
-since found it more convenient to work with a flatter structure where eg `apps/admin` just contains 
-folders `apps/admin/handlers`, `apps/admin/routes`, and `apps/admin/templates` (heresy!). Go with 
-what works for you.
+I originally structured this in a modular fashion as suggested by [TJ](https://vimeo.com/56166857), 
+but I’ve since found it more convenient to work with a flatter structure (heresy!) as I found it 
+unproductive to be constantly expanding and contracting folders. Go with what works for you.
 
 ## Database schema
 

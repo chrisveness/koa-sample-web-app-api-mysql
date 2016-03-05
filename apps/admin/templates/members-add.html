@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Add member</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.2/normalize.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<h1>Add member</h1>
+
+{{>navpartial}}
+{{>errpartial}}
+
+<main>
+
+<form method="post">
+    <ul>
+        <li>
+            <label for="Firstname">First name</label>
+            <input name="Firstname" id="Firstname" value="{{Firstname}}" autofocus>
+        </li>
+        <li>
+            <label for="Lastname">Last name</label>
+            <input name="Lastname" id="Lastname" value="{{Lastname}}">
+        </li>
+        <li>
+            <label for="Email">E-mail</label>
+            <input name="Email" id="Email" type="email" value="{{Email}}" required>
+        </li>
+        <li>
+            <label></label>
+            <button type="submit" class="fa fa-check-square-o green" title="Add"></button>
+        </li>
+    </ul>
+</form>
+
+</main>
+
+</body>
+</html>

@@ -75,7 +75,7 @@ app.use(function* handleErrors(next) {
 app.use(handlebars({
     extension:   ['html', 'handlebars'],
     viewsDir:    'apps/admin',
-    partialsDir: 'apps/admin/templates',
+    partialsDir: 'apps/admin/templates/partials',
 }));
 
 
@@ -113,8 +113,8 @@ app.use(serve('public', { maxage: 1000*60*60 }));
 
 // public (unsecured) modules first
 
-app.use(require('./index/routes-index.js'));
-app.use(require('./login/routes-login.js'));
+app.use(require('./routes/index-routes.js'));
+app.use(require('./routes/login-routes.js'));
 
 // verify user has authenticated...
 
@@ -128,10 +128,10 @@ app.use(function* authSecureRoutes(next) {
 
 // ... as subsequent modules require authentication
 
-app.use(require('./members/routes-members.js'));
-app.use(require('./teams/routes-teams.js'));
-app.use(require('./ajax/routes-ajax.js'));
-app.use(require('./logs/routes-logs.js'));
+app.use(require('./routes/members-routes.js'));
+app.use(require('./routes/teams-routes.js'));
+app.use(require('./routes/ajax-routes.js'));
+app.use(require('./routes/logs-routes.js'));
 
 
 // serve static apidoc files (http://admin.localhost/apidoc) (note login required)

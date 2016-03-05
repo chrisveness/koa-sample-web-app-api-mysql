@@ -6,7 +6,7 @@
 
 const router = require('koa-router')(); // router middleware for koa
 
-const members = require('./handlers-members.js');
+const members = require('./members.js');
 
 
 router.get(   '/members',     members.getMembers);       // list members

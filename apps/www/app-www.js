@@ -13,7 +13,7 @@ const serve      = require('koa-static');     // static file serving middleware
 const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
 
-const app = module.exports = koa(); // API app
+const app = module.exports = koa(); // www app
 
 
 // logging
