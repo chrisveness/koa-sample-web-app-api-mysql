@@ -8,7 +8,73 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/admin.css">
-    <style> form { display: inline-block; margin: 0; } /* for add team forms */ </style>
+    <style>
+        table button { background: none; border: none; padding: 0; }
+    </style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', 'button.add-membership', function() {
+                $('select.add-membership').show().focus();
+            });
+
+            $(document).on('change', 'select.add-membership', function() {
+                if (!this.value) return;
+
+                var details = {
+                    MemberId: {{MemberId}},
+                    TeamId:   this.value,
+                    JoinedOn: new Date().toISOString().replace('T',' ').split('.')[0],
+                }
+                $.ajax({
+                    type:    'POST',
+                    url:     '/ajax/team-members',
+                    data:    details,
+                    headers: { Accept: 'application/json' },
+                    context: this,
+                })
+                .done(function(result) {
+                    // add new row, remove from select
+                    var $thisRow = $(this).closest('tr');
+                    var $newRow = $thisRow.next().clone();
+                    $newRow.prop('id', this.value);
+                    $newRow.find('td').eq(0).html($(this).find('option:selected').text());
+                    $newRow.find('button').prop('value', result.TeamMemberId);
+                    $thisRow.after($newRow);
+                    $(`select.add-membership option[value=${this.value}]`).remove();
+                    $('select.add-membership').hide();
+                })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText);
+                });
+            });
+
+            $(document).on('click', 'button.delete-membership', function() {
+                $.ajax({
+                    type:    'DELETE',
+                    url:     '/ajax/team-members/'+this.value,
+                    headers: { Accept: 'application/json' },
+                    context: this,
+                })
+                .done(function(result) {
+                    // remove row, add to select
+                    var teamId = $(this).closest('tr').attr('id');
+                    $('#'+teamId).remove();
+                    var name = $(this).closest('tr').find('td').eq(0).html();
+                    $('select.add-membership').append(`<option value=${teamId}>${name}</option>option>`);
+                })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText);
+                });
+            });
+
+            $(document).keyup(function(e) {
+                if (e.keyCode == 27) { // escape key maps to keycode `27`
+                    $('select.add-membership').hide();
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 
@@ -42,30 +108,26 @@
 
 <h2>Teams</h2>
 
-<ul>
+<table>
+    <tr>
+        <td>
+            <select name="add-membership" required class="add-membership hide">
+                <option></option>
+                {{#notMemberOfTeams}}
+                <option value="{{TeamId}}">{{Name}}</option>
+                {{/notMemberOfTeams}}
+            </select>
+        </td>
+        <td><button type="button" class="add-membership fa fa-plus small grey" title="add membership"></button></td>
+    </tr>
     {{#memberOfTeams}}
-    <li id="{{TeamMemberId}}">
-        {{Name}}
-        <form method="post">
-            <button type="submit" name="del-team" id="del-team" value="{{TeamMemberId}}" class="fa fa-trash red" title="Remove"></button>
-        </form>
-    </li>
+    <tr id="{{TeamId}}">
+        <td>{{Name}}</td>
+        <td><button type="button" value="{{TeamMemberId}}" class="delete-membership fa fa-trash-o small grey" title="delete membership"></button></td>
+    </tr>
     {{/memberOfTeams}}
-</ul>
+</table>
 
-
-{{#if notMemberOfTeams}}
-<form method="post">
-    <label for="add-team" class="width-auto">Add</label>
-    <select name="add-team" id="add-team" required>
-        <option></option>
-        {{#notMemberOfTeams}}
-        <option value="{{TeamId}}">{{Name}}</option>
-        {{/notMemberOfTeams}}
-    </select>
-    <button type="submit" class="fa fa-plus green" title="Add"></button>
-</form>
-{{/if}}
 
 </main>
 

@@ -1,5 +1,12 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-/* API app - GET / POST / PATCH / DELETE for Members & Teams                                      */
+/* API app - RESTful API for API interface and/or ajax functions.                                 */
+/*                                                                                                */
+/* The API provides GET / POST / PATCH / DELETE methods on a variety of resources.                */
+/*                                                                                                */
+/* 2xx responses honour the request Accept type (json/xml/yaml/text) for the response body;       */
+/* 4xx/5xx responses provide a simple text message in the body.                                   */
+/*                                                                                                */
+/* A GET on a collection which returns no results returns a 204 / No Content response.            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 'use strict';
@@ -78,7 +85,6 @@ app.use(function* handleErrors(next) {
     } catch (e) {
         switch (e.status) {
             case 204: // No Content
-            case 404: // Not Found
                 this.status = e.status;
                 break;
             case 401: // Unauthorized
@@ -86,10 +92,11 @@ app.use(function* handleErrors(next) {
                 this.set('WWW-Authenticate', 'Basic');
                 break;
             case 403: // Forbidden
+            case 404: // Not Found
             case 406: // Not Acceptable
             case 409: // Conflict
                 this.status = e.status;
-                this.body = { error: e.message };
+                this.body = e.message;
                 break;
             default: // report 500 Internal Server Error
                 this.status = e.status || 500;
@@ -116,6 +123,7 @@ app.use(require('./routes-auth.js'));
 app.use(validate.confirmBasicAuthToken());
 app.use(require('./routes-members.js'));
 app.use(require('./routes-teams.js'));
+app.use(require('./routes-team-members.js'));
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */

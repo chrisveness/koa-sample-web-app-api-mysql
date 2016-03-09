@@ -71,7 +71,7 @@ handler.getMembers = function*() {
 handler.getMemberById = function*() {
     const member = yield Member.get(this.params.id);
 
-    if (!member) this.throw(404); // Not Found
+    if (!member) this.throw(404, `No member ${this.params.id} found`); // Not Found
 
     // return id as attribute / underscore-field
     member._id = member.MemberId;
@@ -141,7 +141,7 @@ handler.patchMemberById = function*() {
 
         // return updated member details
         this.body = yield Member.get(this.params.id);
-        if (!this.body) this.throw(404); // Not Found
+        if (!this.body) this.throw(404, `No member ${this.params.id} found`); // Not Found
 
         this.body.root = 'Member';
 
@@ -170,7 +170,7 @@ handler.deleteMemberById = function*() {
         // return deleted member details
         const member = yield Member.get(this.params.id);
 
-        if (!member) this.throw(404); // Not Found
+        if (!member) this.throw(404, `No member ${this.params.id} found`); // Not Found
 
         yield Member.delete(this.params.id);
 

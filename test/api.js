@@ -8,13 +8,13 @@
 
 const supertest = require('co-supertest'); // SuperAgent-driven library for testing HTTP servers
 const expect    = require('chai').expect;  // BDD/TDD assertion library
-require('co-mocha');                     // enable support for generators in mocha tests using co
+require('co-mocha');                       // enable support for generators in mocha tests using co
 
 const app = require('../app.js');
 
 const request = supertest.agent(app.listen());
 
-const headers = { Host: 'api.localhost' }; // set host header
+const headers = { Host: 'api.localhost' }; // set host header (note Accept is defaulted to application/json)
 
 
 describe('API'+' ('+app.env+'/'+require('../config/db-'+app.env+'.json').db.database+')', function() {
@@ -125,7 +125,7 @@ describe('API'+' ('+app.env+'/'+require('../config/db-'+app.env+'.json').db.data
                 const values = { Firstname: 'Test', Lastname: 'User', Email: 'test@user.com' };
                 const response = yield request.post('/members').set(headers).auth(userId, userPw).send(values).end();
                 expect(response.status).to.equal(409, response.text);
-                expect(response.body.error).to.equal("Duplicate entry 'test@user.com' for key 'Email'");
+                expect(response.text).to.equal("Duplicate entry 'test@user.com' for key 'Email'");
             });
 
             it('deletes a member', function*() {

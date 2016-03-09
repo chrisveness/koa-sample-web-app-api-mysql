@@ -22,15 +22,16 @@ of a complete system: in this case, basic interactive tools for viewing, adding,
 deleting ([CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)), with *passport*
 login/authentication, and a matching
 [REST](http://en.wikipedia.org/wiki/Representational_state_transfer)ful API to do the same (using
-basic access authentication). Many systems may not require an API, but the API nicely doubles-up for
-ajax functions. Of course, real systems do much more, but generally build on these core functions.
+basic access authentication). Many systems may not require an API, but the API app can be used for 
+RESTful ajax functions (illustrated in the edit member/team pages). Of course, real systems do much 
+more, but generally build on these core functions.
 
 The database includes a couple of tables with related data and referential integrity – one step
 beyond where most tutorials go. Hence code is included for handling basic validation and referential
 integrity errors returned from the database.
 
-Otherwise I’ve stripped it down to essentials. There’s no pretty styling! There’s no great UI.
-There’s no client-side JavaScript effects, no ajax. Just the bare building-blocks.
+Otherwise I’ve stripped it down to essentials. There’s no pretty styling! There’s no great UI. Just 
+the bare building-blocks.
 
 There are also sample integration/acceptance tests using mocha / supertest / chai / cheerio.
 
@@ -77,9 +78,9 @@ limiting, but I like to work with HTML).
 The main admin/app.js sets up the database connection, handlebars templating, passport
 authentication, 404/500 handling, etc.
 
-The app is then divided into modules (members, teams in this case), each with a handler/controller
-and a set of templates. The handlers have one function for each method/route, and either render a
-view, redirect (e.g. after POST), or throw an error.
+I’ve divided the app into  routes, matching handlers/controllers, and a set of templates. The 
+handlers have one function for each method/route, and either render a view, redirect (e.g. after 
+POST), or throw an error.
 
 ### API
 
@@ -87,6 +88,9 @@ The API returns JSON or XML (or plain text) according to the *Accepts* request h
 
 The main api/app.js sets up the database connection, content negotiation, passport authentication,
 and 404/500 handling.
+
+Routes are grouped into members, teams, team membership, and authentication. All but the simplest of
+these then go on to call related handlers.
 
 The api/members.js and api/teams.js then handle the API requests. I use PATCH in preference to PUT so
 that a subset of entity fields can be supplied (correctly, a PUT will set unsupplied fields to null);
@@ -142,6 +146,7 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 │   │   │   ├── partials
 │   │   │   │   ├── errpartial.html
 │   │   │   │   └── navpartial.html
+│   │   │   ├── 400-bad-request.html
 │   │   │   ├── 404-not-found.html
 │   │   │   ├── 500-internal-server-error.html
 │   │   │   ├── index.html
@@ -165,12 +170,13 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 │   │   ├── routes-auth.js
 │   │   ├── routes-members.js
 │   │   ├── routes-root.js
+│   │   ├── routes-team-members.js
 │   │   ├── routes-teams.js
+│   │   ├── team-members.js
 │   │   ├── teams.js
 │   │   └── validate.js
 │   └── www
 │       ├── templates
-│       │   ├── 400-bad-request.html
 │       │   ├── 404-not-found.html
 │       │   ├── 500-internal-server-error.html
 │       │   ├── contact.html
@@ -193,7 +199,7 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 │   └── user.js
 ├── public
 │   └── css
-│       ├── app.css
+│       ├── admin.css
 │       ├── base.css
 │       └── www.css
 ├── test

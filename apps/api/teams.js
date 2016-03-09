@@ -71,7 +71,7 @@ handler.getTeams = function*() {
 handler.getTeamById = function*() {
     const team = yield Team.get(this.params.id);
 
-    if (!team) this.throw(404); // Not Found
+    if (!team) this.throw(404, `No team ${this.params.id} found`); // Not Found
 
     // return id as attribute / underscore-field
     team._id = team.TeamId;
@@ -141,7 +141,7 @@ handler.patchTeamById = function*() {
 
         // return updated team details
         this.body = yield Team.get(this.params.id);
-        if (!this.body) this.throw(404); // Not Found
+        if (!this.body) this.throw(404, `No team ${this.params.id} found`); // Not Found
 
         this.body.root = 'Team';
 
@@ -170,7 +170,7 @@ handler.deleteTeamById = function*() {
         // return deleted team details
         const team = yield Team.get(this.params.id);
 
-        if (!team) this.throw(404); // Not Found
+        if (!team) this.throw(404, `No team ${this.params.id} found`); // Not Found
 
         yield Team.delete(this.params.id);
 

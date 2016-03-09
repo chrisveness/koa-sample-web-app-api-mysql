@@ -85,7 +85,8 @@ teams.edit = function*() {
     // team members
     const sqlT = `Select TeamMemberId, MemberId, Firstname, Lastname
                   From TeamMember Inner Join Member Using (MemberId)
-                  Where TeamId = ?`;
+                  Where TeamId = ?
+                  Order By Firstname, Lastname`;
     const resultT = yield this.db.query(sqlT, this.params.id);
     team.teamMembers = resultT[0];
 
