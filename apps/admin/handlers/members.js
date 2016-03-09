@@ -93,7 +93,7 @@ members.edit = function*() {
     // teams this member is not a member of (for add picklist)
     let teams = member.memberOfTeams.map(function(t) { return t.TeamId; }); // array of id's
     if (teams.length == 0) teams = [0]; // dummy to satisfy sql 'in' syntax
-    const sqlM = `Select TeamId, Name From Team Where TeamId Not In (`+teams.join(',')+`) Order By Name`;
+    const sqlM = `Select TeamId, Name From Team Where TeamId Not In (${teams.join(',')}) Order By Name`;
     const resultM = yield this.db.query(sqlM, teams);
     member.notMemberOfTeams = resultM[0];
 

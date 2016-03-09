@@ -77,7 +77,7 @@ handler.getTeamById = function*() {
     team._id = team.TeamId;
 
     // team membership
-    const sql = `Select MemberId As _id, concat('/members/',MemberId) As _uri From TeamMember Where TeamId = ?`;
+    const sql = 'Select MemberId As _id, concat("/members/",MemberId) As _uri From TeamMember Where TeamId = ?';
     const result = yield this.db.query(sql, this.params.id);
     const members = result[0];
     team.Members = members;

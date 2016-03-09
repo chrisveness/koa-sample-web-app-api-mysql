@@ -34,7 +34,7 @@ app.use(function* mysqlConnection(next) {
     // keep copy of this.db in GLOBAL for access from models
     this.db = GLOBAL.db = yield GLOBAL.connectionPool.getConnection();
     // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
-    yield this.db.query(`SET SESSION sql_mode = 'TRADITIONAL'`);
+    yield this.db.query('SET SESSION sql_mode = "TRADITIONAL"');
 
     yield next;
 
@@ -44,6 +44,7 @@ app.use(function* mysqlConnection(next) {
 
 // content negotiation: api will respond with json, xml, or yaml
 app.use(function* contentNegotiation(next) {
+    /* eslint no-case-declarations: 1 */
 
     yield next;
 
