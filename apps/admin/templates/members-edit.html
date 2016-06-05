@@ -26,9 +26,8 @@
                     TeamId:   this.value,
                     JoinedOn: new Date().toISOString().replace('T',' ').split('.')[0],
                 }
-                $.ajax({
-                    type:    'POST',
-                    url:     '/ajax/team-members',
+                $.ajax('/ajax/team-members', {
+                    method:  'POST',
                     data:    details,
                     headers: { Accept: 'application/json' },
                     context: this,
@@ -50,9 +49,8 @@
             });
 
             $(document).on('click', 'button.delete-membership', function() {
-                $.ajax({
-                    type:    'DELETE',
-                    url:     '/ajax/team-members/'+this.value,
+                $.ajax('/ajax/team-members/'+this.value, {
+                    method:  'DELETE',
                     headers: { Accept: 'application/json' },
                     context: this,
                 })
