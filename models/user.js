@@ -20,7 +20,7 @@ const User = module.exports = {};
  * @returns {Object} User details.
  */
 User.get = function*(id) {
-    const result = yield GLOBAL.db.query('Select * From User Where UserId = ?', id);
+    const result = yield global.db.query('Select * From User Where UserId = ?', id);
     const users = result[0];
     return users[0];
 };
@@ -38,7 +38,7 @@ User.getBy = function*(field, value) {
 
         const sql = `Select * From User Where ${field} = ? Order By Firstname, Lastname`;
 
-        const result = yield GLOBAL.db.query(sql, value);
+        const result = yield global.db.query(sql, value);
         const users = result[0];
 
         return users;
@@ -62,7 +62,7 @@ User.getBy = function*(field, value) {
 User.insert = function*(values) {
     try {
 
-        const result = yield GLOBAL.db.query('Insert Into User Set ?', values);
+        const result = yield global.db.query('Insert Into User Set ?', values);
         //console.log('User.insert', result.insertId, new Date); // eg audit trail?
         return result[0].insertId;
 
@@ -93,7 +93,7 @@ User.insert = function*(values) {
 User.update = function*(id, values) {
     try {
 
-        yield GLOBAL.db.query('Update User Set ? Where UserId = ?', [values, id]);
+        yield global.db.query('Update User Set ? Where UserId = ?', [values, id]);
         //console.log('User.update', id, new Date); // eg audit trail?
 
     } catch (e) {
@@ -119,7 +119,7 @@ User.update = function*(id, values) {
 User.delete = function*(id) {
     try {
 
-        yield GLOBAL.db.query('Delete From User Where TeamId = ?', id);
+        yield global.db.query('Delete From User Where TeamId = ?', id);
         //console.log('User.delete', id, new Date); // eg audit trail?
 
     } catch (e) {

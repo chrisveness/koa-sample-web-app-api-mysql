@@ -20,7 +20,7 @@ const TeamMember = module.exports = {};
  * @returns {Object} TeamMember details.
  */
 TeamMember.get = function*(id) {
-    const result = yield GLOBAL.db.query('Select * From TeamMember Where TeamMemberId = ?', id);
+    const result = yield global.db.query('Select * From TeamMember Where TeamMemberId = ?', id);
     const teamMember = result[0];
     return teamMember[0];
 };
@@ -40,7 +40,7 @@ TeamMember.insert = function*(values) {
 
     try {
 
-        const result = yield GLOBAL.db.query('Insert Into TeamMember Set ?', values);
+        const result = yield global.db.query('Insert Into TeamMember Set ?', values);
         //console.log('TeamMember.insert', result.insertId, new Date); // eg audit trail?
         return result[0].insertId;
 
@@ -71,7 +71,7 @@ TeamMember.insert = function*(values) {
 TeamMember.update = function*(id, values) {
     try {
 
-        const result = yield GLOBAL.db.query('Update TeamMember Set ? Where TeamMemberId = ?', [values, id]);
+        const result = yield global.db.query('Update TeamMember Set ? Where TeamMemberId = ?', [values, id]);
         if (result.affectedRows == 0) return; // not found
         //console.log('TeamMember.update', id, new Date); // eg audit trail?
 
@@ -100,7 +100,7 @@ TeamMember.update = function*(id, values) {
 TeamMember.delete = function*(id) {
     try {
 
-        yield GLOBAL.db.query('Delete From TeamMember Where TeamMemberId = ?', id);
+        yield global.db.query('Delete From TeamMember Where TeamMemberId = ?', id);
         //console.log('TeamMember.delete', id, new Date); // eg audit trail?
 
     } catch (e) {
