@@ -44,7 +44,7 @@ app.use(function* mysqlConnection(next) {
 
 // content negotiation: api will respond with json, xml, or yaml
 app.use(function* contentNegotiation(next) {
-    /* eslint no-case-declarations: 1 */
+    /* eslint no-case-declarations:off */
 
     yield next;
 

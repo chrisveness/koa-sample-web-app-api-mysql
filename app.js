@@ -8,7 +8,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 'use strict';
-/* eslint no-shadow:0 *//* app is already declared in the upper scope */
+/* eslint no-shadow:off *//* app is already declared in the upper scope */
 
 const koa          = require('koa');               // Koa framework
 const body         = require('koa-body');          // body parser
@@ -45,6 +45,7 @@ global.connectionPool = mysql.createPool(config.db); // put in global to pass to
 
 // select sub-app (admin/api) according to host subdomain (could also be by analysing request.url);
 app.use(function* subApp(next) {
+    /* eslint no-unused-vars:off *//* retain the 'next' signature */
     // use subdomain to determine which app to serve: www. as default, or admin. or api
     const subapp = this.hostname.split('.')[0]; // subdomain = part before first '.' of hostname
 
@@ -67,7 +68,7 @@ app.use(function* subApp(next) {
 
 
 if (!module.parent) {
-    /* eslint no-console: 0 */
+    /* eslint no-console:off */
     app.listen(process.env.PORT||3000);
     const db = require('./config/db-'+app.env+'.json').db.database;
     console.log(process.version+' listening on port '+(process.env.PORT||3000)+' ('+app.env+'/'+db+')');
