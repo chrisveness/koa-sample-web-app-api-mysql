@@ -29,6 +29,13 @@ app.use(responseTime());
 app.use(compress({}));
 
 
+// only search-index www subdomain
+app.use(function* robots(next) {
+    yield next;
+    if (this.hostname.slice(0,3) != 'www') this.response.set('X-Robots-Tag', 'noindex, nofollow');
+});
+
+
 // parse request body into ctx.request.body
 app.use(body());
 
