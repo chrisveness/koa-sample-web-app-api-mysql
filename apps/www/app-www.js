@@ -8,7 +8,7 @@
 const koa        = require('koa');            // koa framework
 const handlebars = require('koa-handlebars'); // handlebars templating
 const flash      = require('koa-flash');      // flash messages
-const helmet     = require('koa-helmet');     // security header middleware
+const lusca      = require('koa-lusca');      // security header middleware
 const serve      = require('koa-static');     // static file serving middleware
 const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
@@ -69,8 +69,15 @@ app.use(function* cleanPost(next) {
 app.use(flash());
 
 
-// helmet security headers
-app.use(helmet());
+// lusca security headers
+const trustedCdns = 'ajax.googleapis.com cdnjs.cloudflare.com maxcdn.bootstrapcdn.com';
+app.use(lusca({
+    csp:           { policy: { 'default-src': '\'self\' '+trustedCdns } }, // Content-Security-Policy
+    cto:           'nosniff',                                              // X-Content-Type-Options
+    hsts:          { maxAge: 31536000, includeSubDomains: true },          // Strict-Transport-Security
+    xframe:        'SAMEORIGIN',                                           // X-Frame-Options
+    xssProtection: true,                                                   // X-XSS-Protection
+}));
 
 
 // ------------ routing
