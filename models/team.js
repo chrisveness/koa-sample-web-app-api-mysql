@@ -20,9 +20,9 @@ const Team = module.exports = {};
  * @returns {Object} Team details.
  */
 Team.get = function*(id) {
-    const result = yield global.db.query('Select * From Team Where TeamId = ?', id);
-    const teams = result[0];
-    return teams[0];
+    const [teams] = yield global.db.query('Select * From Team Where TeamId = ?', id);
+    const team = teams[0];
+    return team;
 };
 
 
@@ -38,8 +38,7 @@ Team.getBy = function*(field, value) {
 
         const sql = `Select * From Team Where ${field} = ? Order By Name`;
 
-        const result = yield global.db.query(sql, value);
-        const teams = result[0];
+        const [teams] = yield global.db.query(sql, value);
 
         return teams;
 
@@ -62,9 +61,9 @@ Team.getBy = function*(field, value) {
 Team.insert = function*(values) {
     try {
 
-        const result = yield global.db.query('Insert Into Team Set ?', values);
+        const [result] = yield global.db.query('Insert Into Team Set ?', values);
         //console.log('Team.insert', result.insertId, new Date); // eg audit trail?
-        return result[0].insertId;
+        return result.insertId;
 
     } catch (e) {
         switch (e.code) {

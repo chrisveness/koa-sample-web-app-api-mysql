@@ -29,8 +29,7 @@ teams.list = function*() {
 
     try {
 
-        const result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
-        const teams = result[0];
+        const [teams] = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
 
         const context = { teams: teams };
         yield this.render('templates/teams-list', context);
@@ -55,8 +54,7 @@ teams.view = function*() {
     const sql = `Select TeamMemberId, MemberId, Firstname, Lastname
                  From Member Inner Join TeamMember Using (MemberId)
                  Where TeamId = ?`;
-    const result = yield this.db.query(sql, this.params.id);
-    const members = result[0];
+    const [members] = yield this.db.query(sql, this.params.id);
 
     const context = team;
     context.members = members;
@@ -87,8 +85,8 @@ teams.edit = function*() {
                   From TeamMember Inner Join Member Using (MemberId)
                   Where TeamId = ?
                   Order By Firstname, Lastname`;
-    const resultT = yield this.db.query(sqlT, this.params.id);
-    team.teamMembers = resultT[0];
+    const [teamMembers] = yield this.db.query(sqlT, this.params.id);
+    team.teamMembers = teamMembers;
 
     // members not in this team (for add picklist)
     let members = team.teamMembers.map(function(m) { return m.MemberId; }); // array of id's
@@ -97,8 +95,8 @@ teams.edit = function*() {
                   From Member
                   Where MemberId Not In (`+members.join(',')+`)
                   Order By Firstname, Lastname`;
-    const resultM = yield this.db.query(sqlM, members);
-    team.notTeamMembers = resultM[0];
+    const [notTeamMembers] = yield this.db.query(sqlM, members);
+    team.notTeamMembers = notTeamMembers;
 
     const context = team;
     yield this.render('templates/teams-edit', context);

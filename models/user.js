@@ -20,9 +20,9 @@ const User = module.exports = {};
  * @returns {Object} User details.
  */
 User.get = function*(id) {
-    const result = yield global.db.query('Select * From User Where UserId = ?', id);
-    const users = result[0];
-    return users[0];
+    const [users] = yield global.db.query('Select * From User Where UserId = ?', id);
+    const user = users[0];
+    return user;
 };
 
 
@@ -38,8 +38,7 @@ User.getBy = function*(field, value) {
 
         const sql = `Select * From User Where ${field} = ? Order By Firstname, Lastname`;
 
-        const result = yield global.db.query(sql, value);
-        const users = result[0];
+        const [users] = yield global.db.query(sql, value);
 
         return users;
 
@@ -62,9 +61,9 @@ User.getBy = function*(field, value) {
 User.insert = function*(values) {
     try {
 
-        const result = yield global.db.query('Insert Into User Set ?', values);
+        const [result] = yield global.db.query('Insert Into User Set ?', values);
         //console.log('User.insert', result.insertId, new Date); // eg audit trail?
-        return result[0].insertId;
+        return result.insertId;
 
     } catch (e) {
         switch (e.code) {

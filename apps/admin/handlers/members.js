@@ -29,8 +29,7 @@ members.list = function*() {
 
     try {
 
-        const result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
-        const members = result[0];
+        const [members] = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
 
         const context = { members: members };
         yield this.render('templates/members-list', context);
@@ -55,8 +54,7 @@ members.view = function*() {
     const sql = `Select TeamMemberId, TeamId, Name
                  From TeamMember Inner Join Team Using (TeamId)
                  Where MemberId = ?`;
-    const result = yield this.db.query(sql, this.params.id);
-    const teams = result[0];
+    const [teams] = yield this.db.query(sql, this.params.id);
 
     const context = member;
     context.teams = teams;
@@ -87,15 +85,15 @@ members.edit = function*() {
                   From TeamMember Inner Join Team Using (TeamId)
                   Where MemberId = ?
                   Order By Name`;
-    const resultT = yield this.db.query(sqlT, this.params.id);
-    member.memberOfTeams = resultT[0];
+    const [memberOfTeams] = yield this.db.query(sqlT, this.params.id);
+    member.memberOfTeams = memberOfTeams;
 
     // teams this member is not a member of (for add picklist)
     let teams = member.memberOfTeams.map(function(t) { return t.TeamId; }); // array of id's
     if (teams.length == 0) teams = [0]; // dummy to satisfy sql 'in' syntax
     const sqlM = `Select TeamId, Name From Team Where TeamId Not In (${teams.join(',')}) Order By Name`;
-    const resultM = yield this.db.query(sqlM, teams);
-    member.notMemberOfTeams = resultM[0];
+    const [notMemberOfTeams] = yield this.db.query(sqlM, teams);
+    member.notMemberOfTeams = notMemberOfTeams;
 
     const context = member;
     yield this.render('templates/members-edit', context);

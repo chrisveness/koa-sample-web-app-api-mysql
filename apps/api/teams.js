@@ -35,8 +35,7 @@ handler.getTeams = function*() {
         }
         sql +=  ' Order By Name';
 
-        const result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
-        const teams = result[0];
+        const [teams] = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
 
         if (teams.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
 
@@ -78,8 +77,7 @@ handler.getTeamById = function*() {
 
     // team membership
     const sql = 'Select MemberId As _id, concat("/members/",MemberId) As _uri From TeamMember Where TeamId = ?';
-    const result = yield this.db.query(sql, this.params.id);
-    const members = result[0];
+    const [members] = yield this.db.query(sql, this.params.id);
     team.Members = members;
 
     this.body = team;
