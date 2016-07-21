@@ -69,6 +69,7 @@
     },
     "extends": "eslint:recommended",
     "rules": {
+      "array-bracket-spacing": [ "error", "never" ],
       "comma-dangle": [ "error", "always-multiline" ],
       "curly": [ "error", "multi-line" ],
       "indent": [ "error", 4, { "SwitchCase": 1 } ],

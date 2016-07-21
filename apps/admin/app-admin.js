@@ -20,7 +20,7 @@ const app = module.exports = koa(); // API app
 // logging
 const access = { type: 'rotating-file', path: './logs/admin-access.log', level: 'trace', period: '1d', count: 4 };
 const error  = { type: 'rotating-file', path: './logs/admin-error.log',  level: 'error', period: '1d', count: 4 };
-const logger = bunyan.createLogger({ name: 'admin', streams: [ access, error ] });
+const logger = bunyan.createLogger({ name: 'admin', streams: [access, error] });
 app.use(koaLogger(logger, {}));
 
 

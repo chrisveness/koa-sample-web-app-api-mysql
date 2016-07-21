@@ -15,7 +15,7 @@ router.get('/logs/:logfile', function* logs() {
     if (this.passport.user.Role != 'su') return this.redirect('/login'+this.url);
     const bunyan = require.resolve('bunyan/bin/bunyan');
     const logfile = path.join(__dirname, '../../../logs/'+this.params.logfile);
-    const args = this.query.options ? [ logfile, this.query.options ] : [ logfile ];
+    const args = this.query.options ? [logfile, this.query.options] : [logfile];
 
     try {
 
