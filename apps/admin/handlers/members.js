@@ -123,6 +123,8 @@ members.processAdd = function*() {
 
     try {
 
+        this.request.body.Active = this.request.body.Active ? true : false;
+
         const id = yield Member.insert(this.request.body);
         this.set('X-Insert-Id', id); // for integration tests
 
@@ -146,6 +148,8 @@ members.processEdit = function*() {
     // update member details
     if ('Firstname' in this.request.body) {
         try {
+
+            this.request.body.Active = this.request.body.Active ? true : false;
 
             yield Member.update(this.params.id, this.request.body);
 

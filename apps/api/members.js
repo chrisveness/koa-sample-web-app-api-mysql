@@ -4,7 +4,8 @@
 
 'use strict';
 
-const Member = require('../../models/member.js');
+const Member       = require('../../models/member.js');
+const castBoolean  = require('./cast-boolean.js');
 
 const handler = module.exports = {};
 
@@ -35,7 +36,8 @@ handler.getMembers = function*() {
         }
         sql +=  ' Order By Firstname, Lastname';
 
-        const [members] = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
+        const result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
+        const [members] = castBoolean.fromMysql(result);
 
         if (members.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
 
@@ -68,7 +70,9 @@ handler.getMembers = function*() {
  * @apiError   404/NotFound             Member not found.
  */
 handler.getMemberById = function*() {
-    const member = yield Member.get(this.params.id);
+    const result = yield global.db.query('Select * From Member Where MemberId = ?', this.params.id);
+    const [members] = castBoolean.fromMysql(result);
+    const member = members[0];
 
     if (!member) this.throw(404, `No member ${this.params.id} found`); // Not Found
 
@@ -103,6 +107,8 @@ handler.postMembers = function*() {
 
     try {
 
+        this.request.body = yield castBoolean.fromStrings('Member', this.request.body);
+
         const id = yield Member.insert(this.request.body);
 
         this.body = yield Member.get(id); // return created member details
@@ -134,6 +140,8 @@ handler.patchMemberById = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
     try {
+
+        this.request.body = yield castBoolean.fromStrings('Member', this.request.body);
 
         yield Member.update(this.params.id, this.request.body);
 

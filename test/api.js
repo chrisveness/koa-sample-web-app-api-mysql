@@ -69,18 +69,11 @@ describe('API'+' ('+app.env+'/'+require('../config/db-'+app.env+'.json').db.data
                 expect(response.body).to.be.an('array');
                 expect(response.body).to.have.length.above(1);
             });
-
-            it('returns xml', function*() {
-                const hdrs = { Host: 'api.localhost', Accept: 'application/xml' }; // set host & accepts headers
-                const response = yield request.get('/members').set(hdrs).auth(userId, userPw).end();
-                expect(response.status).to.equal(200, response.text);
-                expect(response.text.slice(0, 38)).to.equal('<?xml version="1.0" encoding="UTF-8"?>');
-            });
         });
         describe('CRUD', function() {
             let id = null;
             it('adds a member', function*() {
-                const values = { Firstname: 'Test', Lastname: 'User', Email: 'test@user.com' };
+                const values = { Firstname: 'Test', Lastname: 'User', Email: 'test@user.com', Active: 'true' };
                 const response = yield request.post('/members').set(headers).auth(userId, userPw).send(values).end();
                 expect(response.status).to.equal(201, response.text);
                 expect(response.body).to.be.an('object');
@@ -90,13 +83,24 @@ describe('API'+' ('+app.env+'/'+require('../config/db-'+app.env+'.json').db.data
                 id = response.body.MemberId;
             });
 
-            it('gets a member', function*() {
+            it('gets a member (json)', function*() {
                 const response = yield request.get('/members/'+id).set(headers).auth(userId, userPw).end();
                 expect(response.status).to.equal(200, response.text);
                 expect(response.body).to.be.an('object');
                 expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
                 expect(response.body.Email).to.equal('test@user.com');
                 expect(response.body.Firstname).to.equal('Test');
+                expect(response.body.Active).to.be.true;
+            });
+
+            it('gets a member (xml)', function*() {
+                const hdrs = { Host: 'api.localhost', Accept: 'application/xml' }; // set host & accepts headers
+                const response = yield request.get('/members/'+id).set(hdrs).auth(userId, userPw).end();
+                expect(response.status).to.equal(200, response.text);
+                expect(response.text.slice(0, 38)).to.equal('<?xml version="1.0" encoding="UTF-8"?>');
+                expect(response.text.match(/<Email>(.*)<\/Email>/)[1]).to.equal('test@user.com');
+                expect(response.text.match(/<Firstname>(.*)<\/Firstname>/)[1]).to.equal('Test');
+                expect(response.text.match(/<Active>(.*)<\/Active>/)[1]).to.equal('true');
             });
 
             it('gets a member (filtered)', function*() {

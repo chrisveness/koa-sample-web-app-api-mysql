@@ -96,6 +96,11 @@ The api/members.js and api/teams.js then handle the API requests. I use PATCH in
 that a subset of entity fields can be supplied (correctly, a PUT will set unsupplied fields to null);
 otherwise everything is very straightforward REST API, hopefully all following best practice.
 
+Special provision is made for boolean values, which are typically stored in MySQL as BIT(1) or
+TINYINT(1). In the admin section, where fields are handled individually, normal JavaScript type 
+conversion rules take care of conversions between boolean and numeric values, but for the API boolean
+values have to be explicitly converted between 1/0 and true/false (for both JSON and XML).
+
 ### Models
 
 Models sit above the sub-apps, as they are used by both the admin app and the API.
@@ -225,6 +230,7 @@ create table Member (
   Firstname text,
   Lastname  text,
   Email     text not null,
+  Active    bit(1),
   primary key       (MemberId),
   unique  key Email (Email(24))
 ) engine=InnoDB charset=utf8 auto_increment=100001;
@@ -267,10 +273,10 @@ create table User (
 -- Test data for ‘koa-sample-web-app-api-mysql’ app
 
 INSERT INTO Member VALUES 
- (100001,'Juan Manuel','Fangio','juan-manuel@fangio.com'),
- (100002,'Ayrton','Senna','ayrton@senna.com'),
- (100003,'Michael','Schumacher','michael@schumacher.com'),
- (100004,'Lewis','Hamilton','lewis@hamilton.com');
+ (100001,'Juan Manuel','Fangio','juan-manuel@fangio.com', false),
+ (100002,'Ayrton','Senna','ayrton@senna.com', false),
+ (100003,'Michael','Schumacher','michael@schumacher.com', false),
+ (100004,'Lewis','Hamilton','lewis@hamilton.com', true);
 
 INSERT INTO Team VALUES 
  (100001,'Ferrari'),
