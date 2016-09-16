@@ -70,13 +70,14 @@ app.use(flash());
 
 
 // lusca security headers
-const trustedCdns = 'ajax.googleapis.com cdnjs.cloudflare.com maxcdn.bootstrapcdn.com';
+const luscaCspTrustedCdns = 'ajax.googleapis.com cdnjs.cloudflare.com maxcdn.bootstrapcdn.com';
+const luscaCspDefaultSrc = `'self' 'unsafe-inline' ${luscaCspTrustedCdns}`; // 'unsafe-inline' required for <style> blocks
 app.use(lusca({
-    csp:           { policy: { 'default-src': '\'self\' '+trustedCdns } }, // Content-Security-Policy
-    cto:           'nosniff',                                              // X-Content-Type-Options
-    hsts:          { maxAge: 31536000, includeSubDomains: true },          // Strict-Transport-Security
-    xframe:        'SAMEORIGIN',                                           // X-Frame-Options
-    xssProtection: true,                                                   // X-XSS-Protection
+    csp:           { policy: { 'default-src': luscaCspDefaultSrc } }, // Content-Security-Policy
+    cto:           'nosniff',                                         // X-Content-Type-Options
+    hsts:          { maxAge: 31536000, includeSubDomains: true },     // HTTP Strict-Transport-Security (1 year)
+    xframe:        'SAMEORIGIN',                                      // X-Frame-Options
+    xssProtection: true,                                              // X-XSS-Protection
 }));
 
 
