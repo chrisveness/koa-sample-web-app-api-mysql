@@ -225,6 +225,9 @@ unproductive to be constantly expanding and contracting folders. Go with what wo
 ```sql
 -- Schema for ‘koa-sample-web-app-api-mysql’ app
 
+create database `koa-sample-sandbox`;
+use `koa-sample-sandbox`;
+
 create table Member (
   MemberId  integer unsigned not null auto_increment,
   Firstname text,
