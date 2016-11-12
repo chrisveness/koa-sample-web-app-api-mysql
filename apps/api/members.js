@@ -52,7 +52,7 @@ handler.getMembers = function*() {
     } catch (e) {
         switch (e.code) {
             case 'ER_BAD_FIELD_ERROR': this.throw(403, 'Unrecognised Member field'); break;
-            default: this.throw(e.status||500, e.message);
+            default: throw e;
         }
     }
 };
@@ -105,20 +105,14 @@ handler.getMemberById = function*() {
 handler.postMembers = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
-    try {
+    this.request.body = yield castBoolean.fromStrings('Member', this.request.body);
 
-        this.request.body = yield castBoolean.fromStrings('Member', this.request.body);
+    const id = yield Member.insert(this.request.body);
 
-        const id = yield Member.insert(this.request.body);
-
-        this.body = yield Member.get(id); // return created member details
-        this.body.root = 'Member';
-        this.set('Location', '/members/'+id);
-        this.status = 201; // Created
-
-    } catch (e) {
-        this.throw(e.status||500, e.message);
-    }
+    this.body = yield Member.get(id); // return created member details
+    this.body.root = 'Member';
+    this.set('Location', '/members/'+id);
+    this.status = 201; // Created
 };
 
 
@@ -139,21 +133,15 @@ handler.postMembers = function*() {
 handler.patchMemberById = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
-    try {
+    this.request.body = yield castBoolean.fromStrings('Member', this.request.body);
 
-        this.request.body = yield castBoolean.fromStrings('Member', this.request.body);
+    yield Member.update(this.params.id, this.request.body);
 
-        yield Member.update(this.params.id, this.request.body);
+    // return updated member details
+    this.body = yield Member.get(this.params.id);
+    if (!this.body) this.throw(404, `No member ${this.params.id} found`); // Not Found
 
-        // return updated member details
-        this.body = yield Member.get(this.params.id);
-        if (!this.body) this.throw(404, `No member ${this.params.id} found`); // Not Found
-
-        this.body.root = 'Member';
-
-    } catch (e) {
-        this.throw(e.status||500, e.message);
-    }
+    this.body.root = 'Member';
 };
 
 
@@ -171,21 +159,15 @@ handler.patchMemberById = function*() {
 handler.deleteMemberById = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
-    try {
+    // return deleted member details
+    const member = yield Member.get(this.params.id);
 
-        // return deleted member details
-        const member = yield Member.get(this.params.id);
+    if (!member) this.throw(404, `No member ${this.params.id} found`); // Not Found
 
-        if (!member) this.throw(404, `No member ${this.params.id} found`); // Not Found
+    yield Member.delete(this.params.id);
 
-        yield Member.delete(this.params.id);
-
-        this.body = member; // deleted member details
-        this.body.root = 'Member';
-
-    } catch (e) {
-        this.throw(e.status||500, e.message);
-    }
+    this.body = member; // deleted member details
+    this.body.root = 'Member';
 };
 
 

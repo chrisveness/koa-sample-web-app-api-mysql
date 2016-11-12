@@ -62,6 +62,7 @@ app.use(function* handleErrors(next) {
                 yield this.render('templates/400-bad-request', e);
                 break;
             case 500: // Internal Server Error
+                console.log(e.status||'500', e.message);
                 context = app.env=='production' ? {} : { e: e };
                 yield this.render('templates/500-internal-server-error', context);
                 this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js

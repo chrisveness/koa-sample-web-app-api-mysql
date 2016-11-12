@@ -16,14 +16,10 @@ const www = module.exports = {};
  * GET / - render index page, including README.md.
  */
 www.index = function*() {
-    try {
-        const readme = yield fs.readFile('README.md', 'utf8');
-        const content = md.render(readme);
-        const context = { content: content };
-        yield this.render('templates/index', context);
-    } catch (e) {
-        this.throw(e);
-    }
+    const readme = yield fs.readFile('README.md', 'utf8');
+    const content = md.render(readme);
+    const context = { content: content };
+    yield this.render('templates/index', context);
 };
 
 

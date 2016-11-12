@@ -49,18 +49,12 @@ handler.getTeamMemberById = function*() {
 handler.postTeamMembers = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
-    try {
+    const id = yield TeamMember.insert(this.request.body);
 
-        const id = yield TeamMember.insert(this.request.body);
-
-        this.body = yield TeamMember.get(id); // return created team-member details
-        this.body.root = 'TeamMember';
-        this.set('Location', '/team-members/'+id);
-        this.status = 201; // Created
-
-    } catch (e) {
-        this.throw(e.status||500, e.message);
-    }
+    this.body = yield TeamMember.get(id); // return created team-member details
+    this.body.root = 'TeamMember';
+    this.set('Location', '/team-members/'+id);
+    this.status = 201; // Created
 };
 
 
@@ -78,21 +72,15 @@ handler.postTeamMembers = function*() {
 handler.deleteTeamMemberById = function*() {
     if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
-    try {
+    // return deleted team-member details
+    const teamMember = yield TeamMember.get(this.params.id);
 
-        // return deleted team-member details
-        const teamMember = yield TeamMember.get(this.params.id);
+    if (!teamMember) this.throw(404, `No team-member ${this.params.id} found`); // Not Found
 
-        if (!teamMember) this.throw(404, `No team-member ${this.params.id} found`); // Not Found
+    yield TeamMember.delete(this.params.id);
 
-        yield TeamMember.delete(this.params.id);
-
-        this.body = teamMember; // deleted team-member details
-        this.body.root = 'TeamMember';
-
-    } catch (e) {
-        this.throw(e.status||500, e.message);
-    }
+    this.body = teamMember; // deleted team-member details
+    this.body.root = 'TeamMember';
 };
 
 
