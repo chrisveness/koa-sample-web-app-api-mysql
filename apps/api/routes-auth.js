@@ -15,8 +15,9 @@ const crypto = require('crypto');       // nodejs.org/api/crypto.html
  *
  * @apiDescription Subsequent requests are made with basic auth username = id, password = token.
  *
- *   Note validation for /auth is by email+pw using bcrypt.compare which is slow, so auth is done once
- *   and token is retained temporarily by client; subsequent requests have a fast check of the token.
+ *   Note validation for /auth is by email+pw using scrypt.validateKdf() which is slow, so auth is
+ *   done once and token is retained temporarily by client; subsequent requests have a fast check of
+ *   the token.
  *
  *   The token has a 24-hour limited lifetime.
  *

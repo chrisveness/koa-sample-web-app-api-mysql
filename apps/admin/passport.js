@@ -11,7 +11,7 @@
 
 const co            = require('co');           // generator async control flow goodness
 const passport      = require('koa-passport'); // authentication
-const bcrypt        = require('co-bcrypt');    // bcrypt library
+const scrypt        = require('scrypt');       // scrypt library
 const LocalStrategy = require('passport-local').Strategy;
 
 const User = require('../../models/user.js');
@@ -44,7 +44,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
         const user = users[0];
 
         // verify password matches
-        const match = yield bcrypt.compare(password, user.Password);
+        const match = yield scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
         if (!match) return false; // no password match
 
         // validated ok, record return user details
@@ -69,7 +69,7 @@ passport.use(new LocalStrategy(function*(username, password, done) {
     const user = users[0];
 
     // verify password matches
-    const match = yield bcrypt.compare(password, user.Password);
+    const match = yield scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
     if (!match) return false; // no password match
 
     // validated ok, return user details

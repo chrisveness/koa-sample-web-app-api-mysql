@@ -24,7 +24,6 @@
     "basic-auth": "^1.0.4",
     "bunyan": "^1.8.1",
     "co": "^4.6.0",
-    "co-bcrypt": "^1.0.0",
     "co-child-process": "^0.0.3",
     "co-fs": "^1.2.0",
     "forever": "^0.15.2",
@@ -46,6 +45,7 @@
     "mysql-co": "^0.0.4",
     "node-fetch": "^1.6.3",
     "passport-local": "^1.0.0",
+    "scrypt": "^6.0.3",
     "superagent": "^2.0.0",
     "xmlify": "^1.0.1"
   },

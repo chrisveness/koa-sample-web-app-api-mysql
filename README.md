@@ -296,8 +296,8 @@ INSERT INTO TeamMember VALUES
  (100007,100004,100003,'2013-03-17');
  
 INSERT INTO User VALUES
-  (100001,'Guest','User','guest@user.com','$2a$12$G5op7sX70HUXfFbI8tPQuuhnWz4bwqbWQeIN9KFyklH5OhLgQbnU6',null,'guest'),
-  (100002,'Admin','User','admin@user.com','$2a$12$jEG0N4wNwuc20WQxN1VzduijVnlzLgBNn2N6Uq1pNjN45VhUyNf4W',null,'admin');
+  (100001,'Guest','User','guest@user.com','c2NyeXB0AA8AAAAIAAAAAadRWAxJ7PVQ8T6zW7orsuCiHr38TPYJ9TGVbHEK5hvdbC7lCKxKdebdo0T0wR9Aiye4GQDHbLkcBNVVQZpBDtWGfezCWZvtcw4JZ90HDuhb',null,'guest'),
+  (100002,'Admin','User','admin@user.com','c2NyeXB0AA4AAAAIAAAAAfvrpUA5jkh3ObPPUPNQEjbkHXk4vj4xPWH6N8yLEvbgkKqW5zqv3AgsHtTcSL2lzfviyMkXjybHPXeqDY62ZxHEvmTgEY6THddbqOUAOzTQ',null,'admin');
 ```
 
 The full sample app is around 1,000 lines of JavaScript.

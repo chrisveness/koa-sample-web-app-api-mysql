@@ -5,8 +5,8 @@
 'use strict';
 
 const basicAuth = require('basic-auth'); // basic access authentication
-const bcrypt    = require('co-bcrypt'); // bcrypt library
-const crypto    = require('crypto');    // nodejs.org/api/crypto.html
+const scrypt    = require('scrypt');     // scrypt library
+const crypto    = require('crypto');     // nodejs.org/api/crypto.html
 
 const User   = require('../../models/user.js');
 
@@ -17,8 +17,8 @@ const validate = module.exports = {};
  * Middleware to verify basic access user authentication; if this url is in urls, subsequent
  * middleware will require authentication by e-mail & password.
  *
- * This is used for initial authentication as it performs a (slow) bcrypt hash. It then leaves the
- * user record in this.auth.user.
+ * This is used for initial authentication as it performs a (slow) scrypt kdf generation. It then
+ * leaves the user record in this.auth.user.
  *
  * For production use, this should always be over SSL (note digest access authentication is not suitable
  * due to password hash constraints: see e.g. stackoverflow.com/questions/18551954#answer-18828089)
@@ -34,7 +34,7 @@ validate.confirmBasicAuthUser = function(urls) {
         const credentials = basicAuth(this.request);
         if (!credentials) this.throw(401); // Unauthorized
 
-        // authenticates off email + cleartext password - this is slow as it requires bcrypt hashing
+        // authenticates off email + cleartext password - this is slow as it requires scrypt hashing
         const user = yield validate.userByEmail(credentials.name, credentials.pass);
         if (!user) this.throw(401); // Unauthorized
 
@@ -51,8 +51,8 @@ validate.confirmBasicAuthUser = function(urls) {
  * Middleware to verify basic access token authentication; subsequent middleware will require
  * authentication by user id & authentication token.
  *
- * This is used for subsequent authentication as there is no (slow) bcrypt hash required, just a
- * (fast) SHA-1 hash.
+ * This is used for subsequent authentication as there is no (slow) scrypt kdf generation required,
+ * just a (fast) SHA-1 hash.
  *
  * For production use, this should always be over SSL (note digest access authentication is not suitable
  * due to password hash constraints: see e.g. stackoverflow.com/questions/18551954#answer-18828089)
@@ -63,7 +63,7 @@ validate.confirmBasicAuthToken = function() {
         const credentials = basicAuth(this.request);
         if (!credentials) this.throw(401); // Unauthorized
 
-        // authenticate off id + token (following auth request) - fast as no bcrypt hash required
+        // authenticate off id + token (following auth request) - fast as no scrypt hash required
         const user = yield validate.userById(credentials.name, credentials.pass);
         if (!user) this.throw(401); // Unauthorized
 
@@ -80,7 +80,7 @@ validate.confirmBasicAuthToken = function() {
  * Validate user identified by 'username' validated against 'password'; returns user record for
  * successful validation, or null for failed validation.
  *
- * This is slow as it does bcrypt.compare() on supplied password; it is used for / and /auth only.
+ * This is slow as it does scrypt.verifyKdf() on supplied password; it is used for / and /auth only.
  *
  * It records a limited-lifetime api token (24h) against the validated user for subsequent requests.
  */
@@ -91,7 +91,7 @@ validate.userByEmail = function*(username, password) {
     const user = users[0];
 
     // check password
-    const match = yield bcrypt.compare(password, user.Password);
+    const match = yield scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
     if (!match) return null;
 
     // validates ok - record api token for subsequent api requests; the stored api token is the
