@@ -8,7 +8,7 @@ const router = require('koa-router')(); // router middleware for koa
 
 
 router.get('/', function* getIndexPage() {
-    yield this.render('templates/index');
+    yield this.render('index');
 });
 
 

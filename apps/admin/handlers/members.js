@@ -32,7 +32,7 @@ members.list = function*() {
         const [members] = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
 
         const context = { members: members };
-        yield this.render('templates/members-list', context);
+        yield this.render('members-list', context);
 
     } catch (e) {
         switch (e.code) {
@@ -58,7 +58,7 @@ members.view = function*() {
 
     const context = member;
     context.teams = teams;
-    yield this.render('templates/members-view', context);
+    yield this.render('members-view', context);
 };
 
 
@@ -67,7 +67,7 @@ members.view = function*() {
  */
 members.add = function*() {
     const context = this.flash.formdata || {}; // failed validation? fill in previous values
-    yield this.render('templates/members-add', context);
+    yield this.render('members-add', context);
 };
 
 
@@ -96,7 +96,7 @@ members.edit = function*() {
     member.notMemberOfTeams = notMemberOfTeams;
 
     const context = member;
-    yield this.render('templates/members-edit', context);
+    yield this.render('members-edit', context);
 };
 
 
@@ -108,7 +108,7 @@ members.delete = function*() {
     if (!member) this.throw(404, 'Member not found');
 
     const context = member;
-    yield this.render('templates/members-delete', context);
+    yield this.render('members-delete', context);
 };
 
 

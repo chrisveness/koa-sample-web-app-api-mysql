@@ -32,7 +32,7 @@ app.use(function* handleErrors(next) {
     } catch (e) {
         this.status = e.status || 500;
         const context = app.env=='development' ? { e: e } : {};
-        yield this.render('templates/500-internal-server-error', context);
+        yield this.render('500-internal-server-error', context);
         this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
     }
 });
@@ -48,7 +48,7 @@ app.use(function* ctxAddDomain(next) {
 // handlebars templating
 app.use(handlebars({
     extension:   ['html', 'handlebars'],
-    viewsDir:    'apps/www',
+    viewsDir:    'apps/www/templates',
     partialsDir: 'apps/www/templates',
 }));
 
@@ -94,7 +94,7 @@ app.use(function* notFound(next) {
     yield next; // actually no next...
 
     this.status = 404;
-    yield this.render('templates/404-not-found');
+    yield this.render('404-not-found');
 });
 
 

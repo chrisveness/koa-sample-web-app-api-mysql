@@ -20,10 +20,10 @@ router.get('/logs/:logfile', function* logs() {
     try {
 
         const log = yield spawn(bunyan, args);
-        yield this.render('templates/logs', { bunyan: log, logfile: this.params.logfile });
+        yield this.render('logs', { bunyan: log, logfile: this.params.logfile });
 
     } catch (e) {
-        yield this.render('templates/logs', { bunyan: e.message, logfile: this.params.logfile });
+        yield this.render('logs', { bunyan: e.message, logfile: this.params.logfile });
     }
 
 });

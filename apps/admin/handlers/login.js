@@ -19,7 +19,7 @@ const handler = module.exports = {};
 handler.getLogin = function*() {
     const context = this.flash.formdata || {}; // failed login? fill in previous values
 
-    yield this.render('templates/login', context);
+    yield this.render('login', context);
 };
 
 

@@ -32,7 +32,7 @@ teams.list = function*() {
         const [teams] = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
 
         const context = { teams: teams };
-        yield this.render('templates/teams-list', context);
+        yield this.render('teams-list', context);
 
     } catch (e) {
         switch (e.code) {
@@ -58,7 +58,7 @@ teams.view = function*() {
 
     const context = team;
     context.members = members;
-    yield this.render('templates/teams-view', context);
+    yield this.render('teams-view', context);
 };
 
 
@@ -67,7 +67,7 @@ teams.view = function*() {
  */
 teams.add = function*() {
     const context = this.flash.formdata || {}; // failed validation? fill in previous values
-    yield this.render('templates/teams-add', context);
+    yield this.render('teams-add', context);
 };
 
 
@@ -99,7 +99,7 @@ teams.edit = function*() {
     team.notTeamMembers = notTeamMembers;
 
     const context = team;
-    yield this.render('templates/teams-edit', context);
+    yield this.render('teams-edit', context);
 };
 
 
@@ -111,7 +111,7 @@ teams.delete = function*() {
     if (!team) this.throw(404, 'Team not found');
 
     const context = team;
-    yield this.render('templates/teams-delete', context);
+    yield this.render('teams-delete', context);
 };
 
 

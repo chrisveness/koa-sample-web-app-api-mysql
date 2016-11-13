@@ -55,16 +55,16 @@ app.use(function* handleErrors(next) {
         switch (this.status) {
             case 404: // Not Found
                 context = { msg: e.message=='Not Found'?null:e.message };
-                yield this.render('templates/404-not-found', context);
+                yield this.render('404-not-found', context);
                 break;
             case 403: // Forbidden
             case 409: // Conflict
-                yield this.render('templates/400-bad-request', e);
+                yield this.render('400-bad-request', e);
                 break;
             case 500: // Internal Server Error
                 console.log(e.status||'500', e.message);
                 context = app.env=='production' ? {} : { e: e };
-                yield this.render('templates/500-internal-server-error', context);
+                yield this.render('500-internal-server-error', context);
                 this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
                 break;
         }
@@ -75,7 +75,7 @@ app.use(function* handleErrors(next) {
 // handlebars templating
 app.use(handlebars({
     extension:   ['html', 'handlebars'],
-    viewsDir:    'apps/admin',
+    viewsDir:    'apps/admin/templates',
     partialsDir: 'apps/admin/templates/partials',
 }));
 
@@ -152,7 +152,7 @@ app.use(function* notFound(next) {
     yield next; // actually no next...
 
     this.status = 404;
-    yield this.render('templates/404-not-found');
+    yield this.render('404-not-found');
 });
 
 

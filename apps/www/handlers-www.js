@@ -19,7 +19,7 @@ www.index = function*() {
     const readme = yield fs.readFile('README.md', 'utf8');
     const content = md.render(readme);
     const context = { content: content };
-    yield this.render('templates/index', context);
+    yield this.render('index', context);
 };
 
 
@@ -27,7 +27,7 @@ www.index = function*() {
  * GET /contact - render contact page, either with contact form or submitted message
  */
 www.contact = function*() {
-    yield this.render('templates/contact', this.flash);
+    yield this.render('contact', this.flash);
 };
 
 
