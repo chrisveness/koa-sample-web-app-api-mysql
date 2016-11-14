@@ -18,7 +18,7 @@ const validate = module.exports = {};
  * middleware will require authentication by e-mail & password.
  *
  * This is used for initial authentication as it performs a (slow) scrypt kdf generation. It then
- * leaves the user record in this.auth.user.
+ * leaves the user record in this.state.auth.user.
  *
  * For production use, this should always be over SSL (note digest access authentication is not suitable
  * due to password hash constraints: see e.g. stackoverflow.com/questions/18551954#answer-18828089)
@@ -38,8 +38,8 @@ validate.confirmBasicAuthUser = function(urls) {
         const user = yield validate.userByEmail(credentials.name, credentials.pass);
         if (!user) this.throw(401); // Unauthorized
 
-        // ok - record authenticated user in this.auth.user
-        this.auth = { user: user };
+        // ok - record authenticated user in this.state.auth.user
+        this.state.auth = { user: user };
 
         // and continue on
         yield next;
@@ -67,8 +67,8 @@ validate.confirmBasicAuthToken = function() {
         const user = yield validate.userById(credentials.name, credentials.pass);
         if (!user) this.throw(401); // Unauthorized
 
-        // ok - record authenticated user in this.auth.user
-        this.auth = { user: user };
+        // ok - record authenticated user in this.state.auth.user
+        this.state.auth = { user: user };
 
         // and continue on
         yield next;

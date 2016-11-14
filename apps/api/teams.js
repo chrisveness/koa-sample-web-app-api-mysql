@@ -35,7 +35,7 @@ handler.getTeams = function*() {
         }
         sql +=  ' Order By Name';
 
-        const [teams] = yield this.db.query(sql, this.query);
+        const [teams] = yield this.state.db.query(sql, this.query);
 
         if (teams.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
 
@@ -77,7 +77,7 @@ handler.getTeamById = function*() {
 
     // team membership
     const sql = 'Select MemberId As _id, concat("/members/",MemberId) As _uri From TeamMember Where TeamId = :id';
-    const [members] = yield this.db.query(sql, { id: this.params.id });
+    const [members] = yield this.state.db.query(sql, { id: this.params.id });
     team.Members = members;
 
     this.body = team;
@@ -99,7 +99,7 @@ handler.getTeamById = function*() {
  * @apiError   403/Forbidden             Admin auth required.
  */
 handler.postTeams = function*() {
-    if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
     const id = yield Team.insert(this.request.body);
 
@@ -125,7 +125,7 @@ handler.postTeams = function*() {
  * @apiError   404/NotFound              Team not found.
  */
 handler.patchTeamById = function*() {
-    if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
     yield Team.update(this.params.id, this.request.body);
 
@@ -149,7 +149,7 @@ handler.patchTeamById = function*() {
  * @apiError   404/NotFound         Team not found.
  */
 handler.deleteTeamById = function*() {
-    if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
     // return deleted team details
     const team = yield Team.get(this.params.id);

@@ -31,15 +31,15 @@ app.use(koaLogger(logger, {}));
 
 // set up MySQL connection
 app.use(function* mysqlConnection(next) {
-    // keep copy of this.db in global for access from models
-    this.db = global.db = yield global.connectionPool.getConnection();
-    this.db.config.namedPlaceholders = true;
+    // keep copy of this.state.db in global for access from models
+    this.state.db = global.db = yield global.connectionPool.getConnection();
+    this.state.db.config.namedPlaceholders = true;
     // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
-    yield this.db.query('SET SESSION sql_mode = "TRADITIONAL"');
+    yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
 
     yield next;
 
-    this.db.release();
+    this.state.db.release();
 });
 
 

@@ -27,7 +27,7 @@ const castBoolean = {};
  * @returns {Array} [rows, fields] Same as ‘results’, but with properly cast booleans.
  *
  * @example
- *   const result = yield this.db.query('Select * From User');
+ *   const result = yield this.state.db.query('Select * From User');
  *   const [users] = castBoolean.fromMysql(result);
  */
 castBoolean.fromMysql = function(result) {

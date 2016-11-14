@@ -47,7 +47,7 @@ handler.getTeamMemberById = function*() {
  * @apiError   403/Forbidden             Admin auth required.
  */
 handler.postTeamMembers = function*() {
-    if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
     const id = yield TeamMember.insert(this.request.body);
 
@@ -70,7 +70,7 @@ handler.postTeamMembers = function*() {
  * @apiError   404/NotFound         Team-member not found.
  */
 handler.deleteTeamMemberById = function*() {
-    if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
     // return deleted team-member details
     const teamMember = yield TeamMember.get(this.params.id);

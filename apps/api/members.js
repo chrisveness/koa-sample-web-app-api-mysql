@@ -36,7 +36,7 @@ handler.getMembers = function*() {
         }
         sql +=  ' Order By Firstname, Lastname';
 
-        const result = yield this.db.query(sql, this.query);
+        const result = yield this.state.db.query(sql, this.query);
         const [members] = castBoolean.fromMysql(result);
 
         if (members.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
@@ -81,7 +81,7 @@ handler.getMemberById = function*() {
 
     // team membership
     const sql = 'Select TeamId As _id, concat("/teams/",TeamId) As _uri From TeamMember Where MemberId = :id';
-    const [teams] = yield this.db.query(sql, { id: this.params.id });
+    const [teams] = yield this.state.db.query(sql, { id: this.params.id });
     member.Teams = teams;
 
     this.body = member;
@@ -103,7 +103,7 @@ handler.getMemberById = function*() {
  * @apiError   403/Forbidden             Admin auth required.
  */
 handler.postMembers = function*() {
-    if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
     this.request.body = yield castBoolean.fromStrings('Member', this.request.body);
 
@@ -131,7 +131,7 @@ handler.postMembers = function*() {
  * @apiError   404/NotFound              Member not found.
  */
 handler.patchMemberById = function*() {
-    if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
     this.request.body = yield castBoolean.fromStrings('Member', this.request.body);
 
@@ -157,7 +157,7 @@ handler.patchMemberById = function*() {
  * @apiError   404/NotFound         Member not found.
  */
 handler.deleteMemberById = function*() {
-    if (this.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
 
     // return deleted member details
     const member = yield Member.get(this.params.id);
