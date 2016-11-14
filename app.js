@@ -10,19 +10,23 @@
 'use strict';
 /* eslint no-shadow:off *//* app is already declared in the upper scope */
 
-const koa          = require('koa');               // Koa framework
-const body         = require('koa-body');          // body parser
-const compose      = require('koa-compose');       // middleware composer
-const compress     = require('koa-compress');      // HTTP compression
-const responseTime = require('koa-response-time'); // X-Response-Time middleware
-const session      = require('koa-session');       // session for passport login, flash messages
-const mysql        = require('mysql2/promise');    // fast mysql driver
+const koa      = require('koa');            // Koa framework
+const body     = require('koa-body');       // body parser
+const compose  = require('koa-compose');    // middleware composer
+const compress = require('koa-compress');   // HTTP compression
+const session  = require('koa-session');    // session for passport login, flash messages
+const mysql    = require('mysql2/promise'); // fast mysql driver
 
 const app = module.exports = koa();
 
 
 // return response time in X-Response-Time header
-app.use(responseTime());
+app.use(function* responseTime(next) {
+    const t1 = Date.now();
+    yield next;
+    const t2 = Date.now();
+    this.set('X-Response-Time', Math.ceil(t2-t1)+'ms');
+});
 
 
 // HTTP compression
