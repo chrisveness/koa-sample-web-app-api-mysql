@@ -15,13 +15,14 @@
 
 {{>navpartial}}
 
+<main>
+
 {{#if @koa.passport.user}}
+
 <p>You are currently logged in as {{@koa.passport.user.Firstname}} {{@koa.passport.user.Lastname}}
     (with {{@koa.passport.user.Role}} privileges).</p>
-{{/if}}
 
-
-<main>
+{{else}}
 
 <form method="post">
     <ul>
@@ -45,6 +46,8 @@
         </li>
     </ul>
 </form>
+
+{{/if}}
 
 <p>Test logins:</p>
 <ul>
