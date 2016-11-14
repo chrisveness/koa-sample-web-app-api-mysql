@@ -7,7 +7,7 @@
 const supertest = require('co-supertest'); // SuperAgent-driven library for testing HTTP servers
 const expect    = require('chai').expect;  // BDD/TDD assertion library
 const cheerio   = require('cheerio');      // core jQuery for the server
-require('co-mocha');                       // enable support for generators in mocha tests using co
+require('mocha');                          // simple, flexible, fun test framework
 
 const app = require('../app.js');
 
