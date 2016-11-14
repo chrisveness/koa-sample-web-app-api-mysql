@@ -20,6 +20,14 @@ const mysql    = require('mysql2/promise'); // fast mysql driver
 const app = module.exports = koa();
 
 
+// MySQL connection pool (set up on app initialisation)
+const config = require('./config/db-'+app.env+'.json');
+global.connectionPool = mysql.createPool(config.db); // put in global to pass to sub-apps
+
+
+/* set up middleware which will be applied to each request - - - - - - - - - - - - - - - - - - -  */
+
+
 // return response time in X-Response-Time header
 app.use(function* responseTime(next) {
     const t1 = Date.now();
@@ -49,11 +57,6 @@ app.keys = ['koa-sample-app'];
 app.use(session(app));
 
 
-// MySQL connection pool TODO: how to catch connection exception eg invalid password?
-const config = require('./config/db-'+app.env+'.json');
-global.connectionPool = mysql.createPool(config.db); // put in global to pass to sub-apps
-
-
 // select sub-app (admin/api) according to host subdomain (could also be by analysing request.url);
 app.use(function* subApp() { // note no 'next'
     // use subdomain to determine which app to serve: www. as default, or admin. or api
@@ -75,6 +78,9 @@ app.use(function* subApp() { // note no 'next'
             break;
     }
 });
+
+
+/* create server - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 
 if (!module.parent) {
