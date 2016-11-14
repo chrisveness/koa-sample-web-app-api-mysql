@@ -22,27 +22,6 @@ const validate  = require('./validate.js');
 const app = module.exports = koa();
 
 
-// logging
-const access = { type: 'rotating-file', path: './logs/api-access.log', level: 'trace', period: '1d', count: 4 };
-const error  = { type: 'rotating-file', path: './logs/api-error.log',  level: 'error', period: '1d', count: 4 };
-const logger = bunyan.createLogger({ name: 'api', streams: [ access, error ] });
-app.use(koaLogger(logger, {}));
-
-
-// set up MySQL connection
-app.use(function* mysqlConnection(next) {
-    // keep copy of this.state.db in global for access from models
-    this.state.db = global.db = yield global.connectionPool.getConnection();
-    this.state.db.connection.config.namedPlaceholders = true;
-    // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
-    yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
-
-    yield next;
-
-    this.state.db.release();
-});
-
-
 // content negotiation: api will respond with json, xml, or yaml
 app.use(function* contentNegotiation(next) {
     yield next;
@@ -105,6 +84,27 @@ app.use(function* handleErrors(next) {
         }
     }
 });
+
+
+// set up MySQL connection
+app.use(function* mysqlConnection(next) {
+    // keep copy of this.state.db in global for access from models
+    this.state.db = global.db = yield global.connectionPool.getConnection();
+    this.state.db.connection.config.namedPlaceholders = true;
+    // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
+    yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
+
+    yield next;
+
+    this.state.db.release();
+});
+
+
+// logging
+const access = { type: 'rotating-file', path: './logs/api-access.log', level: 'trace', period: '1d', count: 4 };
+const error  = { type: 'rotating-file', path: './logs/api-error.log',  level: 'error', period: '1d', count: 4 };
+const logger = bunyan.createLogger({ name: 'api', streams: [ access, error ] });
+app.use(koaLogger(logger, {}));
 
 
 // ------------ routing

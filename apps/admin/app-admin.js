@@ -17,31 +17,16 @@ const koaLogger  = require('koa-bunyan');     // logging
 const app = module.exports = koa(); // API app
 
 
-// logging
-const access = { type: 'rotating-file', path: './logs/admin-access.log', level: 'trace', period: '1d', count: 4 };
-const error  = { type: 'rotating-file', path: './logs/admin-error.log',  level: 'error', period: '1d', count: 4 };
-const logger = bunyan.createLogger({ name: 'admin', streams: [ access, error ] });
-app.use(koaLogger(logger, {}));
+// serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
+app.use(serve('public', { maxage: 1000*60*60 }));
 
 
-// set up MySQL connection
-app.use(function* mysqlConnection(next) {
-    // keep copy of this.state.db in global for access from models
-    this.state.db = global.db = yield global.connectionPool.getConnection();
-    this.state.db.connection.config.namedPlaceholders = true;
-    // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
-    yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
-
-    yield next;
-
-    this.state.db.release();
-});
-
-
-// use passport authentication (local auth)
-require('./passport.js');
-app.use(passport.initialize());
-app.use(passport.session());
+// handlebars templating
+app.use(handlebars({
+    extension:   [ 'html', 'handlebars' ],
+    viewsDir:    'apps/admin/templates',
+    partialsDir: 'apps/admin/templates/partials',
+}));
 
 
 // handle thrown or uncaught exceptions anywhere down the line
@@ -73,12 +58,24 @@ app.use(function* handleErrors(next) {
 });
 
 
-// handlebars templating
-app.use(handlebars({
-    extension:   [ 'html', 'handlebars' ],
-    viewsDir:    'apps/admin/templates',
-    partialsDir: 'apps/admin/templates/partials',
-}));
+// set up MySQL connection
+app.use(function* mysqlConnection(next) {
+        // keep copy of this.state.db in global for access from models
+        this.state.db = global.db = yield global.connectionPool.getConnection();
+        this.state.db.connection.config.namedPlaceholders = true;
+        // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
+        yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
+
+        yield next;
+
+        this.state.db.release();
+});
+
+
+// use passport authentication (local auth)
+require('./passport.js');
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 // clean up post data - trim & convert blank fields to null
@@ -116,10 +113,14 @@ app.use(function* ctxAddDomain(next) {
 });
 
 
-// ------------ routing
+// logging
+const access = { type: 'rotating-file', path: './logs/admin-access.log', level: 'trace', period: '1d', count: 4 };
+const error  = { type: 'rotating-file', path: './logs/admin-error.log',  level: 'error', period: '1d', count: 4 };
+const logger = bunyan.createLogger({ name: 'admin', streams: [ access, error ] });
+app.use(koaLogger(logger, {}));
 
-// serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
-app.use(serve('public', { maxage: 1000*60*60 }));
+
+// ------------ routing
 
 // public (unsecured) modules first
 
