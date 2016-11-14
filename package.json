@@ -20,7 +20,6 @@
     "node": "^6.0.0"
   },
   "dependencies": {
-    "base-64": "^0.1.0",
     "basic-auth": "^1.0.4",
     "bunyan": "^1.8.1",
     "co": "^4.6.0",

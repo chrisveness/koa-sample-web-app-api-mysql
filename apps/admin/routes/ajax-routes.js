@@ -6,7 +6,6 @@
 
 const router  = require('koa-router')(); // router middleware for koa
 
-const base64  = require('base-64');      // base64 encoder/decoder compatible with atob/btoa
 const fetch   = require('node-fetch');   // window.fetch in node.js
 const crypto  = require('crypto');       // nodejs.org/api/crypto.html
 
@@ -40,7 +39,7 @@ router.all(/\/ajax\/(.*)/, function* getAjax() {
     const hdrs = {
         'Content-Type':  'application/json',
         'Accept':        this.header.accept,
-        'Authorization': 'Basic '+base64.encode(user+':'+pass),
+        'Authorization': 'Basic '+base64Encode(user+':'+pass),
     };
 
     const response = yield fetch(url, { method: this.method, body: body, headers: hdrs });
@@ -49,6 +48,11 @@ router.all(/\/ajax\/(.*)/, function* getAjax() {
     this.status = response.status;
     this.body = yield response.json();
 });
+
+
+function base64Encode(str) {
+    return new Buffer(str, 'binary').toString('base64');
+}
 
 
 module.exports = router.middleware();
