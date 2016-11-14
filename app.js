@@ -16,6 +16,7 @@ const compose  = require('koa-compose');    // middleware composer
 const compress = require('koa-compress');   // HTTP compression
 const session  = require('koa-session');    // session for passport login, flash messages
 const mysql    = require('mysql2/promise'); // fast mysql driver
+const debug    = require('debug')('app');   // small debugging utility
 
 const app = module.exports = koa();
 
@@ -55,6 +56,13 @@ app.use(body());
 // session for passport login, flash messages
 app.keys = ['koa-sample-app'];
 app.use(session(app));
+
+
+// sometimes useful to be able to track each request...
+app.use(function*(next) {
+    debug(this.method + ' ' + this.url);
+    yield next;
+})
 
 
 // select sub-app (admin/api) according to host subdomain (could also be by analysing request.url);
