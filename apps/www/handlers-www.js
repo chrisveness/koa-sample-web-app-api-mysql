@@ -6,7 +6,7 @@
 
 'use strict';
 
-const fs = require('co-fs');         // co wrappers for Node core fs functions
+const fs = require('mz/fs');         // 'modernised' node api
 const md = require('markdown-it')(); // markdown parser
 
 const www = module.exports = {};
