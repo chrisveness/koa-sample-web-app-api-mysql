@@ -20,7 +20,7 @@ const TeamMember = module.exports = {};
  * @returns {Object} TeamMember details.
  */
 TeamMember.get = function*(id) {
-    const [teamMembers] = yield global.db.query('Select * From TeamMember Where TeamMemberId = ?', id);
+    const [teamMembers] = yield global.db.query('Select * From TeamMember Where TeamMemberId = :id', { id });
     return teamMembers[0];
 };
 
@@ -39,7 +39,7 @@ TeamMember.insert = function*(values) {
 
     try {
 
-        const [result] = yield global.db.query('Insert Into TeamMember Set ?', values);
+        const [result] = yield global.db.query('Insert Into TeamMember Set ?', [values]);
         //console.log('TeamMember.insert', result.insertId, new Date); // eg audit trail?
         return result.insertId;
 
@@ -99,7 +99,7 @@ TeamMember.update = function*(id, values) {
 TeamMember.delete = function*(id) {
     try {
 
-        yield global.db.query('Delete From TeamMember Where TeamMemberId = ?', id);
+        yield global.db.query('Delete From TeamMember Where TeamMemberId = :id', { id });
         //console.log('TeamMember.delete', id, new Date); // eg audit trail?
 
     } catch (e) {

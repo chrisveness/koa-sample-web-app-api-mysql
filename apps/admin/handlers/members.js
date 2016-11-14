@@ -29,7 +29,7 @@ members.list = function*() {
 
     try {
 
-        const [members] = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
+        const [members] = yield this.db.query(sql, this.query);
 
         const context = { members: members };
         yield this.render('members-list', context);
@@ -53,8 +53,8 @@ members.view = function*() {
     // team membership
     const sql = `Select TeamMemberId, TeamId, Name
                  From TeamMember Inner Join Team Using (TeamId)
-                 Where MemberId = ?`;
-    const [teams] = yield this.db.query(sql, this.params.id);
+                 Where MemberId = :id`;
+    const [teams] = yield this.db.query(sql, { id: this.params.id });
 
     const context = member;
     context.teams = teams;
@@ -83,9 +83,9 @@ members.edit = function*() {
     // team membership
     const sqlT = `Select TeamMemberId, TeamId, Name
                   From TeamMember Inner Join Team Using (TeamId)
-                  Where MemberId = ?
+                  Where MemberId = :id
                   Order By Name`;
-    const [memberOfTeams] = yield this.db.query(sqlT, this.params.id);
+    const [memberOfTeams] = yield this.db.query(sqlT, { id: this.params.id });
     member.memberOfTeams = memberOfTeams;
 
     // teams this member is not a member of (for add picklist)

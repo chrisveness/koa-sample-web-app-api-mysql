@@ -36,7 +36,7 @@ handler.getMembers = function*() {
         }
         sql +=  ' Order By Firstname, Lastname';
 
-        const result = yield this.db.query({ sql: sql, namedPlaceholders: true }, this.query);
+        const result = yield this.db.query(sql, this.query);
         const [members] = castBoolean.fromMysql(result);
 
         if (members.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
@@ -70,7 +70,7 @@ handler.getMembers = function*() {
  * @apiError   404/NotFound             Member not found.
  */
 handler.getMemberById = function*() {
-    const result = yield global.db.query('Select * From Member Where MemberId = ?', this.params.id);
+    const result = yield global.db.query('Select * From Member Where MemberId = :id', { id: this.params.id });
     const [members] = castBoolean.fromMysql(result);
     const member = members[0];
 
@@ -80,8 +80,8 @@ handler.getMemberById = function*() {
     member._id = member.MemberId;
 
     // team membership
-    const sql = 'Select TeamId As _id, concat("/teams/",TeamId) As _uri From TeamMember Where MemberId = ?';
-    const [teams] = yield this.db.query(sql, this.params.id);
+    const sql = 'Select TeamId As _id, concat("/teams/",TeamId) As _uri From TeamMember Where MemberId = :id';
+    const [teams] = yield this.db.query(sql, { id: this.params.id });
     member.Teams = teams;
 
     this.body = member;
