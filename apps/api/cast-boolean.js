@@ -31,7 +31,7 @@ const castBoolean = {};
  *   const [users] = castBoolean.fromMysql(result);
  */
 castBoolean.fromMysql = function(result) {
-    const [rows, fields] = result;
+    const [ rows, fields ] = result;
     const rowsCast = rows.map(row => {
         fields.forEach(field => { // note 0x01 = TINYINT, 0x10 = BIT; how best to access mysql.Types from here?
             const boolean = (field.columnType==0x01 || field.columnType==0x10) && field.columnLength==1;
@@ -39,7 +39,7 @@ castBoolean.fromMysql = function(result) {
         });
         return row;
     });
-    return [rowsCast, fields];
+    return [ rowsCast, fields ];
 };
 
 

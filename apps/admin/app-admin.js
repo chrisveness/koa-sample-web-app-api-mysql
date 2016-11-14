@@ -20,7 +20,7 @@ const app = module.exports = koa(); // API app
 // logging
 const access = { type: 'rotating-file', path: './logs/admin-access.log', level: 'trace', period: '1d', count: 4 };
 const error  = { type: 'rotating-file', path: './logs/admin-error.log',  level: 'error', period: '1d', count: 4 };
-const logger = bunyan.createLogger({ name: 'admin', streams: [access, error] });
+const logger = bunyan.createLogger({ name: 'admin', streams: [ access, error ] });
 app.use(koaLogger(logger, {}));
 
 
@@ -63,7 +63,7 @@ app.use(function* handleErrors(next) {
                 yield this.render('400-bad-request', e);
                 break;
             case 500: // Internal Server Error
-                console.log(e.status||'500', e.message);
+                console.error(e.status||'500', e.message);
                 context = app.env=='production' ? {} : { e: e };
                 yield this.render('500-internal-server-error', context);
                 this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
@@ -75,7 +75,7 @@ app.use(function* handleErrors(next) {
 
 // handlebars templating
 app.use(handlebars({
-    extension:   ['html', 'handlebars'],
+    extension:   [ 'html', 'handlebars' ],
     viewsDir:    'apps/admin/templates',
     partialsDir: 'apps/admin/templates/partials',
 }));

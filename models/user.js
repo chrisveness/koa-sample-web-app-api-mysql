@@ -92,7 +92,7 @@ User.insert = function*(values) {
 User.update = function*(id, values) {
     try {
 
-        yield global.db.query('Update User Set ? Where UserId = ?', [values, id]);
+        yield global.db.query('Update User Set ? Where UserId = ?', [ values, id ]);
         //console.log('User.update', id, new Date); // eg audit trail?
 
     } catch (e) {

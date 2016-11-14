@@ -102,7 +102,7 @@ Member.update = function*(id, values) {
 
     try {
 
-        yield global.db.query('Update Member Set ? Where MemberId = ?', [values, id]);
+        yield global.db.query('Update Member Set ? Where MemberId = ?', [ values, id ]);
         //console.log('Member.update', id, new Date); // eg audit trail?
 
     } catch (e) {

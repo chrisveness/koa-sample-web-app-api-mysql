@@ -39,8 +39,8 @@ router.all(/\/ajax\/(.*)/, function* getAjax() {
     const pass = crypto.createHash('sha1').update(this.passport.user.ApiToken).digest('hex');
     const hdrs = {
         'Content-Type':  'application/json',
-        'Accept':         this.header.accept,
-        'Authorization': 'Basic '+base64.encode(user+':'+pass)
+        'Accept':        this.header.accept,
+        'Authorization': 'Basic '+base64.encode(user+':'+pass),
     };
 
     const response = yield fetch(url, { method: this.method, body: body, headers: hdrs });

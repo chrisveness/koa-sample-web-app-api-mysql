@@ -51,8 +51,7 @@ global.connectionPool = mysql.createPool(config.db); // put in global to pass to
 
 
 // select sub-app (admin/api) according to host subdomain (could also be by analysing request.url);
-app.use(function* subApp(next) {
-    /* eslint no-unused-vars:off *//* retain the 'next' signature */
+app.use(function* subApp() { // note no 'next'
     // use subdomain to determine which app to serve: www. as default, or admin. or api
     const subapp = this.hostname.split('.')[0]; // subdomain = part before first '.' of hostname
 

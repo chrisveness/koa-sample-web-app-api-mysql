@@ -25,7 +25,7 @@ const app = module.exports = koa();
 // logging
 const access = { type: 'rotating-file', path: './logs/api-access.log', level: 'trace', period: '1d', count: 4 };
 const error  = { type: 'rotating-file', path: './logs/api-error.log',  level: 'error', period: '1d', count: 4 };
-const logger = bunyan.createLogger({ name: 'api', streams: [access, error] });
+const logger = bunyan.createLogger({ name: 'api', streams: [ access, error ] });
 app.use(koaLogger(logger, {}));
 
 
@@ -45,8 +45,6 @@ app.use(function* mysqlConnection(next) {
 
 // content negotiation: api will respond with json, xml, or yaml
 app.use(function* contentNegotiation(next) {
-    /* eslint no-case-declarations:off */
-
     yield next;
 
     if (!this.body) return; // no content to return

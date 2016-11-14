@@ -92,7 +92,7 @@ Team.insert = function*(values) {
 Team.update = function*(id, values) {
     try {
 
-        yield global.db.query('Update Team Set ? Where TeamId = ?', [values, id]);
+        yield global.db.query('Update Team Set ? Where TeamId = ?', [ values, id ]);
         //console.log('Team.update', id, new Date); // eg audit trail?
 
     } catch (e) {

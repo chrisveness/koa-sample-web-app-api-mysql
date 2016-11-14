@@ -19,7 +19,7 @@ const app = module.exports = koa(); // www app
 // logging
 const access = { type: 'rotating-file', path: './logs/www-access.log', level: 'trace', period: '1d', count: 4 };
 const error  = { type: 'rotating-file', path: './logs/www-error.log',  level: 'error', period: '1d', count: 4 };
-const logger = bunyan.createLogger({ name: 'www', streams: [access, error] });
+const logger = bunyan.createLogger({ name: 'www', streams: [ access, error ] });
 app.use(koaLogger(logger, {}));
 
 
@@ -47,7 +47,7 @@ app.use(function* ctxAddDomain(next) {
 
 // handlebars templating
 app.use(handlebars({
-    extension:   ['html', 'handlebars'],
+    extension:   [ 'html', 'handlebars' ],
     viewsDir:    'apps/www/templates',
     partialsDir: 'apps/www/templates',
 }));

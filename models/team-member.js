@@ -70,7 +70,7 @@ TeamMember.insert = function*(values) {
 TeamMember.update = function*(id, values) {
     try {
 
-        const result = yield global.db.query('Update TeamMember Set ? Where TeamMemberId = ?', [values, id]);
+        const result = yield global.db.query('Update TeamMember Set ? Where TeamMemberId = ?', [ values, id ]);
         if (result.affectedRows == 0) return; // not found
         //console.log('TeamMember.update', id, new Date); // eg audit trail?
 
