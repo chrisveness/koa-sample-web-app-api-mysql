@@ -41,7 +41,7 @@
     "koa-session": "^3.3.1",
     "koa-static": "^2.0.0",
     "markdown-it": "^6.0.5",
-    "mysql-co": "^0.0.4",
+    "mysql2": "^1.1.1",
     "mz": "^2.5.0",
     "node-fetch": "^1.6.3",
     "nodejs-info": "^1.0.1",

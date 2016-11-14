@@ -16,7 +16,7 @@ const compose      = require('koa-compose');       // middleware composer
 const compress     = require('koa-compress');      // HTTP compression
 const responseTime = require('koa-response-time'); // X-Response-Time middleware
 const session      = require('koa-session');       // session for passport login, flash messages
-const mysql        = require('mysql-co');          // MySQL (co wrapper for mysql2)
+const mysql        = require('mysql2/promise');    // fast mysql driver
 
 const app = module.exports = koa();
 
