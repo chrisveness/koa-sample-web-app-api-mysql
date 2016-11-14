@@ -141,6 +141,7 @@ app.use(require('./routes/members-routes.js'));
 app.use(require('./routes/teams-routes.js'));
 app.use(require('./routes/ajax-routes.js'));
 app.use(require('./routes/logs-routes.js'));
+app.use(require('./routes/dev-routes.js'));
 
 
 // serve static apidoc files (http://admin.localhost/apidoc) (note login required)
