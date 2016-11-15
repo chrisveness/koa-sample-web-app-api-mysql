@@ -13,6 +13,7 @@ const passport   = require('koa-passport');   // authentication
 const serve      = require('koa-static');     // static file serving middleware
 const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
+const document   = require('jsdom').jsdom().defaultView.document; // DOM Document interface in Node!
 
 const app = module.exports = koa(); // admin app
 
@@ -22,10 +23,21 @@ app.use(serve('public', { maxage: 1000*60*60 }));
 
 
 // handlebars templating
+
+const hbsSelectedHelper = function(value, options) {   // stackoverflow.com/questions/13046401#answer-15373215
+    const select = document.createElement('select');   // create a select element
+    select.innerHTML = options.fn(ctx);                // populate it with the option HTML
+    select.value = value;                              // set the value
+    if (select.children[select.selectedIndex])         // if selected node exists add 'selected' attribute
+        select.children[select.selectedIndex].setAttribute('selected', true);
+    return select.innerHTML;
+};
+
 app.use(handlebars({
     extension:   [ 'html', 'handlebars' ],
     viewsDir:    'apps/admin/templates',
     partialsDir: 'apps/admin/templates/partials',
+    helpers:     { selected: hbsSelectedHelper },
 }));
 
 
