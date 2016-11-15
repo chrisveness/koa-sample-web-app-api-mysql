@@ -19,7 +19,7 @@ const koaLogger = require('koa-bunyan'); // logging
 
 const validate  = require('./validate.js');
 
-const app = module.exports = koa();
+const app = module.exports = koa(); // API app
 
 
 // content negotiation: api will respond with json, xml, or yaml
@@ -77,10 +77,13 @@ app.use(function* handleErrors(next) {
                 this.status = e.status;
                 this.body = e.message;
                 break;
-            default: // report 500 Internal Server Error
+            default:
+            case 500: // Internal Server Error
+                console.error(e.message);
                 this.status = e.status || 500;
                 this.body = app.env=='development' ? e.stack : e.message;
                 this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
+                break;
         }
     }
 });

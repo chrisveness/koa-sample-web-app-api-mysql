@@ -6,15 +6,15 @@
 
 
 const koa        = require('koa');            // koa framework
-const flash      = require('koa-flash');      // flash messages
 const handlebars = require('koa-handlebars'); // handlebars templating
+const flash      = require('koa-flash');      // flash messages
 const lusca      = require('koa-lusca');      // security header middleware
 const passport   = require('koa-passport');   // authentication
 const serve      = require('koa-static');     // static file serving middleware
 const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
 
-const app = module.exports = koa(); // API app
+const app = module.exports = koa(); // admin app
 
 
 // serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
@@ -36,21 +36,21 @@ app.use(function* handleErrors(next) {
         yield next;
 
     } catch (e) {
-        let context = null;
         this.status = e.status || 500;
         switch (this.status) {
             case 404: // Not Found
-                context = { msg: e.message=='Not Found'?null:e.message };
-                yield this.render('404-not-found', context);
+                const context404 = { msg: e.message=='Not Found'?null:e.message };
+                yield this.render('404-not-found', context404);
                 break;
             case 403: // Forbidden
             case 409: // Conflict
                 yield this.render('400-bad-request', e);
                 break;
+            default:
             case 500: // Internal Server Error
                 console.error(e.status||'500', e.message);
-                context = app.env=='production' ? {} : { e: e };
-                yield this.render('500-internal-server-error', context);
+                const context500 = app.env=='production' ? {} : { e: e };
+                yield this.render('500-internal-server-error', context500);
                 this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
                 break;
         }
@@ -60,15 +60,15 @@ app.use(function* handleErrors(next) {
 
 // set up MySQL connection
 app.use(function* mysqlConnection(next) {
-        // keep copy of this.state.db in global for access from models
-        this.state.db = global.db = yield global.connectionPool.getConnection();
-        this.state.db.connection.config.namedPlaceholders = true;
-        // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
-        yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
+    // keep copy of this.state.db in global for access from models
+    this.state.db = global.db = yield global.connectionPool.getConnection();
+    this.state.db.connection.config.namedPlaceholders = true;
+    // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
+    yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
 
-        yield next;
+    yield next;
 
-        this.state.db.release();
+    this.state.db.release();
 });
 
 
@@ -151,11 +151,8 @@ app.use(serve('apps/api/apidoc', { maxage: 1000*60*60 }));
 
 
 // end of the line: 404 status for any resource not found
-app.use(function* notFound(next) {
-    yield next; // actually no next...
-
-    this.status = 404;
-    yield this.render('404-not-found');
+app.use(function* notFound() { // note no 'next'
+    this.throw(404);
 });
 
 

@@ -16,33 +16,8 @@ const koaLogger  = require('koa-bunyan');     // logging
 const app = module.exports = koa(); // www app
 
 
-// logging
-const access = { type: 'rotating-file', path: './logs/www-access.log', level: 'trace', period: '1d', count: 4 };
-const error  = { type: 'rotating-file', path: './logs/www-error.log',  level: 'error', period: '1d', count: 4 };
-const logger = bunyan.createLogger({ name: 'www', streams: [ access, error ] });
-app.use(koaLogger(logger, {}));
-
-
-// 500 status for thrown or uncaught exceptions anywhere down the line
-app.use(function* handleErrors(next) {
-    try {
-
-        yield next;
-
-    } catch (e) {
-        this.status = e.status || 500;
-        const context = app.env=='development' ? { e: e } : {};
-        yield this.render('500-internal-server-error', context);
-        this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
-    }
-});
-
-
-// add the domain (host without subdomain) into koa ctx (used in navpartial template)
-app.use(function* ctxAddDomain(next) {
-    this.state.domain = this.host.replace('www.', '');
-    yield next;
-});
+// serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
+app.use(serve('public', { maxage: 1000*60*60 }));
 
 
 // handlebars templating
@@ -51,6 +26,31 @@ app.use(handlebars({
     viewsDir:    'apps/www/templates',
     partialsDir: 'apps/www/templates',
 }));
+
+
+// handle thrown or uncaught exceptions anywhere down the line
+app.use(function* handleErrors(next) {
+    try {
+
+        yield next;
+
+    } catch (e) {
+        this.status = e.status || 500;
+        switch (this.status) {
+            case 404: // Not Found
+                const context404 = { msg: e.message=='Not Found'?null:e.message };
+                yield this.render('404-not-found', context404);
+                break;
+            default:
+            case 500: // Internal Server Error
+                console.error(e.status||'500', e.message);
+                const context500 = app.env=='production' ? {} : { e: e };
+                yield this.render('500-internal-server-error', context500);
+                this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
+                break;
+        }
+    }
+});
 
 
 // clean up post data - trim & convert blank fields to null
@@ -81,20 +81,28 @@ app.use(lusca({
 }));
 
 
-// ------------ routing
+// add the domain (host without subdomain) into koa ctx (used in navpartial template)
+app.use(function* ctxAddDomain(next) {
+    this.state.domain = this.host.replace('www.', '');
+    yield next;
+});
 
-// serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
-app.use(serve('public', { maxage: 1000*60*60 }));
+
+// logging
+const access = { type: 'rotating-file', path: './logs/www-access.log', level: 'trace', period: '1d', count: 4 };
+const error  = { type: 'rotating-file', path: './logs/www-error.log',  level: 'error', period: '1d', count: 4 };
+const logger = bunyan.createLogger({ name: 'www', streams: [ access, error ] });
+app.use(koaLogger(logger, {}));
+
+
+// ------------ routing
 
 app.use(require('./routes-www.js'));
 
 
 // end of the line: 404 status for any resource not found
-app.use(function* notFound(next) {
-    yield next; // actually no next...
-
-    this.status = 404;
-    yield this.render('404-not-found');
+app.use(function* notFound() { // note no 'next'
+    this.throw(404);
 });
 
 
