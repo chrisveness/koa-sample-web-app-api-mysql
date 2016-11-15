@@ -26,7 +26,7 @@ handler.getLogin = function*() {
 /**
  * GET /logout - logout user
  */
-handler.getLogout = function*() {
+handler.getLogout = function() {
     this.logout();
     this.session = null;
     this.redirect('/');

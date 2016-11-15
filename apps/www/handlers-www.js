@@ -37,7 +37,7 @@ www.contact = function*() {
 /**
  * POST /contact - process contact page
  */
-www.processContact = function*() {
+www.processContact = function() {
     // just an illustration - a real app would log/notify the contact request
     this.flash = this.request.body;
     this.redirect('/contact');

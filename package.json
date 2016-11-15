@@ -54,7 +54,7 @@
     "chai": "^3.5.0",
     "cheerio": "^0.20.0",
     "co-supertest": "^0.0.10",
-    "eslint": "^2.11.1",
+    "eslint": "^3.10.1",
     "mocha": "^3.1.2",
     "nodemon": "^1.9.2",
     "npm-check": "^5.2.1",
@@ -64,8 +64,10 @@
   "eslintConfig": {
     "env": {
       "node": true,
-      "es6": true,
       "mocha": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2015
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -83,6 +85,7 @@
       "object-curly-spacing": [ "error", "always" ],
       "prefer-const": "error",
       "quotes": [ "error", "single", "avoid-escape" ],
+      "require-yield": "warn",
       "semi": [ "error", "always" ],
       "strict": [ "error", "global" ]
     }

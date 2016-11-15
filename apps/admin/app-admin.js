@@ -26,10 +26,11 @@ app.use(serve('public', { maxage: 1000*60*60 }));
 
 const hbsSelectedHelper = function(value, options) {   // stackoverflow.com/questions/13046401#answer-15373215
     const select = document.createElement('select');   // create a select element
-    select.innerHTML = options.fn(ctx);                // populate it with the option HTML
+    select.innerHTML = options.fn(this);               // populate it with the option HTML
     select.value = value;                              // set the value
-    if (select.children[select.selectedIndex])         // if selected node exists add 'selected' attribute
+    if (select.children[select.selectedIndex]) {        // if selected node exists add 'selected' attribute
         select.children[select.selectedIndex].setAttribute('selected', true);
+    }
     return select.innerHTML;
 };
 

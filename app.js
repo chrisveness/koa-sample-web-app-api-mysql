@@ -62,7 +62,7 @@ app.use(session(app));
 app.use(function*(next) {
     debug(this.method + ' ' + this.url);
     yield next;
-})
+});
 
 
 // select sub-app (admin/api) according to host subdomain (could also be by analysing request.url);

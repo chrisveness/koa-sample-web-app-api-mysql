@@ -26,7 +26,7 @@ const crypto = require('crypto');       // nodejs.org/api/crypto.html
  * @apiSuccess id                       Id to be used for subsequent Authorization header ‘username’
  * @apiSuccess token                    Token to be used for subsequent Authorization header ‘password’
  */
-router.get('/auth', function* getAuth() {
+router.get('/auth', function getAuth() {
     // (middleware has already validated user at this point, just return the hashed token timestamp)
 
     // the stored api token is the issue timestamp; the token given out is its sha1 hash
