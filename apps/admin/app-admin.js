@@ -60,15 +60,22 @@ app.use(function* handleErrors(next) {
 
 // set up MySQL connection
 app.use(function* mysqlConnection(next) {
-    // keep copy of this.state.db in global for access from models
-    this.state.db = global.db = yield global.connectionPool.getConnection();
-    this.state.db.connection.config.namedPlaceholders = true;
-    // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
-    yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
+    try {
 
-    yield next;
+        // keep copy of this.state.db in global for access from models
+        this.state.db = global.db = yield global.connectionPool.getConnection();
+        this.state.db.connection.config.namedPlaceholders = true;
+        // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
+        yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
 
-    this.state.db.release();
+        yield next;
+
+        this.state.db.release();
+
+    } catch (e) {
+        this.state.db.release();
+        throw e;
+    }
 });
 
 
