@@ -40,10 +40,12 @@ structured, and I’ve liberally commented the code.
 
 ## Design choices
 
-For all that it’s rather bleeding-edge, Koa makes development far simpler than classic
-callback-style Node.js with Express. *Yield* may be just a stepping-stone to ES7 *await*, but it
-works. JavaScript may be looked down on ([misunderstood?](http://davidwalsh.name/javascript-objects))
-in some quarters, but I do find it vastly better to work with than PHP :)
+While it’s still rather leading-edge, Koa makes development far simpler than classic callback-style 
+Node.js with Express. *Yield* may be just a stepping-stone to ES7 *await*, but it works. JavaScript 
+may be looked down on ([misunderstood?](http://davidwalsh.name/javascript-objects)) in some quarters, 
+but it is gaining understanding as a mature and valid language (the benefits of prototypal inheritance 
+are starting to be appreciated, rather than seen as ‘classical inheritance got wrong’). It’s certainly 
+vastly better to work with than PHP :)
 
 With Node.js v4 (stable LTS) out, I believe Koa can now be 
 considered[*](http://hueniverse.com/2015/03/02/the-node-version-dilemma) for production use.
@@ -56,9 +58,8 @@ JavaScript handlers for GET, POST, PATCH, DELETE requests.
 
 The highly-structured applications I work on require ACID SQL databases with referential integrity,
 so MongoDB was out for me. MySQL and PostgreSQL should be pretty similar, but PostgreSQL is not yet
-so well supported for Koa. (Actually, one of my first Koa applications is using MongoDB/monk; there
-are few changes – the models replicate monk functions, but add functionality to those functions
-which update the database).
+so well supported for Koa. (Actually, I’ve since built applications using MongoDB, sometimes 
+together with MySQL for different datastores in the same application).
 
 For some people, a full JavaScript framework will work better. If you’re happy to plan out your own
 preferred structure, designing your own patterns means one less component to learn / conform to.
@@ -220,6 +221,9 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 I originally structured this in a modular fashion as suggested by [TJ](https://vimeo.com/56166857), 
 but I’ve since found it more convenient to work with a flatter structure (heresy!) as I found it 
 unproductive to be constantly expanding and contracting folders. Go with what works for you.
+
+Simpler applications can use a much flatter structure still, at the limit with no sub-folders at all; 
+more complex ones might use a deeper structure. “Horses for courses”, my dad used to say.
 
 ## Database schema
 
