@@ -106,9 +106,9 @@ app.use(lusca({
 }));
 
 
-// add the domain (host without subdomain) into koa ctx
+// add the domain (host without subdomain) into koa ctx (used in index.html)
 app.use(function* ctxAddDomain(next) {
-    this.domain = this.host.replace('admin.', '');
+    this.state.domain = this.host.replace('admin.', '');
     yield next;
 });
 

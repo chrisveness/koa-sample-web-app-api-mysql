@@ -38,9 +38,9 @@ app.use(function* handleErrors(next) {
 });
 
 
-// add the domain (host without subdomain) into koa ctx (referenced in navpartial template)
+// add the domain (host without subdomain) into koa ctx (used in navpartial template)
 app.use(function* ctxAddDomain(next) {
-    this.domain = this.host.replace('www.', '');
+    this.state.domain = this.host.replace('www.', '');
     yield next;
 });
 
