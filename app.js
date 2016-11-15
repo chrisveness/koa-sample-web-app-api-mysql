@@ -49,7 +49,7 @@ app.use(function* robots(next) {
 });
 
 
-// parse request body into ctx.request.body
+// parse request body into this.request.body
 app.use(body());
 
 
@@ -66,20 +66,22 @@ app.use(function*(next) {
 
 
 // select sub-app (admin/api) according to host subdomain (could also be by analysing request.url);
-app.use(function* subApp() { // note no 'next'
-    // use subdomain to determine which app to serve: www. as default, or admin. or api
-    const subapp = this.hostname.split('.')[0]; // subdomain = part before first '.' of hostname
+// separate sub-apps can be used for modularisation of a large system, for different login/access
+// rights for public/protected elements, and also for different functionality between api & web
+// pages (content negotiation, error handling, handlebars templating, etc).
 
-    switch (subapp) {
-        case 'admin':
-            yield compose(require('./apps/admin/app-admin.js').middleware);
-            break;
-        case 'api':
-            yield compose(require('./apps/api/app-api.js').middleware);
-            break;
-        case 'www':
-            yield compose(require('./apps/www/app-www.js').middleware);
-            break;
+app.use(function* subApp(next) {
+    // use subdomain to determine which app to serve: www. as default, or admin. or api
+    this.state.subapp = this.hostname.split('.')[0]; // subdomain = part before first '.' of hostname
+    // note: could use root part of path instead of sub-domains e.g. this.request.url.split('/')[1]
+    yield next;
+});
+
+app.use(function* composeSubapp() { // note no 'next' after composed subapp
+    switch (this.state.subapp) {
+        case 'admin': yield compose(require('./apps/admin/app-admin.js').middleware); break;
+        case 'api':   yield compose(require('./apps/api/app-api.js').middleware);     break;
+        case 'www':   yield compose(require('./apps/www/app-www.js').middleware);     break;
         default: // no (recognised) subdomain? canonicalise host to www.host
             // note switch must include all registered subdomains to avoid potential redirect loop
             this.redirect(this.protocol+'://'+'www.'+this.host+this.path+this.search);
