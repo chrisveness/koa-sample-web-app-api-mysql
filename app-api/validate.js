@@ -8,7 +8,7 @@ const basicAuth = require('basic-auth'); // basic access authentication
 const scrypt    = require('scrypt');     // scrypt library
 const crypto    = require('crypto');     // nodejs.org/api/crypto.html
 
-const User   = require('../../models/user.js');
+const User   = require('../models/user.js');
 
 const validate = module.exports = {};
 

@@ -14,7 +14,7 @@ const passport      = require('koa-passport'); // authentication
 const scrypt        = require('scrypt');       // scrypt library
 const LocalStrategy = require('passport-local').Strategy;
 
-const User = require('../../models/user.js');
+const User = require('../models/user.js');
 
 
 // serialise user: record authenticated user's id in session

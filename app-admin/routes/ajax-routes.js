@@ -9,7 +9,7 @@ const router  = require('koa-router')(); // router middleware for koa
 const fetch   = require('node-fetch');   // window.fetch in node.js
 const crypto  = require('crypto');       // nodejs.org/api/crypto.html
 
-const User    = require('../../../models/user.js');
+const User    = require('../../models/user.js');
 
 /*
  * This provides an interface to the 'api' app, hence providing a RESTful-structured ajax service;

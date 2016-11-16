@@ -4,7 +4,7 @@
 
 'use strict';
 
-const TeamMember = require('../../models/team-member.js');
+const TeamMember = require('../models/team-member.js');
 
 const handler = module.exports = {};
 

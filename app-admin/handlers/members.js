@@ -6,8 +6,8 @@
 
 'use strict';
 
-const Member     = require('../../../models/member.js');
-const TeamMember = require('../../../models/team-member.js');
+const Member     = require('../../models/member.js');
+const TeamMember = require('../../models/team-member.js');
 
 const members = module.exports = {};
 

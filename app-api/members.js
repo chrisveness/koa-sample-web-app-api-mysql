@@ -4,7 +4,7 @@
 
 'use strict';
 
-const Member       = require('../../models/member.js');
+const Member       = require('../models/member.js');
 const castBoolean  = require('./cast-boolean.js');
 
 const handler = module.exports = {};
