@@ -135,63 +135,62 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 
 ```
 .
-├── apps
-│   ├── admin
-│   │   ├── handlers
-│   │   │   ├── login.js
-│   │   │   ├── members.js
-│   │   │   └── teams.js
-│   │   ├── routes
-│   │   │   ├── ajax-routes.js
-│   │   │   ├── dev-routes.js
-│   │   │   ├── index-routes.js
-│   │   │   ├── login-routes.js
-│   │   │   ├── logs-routes.js
-│   │   │   ├── members-routes.js
-│   │   │   └── teams-routes.js
-│   │   ├── templates
-│   │   │   ├── partials
-│   │   │   │   ├── errpartial.html
-│   │   │   │   └── navpartial.html
-│   │   │   ├── 400-bad-request.html
-│   │   │   ├── 404-not-found.html
-│   │   │   ├── 500-internal-server-error.html
-│   │   │   ├── index.html
-│   │   │   ├── login.html
-│   │   │   ├── logs.html
-│   │   │   ├── members-add.html
-│   │   │   ├── members-delete.html
-│   │   │   ├── members-edit.html
-│   │   │   ├── members-list.html
-│   │   │   ├── members-view.html
-│   │   │   ├── teams-add.html
-│   │   │   ├── teams-delete.html
-│   │   │   ├── teams-edit.html
-│   │   │   ├── teams-list.html
-│   │   │   └── teams-view.html
-│   │   ├── app-admin.js
-│   │   └── passport.js
-│   ├── api
-│   │   ├── app-api.js
+├── apps-admin
+│   ├── handlers
+│   │   ├── login.js
 │   │   ├── members.js
-│   │   ├── routes-auth.js
-│   │   ├── routes-members.js
-│   │   ├── routes-root.js
-│   │   ├── routes-team-members.js
-│   │   ├── routes-teams.js
-│   │   ├── team-members.js
-│   │   ├── teams.js
-│   │   └── validate.js
-│   └── www
-│       ├── templates
-│       │   ├── 404-not-found.html
-│       │   ├── 500-internal-server-error.html
-│       │   ├── contact.html
-│       │   ├── index.html
-│       │   └── navpartial.html
-│       ├── app-www.js
-│       ├── handlers-www.js
-│       └── routes-www.js
+│   │   └── teams.js
+│   ├── routes
+│   │   ├── ajax-routes.js
+│   │   ├── dev-routes.js
+│   │   ├── index-routes.js
+│   │   ├── login-routes.js
+│   │   ├── logs-routes.js
+│   │   ├── members-routes.js
+│   │   └── teams-routes.js
+│   ├── templates
+│   │   ├── partials
+│   │   │   ├── errpartial.html
+│   │   │   └── navpartial.html
+│   │   ├── 400-bad-request.html
+│   │   ├── 404-not-found.html
+│   │   ├── 500-internal-server-error.html
+│   │   ├── index.html
+│   │   ├── login.html
+│   │   ├── logs.html
+│   │   ├── members-add.html
+│   │   ├── members-delete.html
+│   │   ├── members-edit.html
+│   │   ├── members-list.html
+│   │   ├── members-view.html
+│   │   ├── teams-add.html
+│   │   ├── teams-delete.html
+│   │   ├── teams-edit.html
+│   │   ├── teams-list.html
+│   │   └── teams-view.html
+│   ├── app-admin.js
+│   └── passport.js
+├── apps-api
+│   ├── app-api.js
+│   ├── members.js
+│   ├── routes-auth.js
+│   ├── routes-members.js
+│   ├── routes-root.js
+│   ├── routes-team-members.js
+│   ├── routes-teams.js
+│   ├── team-members.js
+│   ├── teams.js
+│   └── validate.js
+├── apps-www
+│   ├── templates
+│   │   ├── 404-not-found.html
+│   │   ├── 500-internal-server-error.html
+│   │   ├── contact.html
+│   │   ├── index.html
+│   │   └── navpartial.html
+│   ├── app-www.js
+│   ├── handlers-www.js
+│   └── routes-www.js
 ├── config
 │   ├── db-development.json
 │   └── db-production.json
