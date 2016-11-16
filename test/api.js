@@ -6,9 +6,9 @@
 /* eslint no-console:off */
 /* eslint no-unused-expressions:off */ /* (for expect().to.be.empty ) */
 
-const supertest = require('co-supertest'); // SuperAgent-driven library for testing HTTP servers
-const expect    = require('chai').expect;  // BDD/TDD assertion library
-require('mocha');                          // simple, flexible, fun test framework
+const supertest = require('supertest-as-promised'); // supertest with a promise interface
+const expect    = require('chai').expect;           // BDD/TDD assertion library
+require('mocha');                                   // simple, flexible, fun test framework
 
 const app = require('../app.js');
 

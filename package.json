@@ -53,13 +53,13 @@
     "apidoc": "^0.16.1",
     "chai": "^3.5.0",
     "cheerio": "^0.20.0",
-    "co-supertest": "^0.0.10",
     "eslint": "^3.10.1",
     "mocha": "^3.1.2",
     "nodemon": "^1.9.2",
     "npm-check": "^5.2.1",
     "npm-check-updates": "^2.6.5",
-    "supertest": "^1.2.0"
+    "supertest": "^1.2.0",
+    "supertest-as-promised": "^4.0.2"
   },
   "eslintConfig": {
     "env": {
