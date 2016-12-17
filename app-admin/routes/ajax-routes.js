@@ -42,11 +42,15 @@ router.all(/\/ajax\/(.*)/, function* getAjax() {
         'Authorization': 'Basic '+base64Encode(user+':'+pass),
     };
 
-    const response = yield fetch(url, { method: this.method, body: body, headers: hdrs });
-    if (!response.ok) this.throw(response.status, yield response.text()); // response.ok = 2xx status
-
-    this.status = response.status;
-    this.body = yield response.json();
+    try {
+        const response = yield fetch(url, { method: this.method, body: body, headers: hdrs });
+        const json = response.headers.get('content-type').match(/application\/json/);
+        this.status = response.status;
+        this.body = json ? yield response.json() : yield response.text();
+    } catch (e) { // eg offline, DNS fail, etc
+        this.status = 500;
+        this.body = e.message;
+    }
 });
 
 
