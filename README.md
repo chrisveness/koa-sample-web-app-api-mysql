@@ -115,27 +115,44 @@ SQL queries).
 While very basic, this sample app incorporates together many of the components of a real application;
 as well as handlebars templates & MySQL, there’s static file serving, body-parser for post data,
 compression, *passport* logins with remember-me, logging, flash messages, etc, and mocha/chai/cheerio
-for testing (I’ve ignored i18n which would introduce considerable complexity).
-
-Note that if you wish to set this up locally, you will need `admin.`, `api.`, and `www.` subdomains
-available. To do this, add a line such as `127.0.0.1 www.localhost api.localhost admin.localhost`
-to `/etc/hosts` (on Unix/Mac), or `\Windows\System32\drivers\etc\hosts` (on Windows). `npm start` 
-will then make the app available at www.localhost:3000.
+for testing (I’ve ignored i18n which would introduce considerable complexity). Full details of course
+in [package.json](/chrisveness/koa-sample-web-app-api-mysql/blob/master/package.json).
 
 It uses the database set out below, with connection details as per `/config/db-development.json`.
-
-Either Node.js v4+ or io.js is required as Node.js v0.12 doesn’t support template strings.
 
 ### Demo
 
 There is a running version of the app at [koa-sample-app.movable-type.co.uk](http://koa-sample-app.movable-type.co.uk).
 
 
+### Local copy
+
+If you would like to make a local copy to experiment with, you of course need Node.js and Git 
+installed, and also MySQL.
+
+You will need `admin.`, `api.`, and `www.` subdomains available; to do this, add a line such as 
+`127.0.0.1 www.localhost api.localhost admin.localhost` to `/etc/hosts` (on Unix/Mac), or 
+`\Windows\System32\drivers\etc\hosts` (on Windows).
+
+In MySQL, run the [database schema](#database-schema) script to create the database, and the 
+[test data](#test-data) script to populate it.
+
+Then at the Unix command line, or using Git Bash on Windows:
+````
+$ git clone https://github.com/chrisveness/koa-sample-web-app-api-mysql.git
+$ cd koa-sample-web-app-api-mysql
+$ npm install
+$ npm start
+````
+
+Then open a browser and go to `http://www.localhost:3000` to run the app.
+
+
 ## File structure
 
 ```
 .
-├── apps-admin
+├── app-admin
 │   ├── handlers
 │   │   ├── login.js
 │   │   ├── members.js
@@ -170,7 +187,7 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 │   │   └── teams-view.html
 │   ├── app-admin.js
 │   └── passport.js
-├── apps-api
+├── app-api
 │   ├── app-api.js
 │   ├── members.js
 │   ├── routes-auth.js
@@ -181,7 +198,7 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 │   ├── team-members.js
 │   ├── teams.js
 │   └── validate.js
-├── apps-www
+├── app-www
 │   ├── templates
 │   │   ├── 404-not-found.html
 │   │   ├── 500-internal-server-error.html
