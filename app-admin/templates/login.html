@@ -4,7 +4,7 @@
     <title>Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/admin.css">
@@ -17,10 +17,10 @@
 
 <main>
 
-{{#if @koa.passport.user}}
+{{#if @koa.state.user}}
 
-<p>You are currently logged in as {{@koa.passport.user.Firstname}} {{@koa.passport.user.Lastname}}
-    (with {{@koa.passport.user.Role}} privileges).</p>
+<p>You are currently logged in as {{@koa.state.user.Firstname}} {{@koa.state.user.Lastname}}
+    (with {{@koa.state.user.Role}} privileges).</p>
 
 {{else}}
 
