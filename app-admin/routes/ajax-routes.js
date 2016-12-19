@@ -11,11 +11,23 @@ const crypto  = require('crypto');       // nodejs.org/api/crypto.html
 
 const User    = require('../../models/user.js');
 
+
+/*
+ * Note routes/handlers for app-specific ajax calls can go here.
+ *
+ * All such handlers should set status and body, and should not throw (as that would invoke the
+ * generic admin exception handler which would return an html page).
+ *
+ * Generic ajax functionality gets passed through to be handled by the API via the fallback
+ * router.all() below.
+ *
+ * Being placed after passport in the middleware stack, ajax calls are password-protected.
+ */
+
+
 /*
  * This provides an interface to the 'api' app, hence providing a RESTful-structured ajax service;
  * e.g. GET admin.app.com/ajax/members/123456 => GET api.app.com/members/123456
- *
- * Being placed after passport in the middleware stack, ajax calls are password-protected.
  *
  * If necessary, it sets up the api token in the same manner as a call to the API resource /auth.
  *
