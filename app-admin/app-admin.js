@@ -86,7 +86,9 @@ app.use(function* mysqlConnection(next) {
         this.state.db.release();
 
     } catch (e) {
-        this.state.db.release();
+        // note if getConnection() fails we have no this.state.db, but if anything downstream throws,
+        // we need to release the connection
+        if (this.state.db) this.state.db.release();
         throw e;
     }
 });
