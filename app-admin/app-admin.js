@@ -5,7 +5,7 @@
 'use strict';
 
 
-const koa        = require('koa');            // koa framework
+const Koa        = require('koa');            // koa framework
 const handlebars = require('koa-handlebars'); // handlebars templating
 const flash      = require('koa-flash');      // flash messages
 const lusca      = require('koa-lusca');      // security header middleware
@@ -15,7 +15,8 @@ const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
 const document   = require('jsdom').jsdom().defaultView.document; // DOM Document interface in Node!
 
-const app = module.exports = koa(); // admin app
+
+const app = new Koa(); // admin app
 
 
 // serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
@@ -43,28 +44,28 @@ app.use(handlebars({
 
 
 // handle thrown or uncaught exceptions anywhere down the line
-app.use(function* handleErrors(next) {
+app.use(async function handleErrors(ctx, next) {
     try {
 
-        yield next;
+        await next();
 
     } catch (e) {
-        this.status = e.status || 500;
-        switch (this.status) {
+        ctx.status = e.status || 500;
+        switch (ctx.status) {
             case 404: // Not Found
                 const context404 = { msg: e.message=='Not Found'?null:e.message };
-                yield this.render('404-not-found', context404);
+                await ctx.render('404-not-found', context404);
                 break;
             case 403: // Forbidden
             case 409: // Conflict
-                yield this.render('400-bad-request', e);
+                await ctx.render('400-bad-request', e);
                 break;
             default:
             case 500: // Internal Server Error
                 console.error(e.status||'500', e.message);
                 const context500 = app.env=='production' ? {} : { e: e };
-                yield this.render('500-internal-server-error', context500);
-                this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
+                await ctx.render('500-internal-server-error', context500);
+                ctx.app.emit('error', e, ctx); // github.com/koajs/examples/blob/master/errors/app.js
                 break;
         }
     }
@@ -72,23 +73,23 @@ app.use(function* handleErrors(next) {
 
 
 // set up MySQL connection
-app.use(function* mysqlConnection(next) {
+app.use(async function mysqlConnection(ctx, next) {
     try {
 
-        // keep copy of this.state.db in global for access from models
-        this.state.db = global.db = yield global.connectionPool.getConnection();
-        this.state.db.connection.config.namedPlaceholders = true;
+        // keep copy of ctx.state.db in global for access from models
+        ctx.state.db = global.db = await global.connectionPool.getConnection();
+        ctx.state.db.connection.config.namedPlaceholders = true;
         // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
-        yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
+        await ctx.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
 
-        yield next;
+        await next();
 
-        this.state.db.release();
+        ctx.state.db.release();
 
     } catch (e) {
         // note if getConnection() fails we have no this.state.db, but if anything downstream throws,
         // we need to release the connection
-        if (this.state.db) this.state.db.release();
+        if (ctx.state.db) ctx.state.db.release();
         throw e;
     }
 });
@@ -101,37 +102,37 @@ app.use(passport.session());
 
 
 // clean up post data - trim & convert blank fields to null
-app.use(function* cleanPost(next) {
-    if (this.request.body !== undefined) {
-        for (const key in this.request.body) {
-            this.request.body[key] = this.request.body[key].trim();
-            if (this.request.body[key] == '') this.request.body[key] = null;
+app.use(async function cleanPost(ctx, next) {
+    if (ctx.request.body !== undefined) {
+        for (const key in ctx.request.body) {
+            ctx.request.body[key] = ctx.request.body[key].trim();
+            if (ctx.request.body[key] == '') ctx.request.body[key] = null;
         }
     }
-    yield next;
+    await next();
 });
 
 
 // flash messages
-app.use(flash());
+app.use(flash()); // note koa-flash@1.0.0 is v1 middleware which generates deprecation notice
 
 
 // lusca security headers
 const luscaCspTrustedCdns = 'ajax.googleapis.com cdnjs.cloudflare.com maxcdn.bootstrapcdn.com';
 const luscaCspDefaultSrc = `'self' 'unsafe-inline' ${luscaCspTrustedCdns}`; // 'unsafe-inline' required for <style> blocks
-app.use(lusca({
+app.use(lusca({ // note koa-lusca@2.2.0 is v1 middleware which generates deprecation notice
     csp:           { policy: { 'default-src': luscaCspDefaultSrc } }, // Content-Security-Policy
     cto:           'nosniff',                                         // X-Content-Type-Options
-    hsts:          { maxAge: 31536000, includeSubDomains: true },     // HTTP Strict-Transport-Security (1 year)
+    hsts:          { maxAge: 60*60*24*365, includeSubDomains: true }, // HTTP Strict-Transport-Security
     xframe:        'SAMEORIGIN',                                      // X-Frame-Options
     xssProtection: true,                                              // X-XSS-Protection
 }));
 
 
 // add the domain (host without subdomain) into koa ctx (used in index.html)
-app.use(function* ctxAddDomain(next) {
-    this.state.domain = this.host.replace('admin.', '');
-    yield next;
+app.use(async function ctxAddDomain(ctx, next) {
+    ctx.state.domain = ctx.host.replace('admin.', '');
+    await next();
 });
 
 
@@ -151,11 +152,11 @@ app.use(require('./routes/login-routes.js'));
 
 // verify user has authenticated...
 
-app.use(function* authSecureRoutes(next) {
-    if (this.isAuthenticated()) {
-        yield next;
+app.use(async function authSecureRoutes(ctx, next) {
+    if (ctx.isAuthenticated()) {
+        await next();
     } else {
-        this.redirect('/login'+this.url);
+        ctx.redirect('/login'+ctx.url);
     }
 });
 
@@ -173,9 +174,11 @@ app.use(serve('app-api/apidoc', { maxage: 1000*60*60 }));
 
 
 // end of the line: 404 status for any resource not found
-app.use(function* notFound() { // note no 'next'
-    this.throw(404);
+app.use(async function notFound(ctx) { // note no 'next'
+    ctx.throw(404);
 });
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = app;

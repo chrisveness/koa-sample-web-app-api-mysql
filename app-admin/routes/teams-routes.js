@@ -20,6 +20,6 @@ router.post('/teams/:id/edit',     teams.processEdit);   // process edit member
 router.post('/teams/:id/delete',   teams.processDelete); // process delete member
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

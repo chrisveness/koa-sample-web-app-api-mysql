@@ -24,6 +24,7 @@ function ModelError(status, message) {
     this.message = message;
 }
 
-module.exports = ModelError;
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = ModelError;

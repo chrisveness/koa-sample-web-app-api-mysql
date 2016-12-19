@@ -10,42 +10,42 @@
   },
   "main": "app.js",
   "scripts": {
-    "start": "forever --minUptime 1000 --spinSleepTime 1000 app.js",
-    "start-dev": "nodemon -e js,json,html app.js",
-    "test": "mocha test/admin.js test/api.js",
+    "start": "forever -c 'node --harmony' --minUptime 1000 --spinSleepTime 1000 app.js",
+    "start-dev": "nodemon --harmony -e js,json,html app.js",
+    "start-devtools": "nodemon --harmony --inspect -e js,json,html app.js",
+    "test": "mocha --harmony test/admin.js test/api.js",
     "lint": "eslint --ignore-pattern app-api/apidoc .",
     "apidoc": "apidoc -i app-api -o app-api/apidoc/apidoc"
   },
   "engines": {
-    "node": "^6.0.0"
+    "node": "^7.2.1"
   },
   "dependencies": {
-    "basic-auth": "^1.0.4",
+    "basic-auth": "^1.1.0",
     "bunyan": "^1.8.5",
-    "co": "^4.6.0",
-    "co-child-process": "^1.0.0",
-    "debug": "^2.3.2",
+    "debug": "^2.4.5",
     "forever": "^0.15.3",
     "js-yaml": "^3.7.0",
-    "jsdom": "^9.8.3",
-    "koa": "^1.2.4",
-    "koa-body": "^1.6.0",
-    "koa-bunyan": "^0.0.2",
-    "koa-compose": "^2.5.1",
-    "koa-compress": "^1.0.9",
+    "jsdom": "^9.9.1",
+    "koa": "^2.0.0",
+    "koa-body": "^2.0.0",
+    "koa-bunyan": "^1.0.0",
+    "koa-compose": "^3.2.1",
+    "koa-compress": "^2.0.0",
     "koa-flash": "^1.0.0",
-    "koa-handlebars": "^1.0.0",
+    "koa-handlebars": "^2.0.0",
     "koa-lusca": "^2.2.0",
-    "koa-passport": "^1.3.1",
-    "koa-router": "^5.4.0",
+    "koa-passport": "^3.0.0-rc.2",
+    "koa-router": "^7.0.1",
     "koa-session": "^3.4.0",
-    "koa-static": "^2.0.0",
-    "markdown-it": "^8.1.0",
+    "koa-static": "^3.0.0",
+    "markdown-it": "^8.2.2",
     "mysql2": "^1.1.2",
-    "mz": "^2.5.0",
+    "mz": "^2.6.0",
     "node-fetch": "^1.6.3",
     "nodejs-info": "^1.0.1",
     "passport-local": "^1.0.0",
+    "promised-spawn": "^0.0.1",
     "scrypt": "^6.0.3",
     "xmlify": "^1.1.0"
   },
@@ -53,11 +53,11 @@
     "apidoc": "^0.16.1",
     "chai": "^3.5.0",
     "cheerio": "^0.22.0",
-    "eslint": "^3.10.2",
-    "mocha": "^3.1.2",
+    "eslint": "^3.12.2",
+    "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
     "npm-check": "^5.4.0",
-    "npm-check-updates": "^2.8.6",
+    "npm-check-updates": "^2.8.8",
     "supertest": "^2.0.1",
     "supertest-as-promised": "^4.0.2"
   },
@@ -67,7 +67,7 @@
       "mocha": true
     },
     "parserOptions": {
-      "ecmaVersion": 2015
+      "ecmaVersion": 2017
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -76,7 +76,7 @@
       "curly": [ "error", "multi-line" ],
       "indent": [ "error", 4, { "SwitchCase": 1 } ],
       "key-spacing": [ "error", { "align": "value" } ],
-      "no-case-declarations": "warn",
+      "no-case-declarations": "off",
       "no-console": [ "warn", { "allow": [ "error" ] } ],
       "no-redeclare": "warn",
       "no-shadow": "warn",
@@ -85,7 +85,6 @@
       "object-curly-spacing": [ "error", "always" ],
       "prefer-const": "error",
       "quotes": [ "error", "single", "avoid-escape" ],
-      "require-yield": "warn",
       "semi": [ "error", "always" ],
       "strict": [ "error", "global" ]
     }

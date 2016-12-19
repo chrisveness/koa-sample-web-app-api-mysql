@@ -9,39 +9,43 @@
 const fs = require('mz/fs');         // 'modernised' node api
 const md = require('markdown-it')(); // markdown parser
 
-const www = module.exports = {};
+
+class Www {
+
+    /**
+     * GET / - render index page, including README.md.
+     */
+    static async index(ctx) {
+        const readme = await fs.readFile('README.md', 'utf8');
+        const content = md.render(readme);
+        const context = { content: content };
+        await ctx.render('index', context);
+    }
 
 
-/**
- * GET / - render index page, including README.md.
- */
-www.index = function*() {
-    const readme = yield fs.readFile('README.md', 'utf8');
-    const content = md.render(readme);
-    const context = { content: content };
-    yield this.render('index', context);
-};
+    /**
+     * GET /contact - render contact page, either with contact form or submitted message
+     */
+    static async contact(ctx) {
+        await ctx.render('contact', ctx.flash);
+    }
 
 
-/**
- * GET /contact - render contact page, either with contact form or submitted message
- */
-www.contact = function*() {
-    yield this.render('contact', this.flash);
-};
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+
+    /**
+     * POST /contact - process contact page
+     */
+    static async processContact(ctx) {
+        // just an illustration - a real app would log/notify the contact request
+        ctx.flash = ctx.request.body;
+        ctx.redirect('/contact');
+    }
+
+}
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-
-/**
- * POST /contact - process contact page
- */
-www.processContact = function() {
-    // just an illustration - a real app would log/notify the contact request
-    this.flash = this.request.body;
-    this.redirect('/contact');
-};
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+module.exports = Www;

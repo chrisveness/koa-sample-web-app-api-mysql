@@ -6,161 +6,166 @@
 
 const Team = require('../models/team.js');
 
-const handler = module.exports = {};
 
+class TeamsHandlers {
 
-/**
- * @api {get} /teams List teams
- * @apiName   GetTeams
- * @apiGroup  Teams
- *
- * @apiDescription Summary list of teams.
- *
- * @apiParam   -filter-field-              Field to be filtered on (eg /teams?name=brainiacs)
- * @apiHeader  Authorization               Basic Access Authentication token.
- * @apiHeader  [Accept=application/json]   application/json, application/xml, text/yaml, text/plain.
- * @apiSuccess (Success 2xx) 200/OK        List of teams with id, uri attributes.
- * @apiSuccess (Success 2xx) 204/NoContent No matching teams found.
- * @apiError   403/Forbidden               Unrecognised Team field in query.
- * @apiError   401/Unauthorized            Invalid basic auth credentials supplied.
- */
-handler.getTeams = function*() {
-    try {
+    /**
+     * @api {get} /teams List teams
+     * @apiName   GetTeams
+     * @apiGroup  Teams
+     *
+     * @apiDescription Summary list of teams.
+     *
+     * @apiParam   -filter-field-              Field to be filtered on (eg /teams?name=brainiacs)
+     * @apiHeader  Authorization               Basic Access Authentication token.
+     * @apiHeader  [Accept=application/json]   application/json, application/xml, text/yaml, text/plain.
+     * @apiSuccess (Success 2xx) 200/OK        List of teams with id, uri attributes.
+     * @apiSuccess (Success 2xx) 204/NoContent No matching teams found.
+     * @apiError   403/Forbidden               Unrecognised Team field in query.
+     * @apiError   401/Unauthorized            Invalid basic auth credentials supplied.
+     */
+    static async getTeams(ctx) {
+        try {
 
-        let sql = 'Select * From Team';
-        // query-string filters?
-        if (this.querystring) {
-            const filter = Object.keys(this.query).map(function(q) { return q+' = :'+q; }).join(' and ');
-            sql += ' Where '+filter;
-        }
-        sql +=  ' Order By Name';
+            let sql = 'Select * From Team';
+            // query-string filters?
+            if (ctx.querystring) {
+                const filter = Object.keys(ctx.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+                sql += ' Where '+filter;
+            }
+            sql +=  ' Order By Name';
 
-        const [teams] = yield this.state.db.query(sql, this.query);
+            const [teams] = await ctx.state.db.query(sql, ctx.query);
 
-        if (teams.length == 0) this.throw(204); // No Content (preferred to returning 200 with empty list)
+            if (teams.length == 0) ctx.throw(204); // No Content (preferred to returning 200 with empty list)
 
-        // just id & uri attributes in list
-        for (let m=0; m<teams.length; m++) {
-            teams[m] = { _id: teams[m].TeamId, _uri: '/teams/'+teams[m].TeamId };
-        }
+            // just id & uri attributes in list
+            for (let m=0; m<teams.length; m++) {
+                teams[m] = { _id: teams[m].TeamId, _uri: '/teams/'+teams[m].TeamId };
+            }
 
-        this.body = teams;
-        this.body.root = 'Teams';
+            ctx.body = teams;
+            ctx.body.root = 'Teams';
 
-    } catch (e) {
-        switch (e.code) {
-            case 'ER_BAD_FIELD_ERROR': this.throw(403, 'Unrecognised Team field'); break;
-            default: throw e;
+        } catch (e) {
+            switch (e.code) {
+                case 'ER_BAD_FIELD_ERROR': ctx.throw(403, 'Unrecognised Team field'); break;
+                default: throw e;
+            }
         }
     }
-};
 
 
-/**
- * @api {get} /teams/:id Get details of team (including team memberships).
- * @apiName   GetTeamsId
- * @apiGroup  Teams
- *
- * @apiHeader  Authorization             Basic Access Authentication token.
- * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
- * @apiSuccess (Success 2xx) 200/OK      Full details of specified team.
- * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
- * @apiError   404/NotFound              Team not found.
- */
-handler.getTeamById = function*() {
-    const team = yield Team.get(this.params.id);
+    /**
+     * @api {get} /teams/:id Get details of team (including team memberships).
+     * @apiName   GetTeamsId
+     * @apiGroup  Teams
+     *
+     * @apiHeader  Authorization             Basic Access Authentication token.
+     * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+     * @apiSuccess (Success 2xx) 200/OK      Full details of specified team.
+     * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+     * @apiError   404/NotFound              Team not found.
+     */
+    static async getTeamById(ctx) {
+        const team = await Team.get(ctx.params.id);
 
-    if (!team) this.throw(404, `No team ${this.params.id} found`); // Not Found
+        if (!team) ctx.throw(404, `No team ${ctx.params.id} found`); // Not Found
 
-    // return id as attribute / underscore-field
-    team._id = team.TeamId;
+        // return id as attribute / underscore-field
+        team._id = team.TeamId;
 
-    // team membership
-    const sql = 'Select MemberId As _id, concat("/members/",MemberId) As _uri From TeamMember Where TeamId = :id';
-    const [members] = yield this.state.db.query(sql, { id: this.params.id });
-    team.Members = members;
+        // team membership
+        const sql = 'Select MemberId As _id, concat("/members/",MemberId) As _uri From TeamMember Where TeamId = :id';
+        const [members] = await ctx.state.db.query(sql,  { id: ctx.params.id });
+        team.Members = members;
 
-    this.body = team;
-    this.body.root = 'Team';
-};
-
-
-/**
- * @api {post} /teams Create new team
- * @apiName    PostTeams
- * @apiGroup   Teams
- *
- * @apiParam   ...                       [as per get].
- * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
- * @apiHeader  Authorization             Basic Access Authentication token.
- * @apiHeader  Content-Type              application/x-www-form-urlencoded.
- * @apiSuccess (Success 2xx) 201/Created Details of newly created team.
- * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
- * @apiError   403/Forbidden             Admin auth required.
- */
-handler.postTeams = function*() {
-    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
-
-    const id = yield Team.insert(this.request.body);
-
-    this.body = yield Team.get(id); // return created team details
-    this.body.root = 'Team';
-    this.set('Location', '/teams/'+id);
-    this.status = 201; // Created
-};
+        ctx.body = team;
+        ctx.body.root = 'Team';
+    }
 
 
-/**
- * @api {patch} /teams/:id Update team details
- * @apiName     PatchTeams
- * @apiGroup    Teams
- *
- * @apiParam   ...                       [as per get].
- * @apiHeader  Authorization             Basic Access Authentication token.
- * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
- * @apiHeader  Content-Type              application/x-www-form-urlencoded.
- * @apiSuccess (Success 2xx) 200/OK      Updated team details.
- * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
- * @apiError   403/Forbidden             Admin auth required.
- * @apiError   404/NotFound              Team not found.
- */
-handler.patchTeamById = function*() {
-    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    /**
+     * @api {post} /teams Create new team
+     * @apiName    PostTeams
+     * @apiGroup   Teams
+     *
+     * @apiParam   ...                       [as per get].
+     * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+     * @apiHeader  Authorization             Basic Access Authentication token.
+     * @apiHeader  Content-Type              application/x-www-form-urlencoded.
+     * @apiSuccess (Success 2xx) 201/Created Details of newly created team.
+     * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+     * @apiError   403/Forbidden             Admin auth required.
+     */
+    static async postTeams(ctx) {
+        if (ctx.state.auth.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
-    yield Team.update(this.params.id, this.request.body);
+        const id = await Team.insert(ctx.request.body);
 
-    // return updated team details
-    this.body = yield Team.get(this.params.id);
-    if (!this.body) this.throw(404, `No team ${this.params.id} found`); // Not Found
-
-    this.body.root = 'Team';
-};
+        ctx.body = await Team.get(id); // return created team details
+        ctx.body.root = 'Team';
+        ctx.set('Location', '/teams/'+id);
+        ctx.status = 201; // Created
+    }
 
 
-/**
- * @api {delete} /teams/:id Delete team
- * @apiName      DeleteTeams
- * @apiGroup     Teams
- *
- * @apiHeader  Authorization        Basic Access Authentication token.
- * @apiSuccess (Success 2xx) 200/OK Full details of deleted team.
- * @apiError   401/Unauthorized     Invalid basic auth credentials supplied.
- * @apiError   403/Forbidden        Admin auth required.
- * @apiError   404/NotFound         Team not found.
- */
-handler.deleteTeamById = function*() {
-    if (this.state.auth.user.Role != 'admin') this.throw(403, 'Admin auth required'); // Forbidden
+    /**
+     * @api {patch} /teams/:id Update team details
+     * @apiName     PatchTeams
+     * @apiGroup    Teams
+     *
+     * @apiParam   ...                       [as per get].
+     * @apiHeader  Authorization             Basic Access Authentication token.
+     * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+     * @apiHeader  Content-Type              application/x-www-form-urlencoded.
+     * @apiSuccess (Success 2xx) 200/OK      Updated team details.
+     * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+     * @apiError   403/Forbidden             Admin auth required.
+     * @apiError   404/NotFound              Team not found.
+     */
+    static async patchTeamById(ctx) {
+        if (ctx.state.auth.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
-    // return deleted team details
-    const team = yield Team.get(this.params.id);
+        await Team.update(ctx.params.id, ctx.request.body);
 
-    if (!team) this.throw(404, `No team ${this.params.id} found`); // Not Found
+        // return updated team details
+        ctx.body = await Team.get(ctx.params.id);
+        if (!ctx.body) ctx.throw(404, `No team ${ctx.params.id} found`); // Not Found
 
-    yield Team.delete(this.params.id);
+        ctx.body.root = 'Team';
+    }
 
-    this.body = team; // deleted team details
-    this.body.root = 'Team';
-};
+
+    /**
+     * @api {delete} /teams/:id Delete team
+     * @apiName      DeleteTeams
+     * @apiGroup     Teams
+     *
+     * @apiHeader  Authorization        Basic Access Authentication token.
+     * @apiSuccess (Success 2xx) 200/OK Full details of deleted team.
+     * @apiError   401/Unauthorized     Invalid basic auth credentials supplied.
+     * @apiError   403/Forbidden        Admin auth required.
+     * @apiError   404/NotFound         Team not found.
+     */
+    static async deleteTeamById(ctx) {
+        if (ctx.state.auth.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+
+        // return deleted team details
+        const team = await Team.get(ctx.params.id);
+
+        if (!team) ctx.throw(404, `No team ${ctx.params.id} found`); // Not Found
+
+        await Team.delete(ctx.params.id);
+
+        ctx.body = team; // deleted team details
+        ctx.body.root = 'Team';
+    }
+
+
+}
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = TeamsHandlers;

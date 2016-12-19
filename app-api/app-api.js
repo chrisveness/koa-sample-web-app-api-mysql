@@ -11,7 +11,7 @@
 
 'use strict';
 
-const koa       = require('koa');        // Koa framework
+const Koa       = require('koa');        // Koa framework
 const xmlify    = require('xmlify');     // JS object to XML
 const yaml      = require('js-yaml');    // JS object to YAML
 const bunyan    = require('bunyan');     // logging
@@ -19,70 +19,70 @@ const koaLogger = require('koa-bunyan'); // logging
 
 const validate  = require('./validate.js');
 
-const app = module.exports = koa(); // API app
+
+const app = new Koa(); // API app
 
 
 // content negotiation: api will respond with json, xml, or yaml
-app.use(function* contentNegotiation(next) {
-    yield next;
+app.use(async function contentNegotiation(ctx, next) {
+    await next();
 
-    if (!this.body) return; // no content to return
+    if (!ctx.body) return; // no content to return
 
     // check Accept header for preferred response type
-    const type = this.accepts('json', 'xml', 'yaml', 'text');
+    const type = ctx.accepts('json', 'xml', 'yaml', 'text');
 
     switch (type) {
         case 'json':
         default:
-            delete this.body.root; // xml root element
+            delete ctx.body.root; // xml root element
             break; // ... koa takes care of type
         case 'xml':
-            this.type = type;
-            const root = this.body.root; // xml root element
-            delete this.body.root;
-            this.body = xmlify(this.body, root);
+            ctx.type = type;
+            const root = ctx.body.root; // xml root element
+            delete ctx.body.root;
+            ctx.body = xmlify(ctx.body, root);
             break;
         case 'yaml':
         case 'text':
-            delete this.body.root; // xml root element
-            this.type = 'yaml';
-            this.body = yaml.dump(this.body);
+            delete ctx.body.root; // xml root element
+            ctx.type = 'yaml';
+            ctx.body = yaml.dump(ctx.body);
             break;
         case false:
-            this.throw(406); // "Not acceptable" - can't furnish whatever was requested
+            ctx.throw(406); // "Not acceptable" - can't furnish whatever was requested
             break;
     }
 });
 
 
 // handle thrown or uncaught exceptions anywhere down the line
-app.use(function* handleErrors(next) {
+app.use(async function handleErrors(ctx, next) {
     try {
 
-        yield next;
+        await next();
 
     } catch (e) {
         switch (e.status) {
             case 204: // No Content
-                this.status = e.status;
+                ctx.status = e.status;
                 break;
             case 401: // Unauthorized
-                this.status = e.status;
-                this.set('WWW-Authenticate', 'Basic');
+                ctx.status = e.status;
+                ctx.set('WWW-Authenticate', 'Basic');
                 break;
             case 403: // Forbidden
             case 404: // Not Found
             case 406: // Not Acceptable
             case 409: // Conflict
-                this.status = e.status;
-                this.body = e.message;
+                ctx.status = e.status;
+                ctx.body = e.message;
                 break;
             default:
             case 500: // Internal Server Error
-                console.error(e.message);
-                this.status = e.status || 500;
-                this.body = app.env=='development' ? e.stack : e.message;
-                this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
+                ctx.status = e.status || 500;
+                ctx.body = app.env=='development' ? e.stack : e.message;
+                ctx.app.emit('error', e, ctx); // github.com/koajs/examples/blob/master/errors/app.js
                 break;
         }
     }
@@ -90,23 +90,23 @@ app.use(function* handleErrors(next) {
 
 
 // set up MySQL connection
-app.use(function* mysqlConnection(next) {
+app.use(async function mysqlConnection(ctx, next) {
     try {
 
-        // keep copy of this.state.db in global for access from models
-        this.state.db = global.db = yield global.connectionPool.getConnection();
-        this.state.db.connection.config.namedPlaceholders = true;
+        // keep copy of ctx.state.db in global for access from models
+        ctx.state.db = global.db = await global.connectionPool.getConnection();
+        ctx.state.db.connection.config.namedPlaceholders = true;
         // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
-        yield this.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
+        await ctx.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
 
-        yield next;
+        await next();
 
-        this.state.db.release();
+        ctx.state.db.release();
 
     } catch (e) {
         // note if getConnection() fails we have no this.state.db, but if anything downstream throws,
         // we need to release the connection
-        if (this.state.db) this.state.db.release();
+        if (ctx.state.db) ctx.state.db.release();
         throw e;
     }
 });
@@ -139,3 +139,5 @@ app.use(require('./routes-team-members.js'));
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = app;

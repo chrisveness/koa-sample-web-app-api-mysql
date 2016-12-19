@@ -16,6 +16,6 @@ router.patch( '/teams/:id',   teams.patchTeamById);      // update team details
 router.delete('/teams/:id',   teams.deleteTeamById);     // delete team
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

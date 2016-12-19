@@ -1,10 +1,10 @@
-{{#if @koa.passport.user}}
+{{#if @koa.state.user}}
 <nav>
     <ul>
         <li><a href="/">/</a></li>
         <li><a href="/members">members</a></li>
         <li><a href="/teams">teams</a></li>
-        <li><a href="/logout" title="currently logged in as {{@koa.passport.user.Firstname}} {{@koa.passport.user.Lastname}}">logout</a></li>
+        <li><a href="/logout" title="currently logged in as {{@koa.state.user.Firstname}} {{@koa.state.user.Lastname}}">logout</a></li>
     </ul>
 </nav>
 {{else}}

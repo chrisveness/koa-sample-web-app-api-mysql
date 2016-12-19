@@ -5,7 +5,6 @@
 'use strict';
 
 const router  = require('koa-router')(); // router middleware for koa
-
 const fetch   = require('node-fetch');   // window.fetch in node.js
 const crypto  = require('crypto');       // nodejs.org/api/crypto.html
 
@@ -33,35 +32,35 @@ const User    = require('../../models/user.js');
  *
  * TODO: invoke app.listen() directly, instead of going out through http call (use superagent?).
  */
-router.all(/\/ajax\/(.*)/, function* getAjax() {
+router.all(/\/ajax\/(.*)/, async function getAjax(ctx) {
     // if api token has expired, renew it for api authentication
-    const usr = this.passport.user;
+    const usr = ctx.state.user;
     if (usr.ApiToken==null || Date.now()-Date.parse(usr.ApiToken)>1000*60*60*24) {
-        yield User.update(usr.UserId, { ApiToken: new Date().toISOString() });
-        this.passport.user = yield User.get(usr.UserId);
+        await User.update(usr.UserId, { ApiToken: new Date().toISOString() });
+        ctx.state.user = await User.get(usr.UserId);
     }
 
-    const resource = this.captures[0]; // regex capture group; part of url following '/ajax/'
-    const host = this.host.replace('admin', 'api');
-    const url = this.protocol+'://'+host+'/'+resource;
+    const resource = ctx.captures[0]; // regex capture group; part of url following '/ajax/'
+    const host = ctx.host.replace('admin', 'api');
+    const url = ctx.protocol+'://'+host+'/'+resource;
 
-    const body = JSON.stringify(this.request.body)=='{}' ? '' : JSON.stringify(this.request.body);
-    const user = this.passport.user.UserId.toString();
-    const pass = crypto.createHash('sha1').update(this.passport.user.ApiToken).digest('hex');
+    const body = JSON.stringify(ctx.request.body)=='{}' ? '' : JSON.stringify(ctx.request.body);
+    const user = ctx.state.user.UserId.toString();
+    const pass = crypto.createHash('sha1').update(ctx.state.user.ApiToken).digest('hex');
     const hdrs = {
         'Content-Type':  'application/json',
-        'Accept':        this.header.accept,
+        'Accept':        ctx.header.accept,
         'Authorization': 'Basic '+base64Encode(user+':'+pass),
     };
 
     try {
-        const response = yield fetch(url, { method: this.method, body: body, headers: hdrs });
+        const response = await fetch(url, { method: ctx.method, body: body, headers: hdrs });
         const json = response.headers.get('content-type').match(/application\/json/);
-        this.status = response.status;
-        this.body = json ? yield response.json() : yield response.text();
+        ctx.status = response.status;
+        ctx.body = json ? await response.json() : await response.text();
     } catch (e) { // eg offline, DNS fail, etc
-        this.status = 500;
-        this.body = e.message;
+        ctx.status = 500;
+        ctx.body = e.message;
     }
 });
 
@@ -71,6 +70,6 @@ function base64Encode(str) {
 }
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

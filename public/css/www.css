@@ -7,18 +7,16 @@ body {
     max-width: 48em;
 }
 
-h1 { color: #888888; font-size: 2.4em; font-weight: normal; line-height: 1; }
-main h1 { margin: 0 0; max-width: 48em; }
-h3 { font-style: italic; }
+h1           { color: #888888; font-size: 2.4em; font-weight: normal; line-height: 1; }
+main h1      { margin: 0 0; max-width: 48em; }
+h3           { font-style: italic; }
 
-a {
-    color: #33a0c0;
-}
+a            { color: #33a0c0; }
 
-main { max-width: 48em; }
+main         { max-width: 48em; }
 
 a, a:visited { color: #33a0c0; }
-a.grey { color: #999999; }
+a.grey       { color: #999999; }
 
-.green { color: #006600; }
-.red   { color: #660000; }
+.green       { color: #006600; }
+.red         { color: #660000; }

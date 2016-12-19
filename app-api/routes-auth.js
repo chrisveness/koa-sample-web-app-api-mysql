@@ -26,17 +26,17 @@ const crypto = require('crypto');       // nodejs.org/api/crypto.html
  * @apiSuccess id                       Id to be used for subsequent Authorization header ‘username’
  * @apiSuccess token                    Token to be used for subsequent Authorization header ‘password’
  */
-router.get('/auth', function getAuth() {
+router.get('/auth', function getAuth(ctx) {
     // (middleware has already validated user at this point, just return the hashed token timestamp)
 
     // the stored api token is the issue timestamp; the token given out is its sha1 hash
-    const token = crypto.createHash('sha1').update(this.state.auth.user.ApiToken).digest('hex');
+    const token = crypto.createHash('sha1').update(ctx.state.auth.user.ApiToken).digest('hex');
 
-    this.body = { id: this.state.auth.user.UserId, token: token };
-    this.body.root = 'auth';
+    ctx.body = { id: ctx.state.auth.user.UserId, token: token };
+    ctx.body.root = 'auth';
 });
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();
