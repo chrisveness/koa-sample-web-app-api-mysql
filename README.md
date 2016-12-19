@@ -1,5 +1,10 @@
 # Koa Sample App (handlebars templating + RESTful API using MySQL, on Node.js)
 
+> *Now that async/await is available (behind a `--harmony` flag) without transpiling, there is a Koa 
+v2 version available on the [koa-v2](/chrisveness/koa-sample-web-app-api-mysql/tree/koa-v2) branch. 
+The Koa v1 version remains on the [master](/chrisveness/koa-sample-web-app-api-mysql) branch, until 
+Koa v2 is published @latest.*
+
 This is the result of a self-learning exercise on how to put together a complete Node.js
 MySQL-driven [Koa](http://koajs.com) app.
 
@@ -41,14 +46,11 @@ structured, and I’ve liberally commented the code.
 ## Design choices
 
 While it’s still rather leading-edge, Koa makes development far simpler than classic callback-style 
-Node.js with Express. *Yield* may be just a stepping-stone to ES7 *await*, but it works. JavaScript 
-may be looked down on ([misunderstood?](http://davidwalsh.name/javascript-objects)) in some quarters, 
-but it is gaining understanding as a mature and valid language (the benefits of prototypal inheritance 
-are starting to be appreciated, rather than seen as ‘classical inheritance got wrong’). It’s certainly 
-vastly better to work with than PHP :)
-
-With Node.js v4 (stable LTS) out, I believe Koa can now be 
-considered[*](http://hueniverse.com/2015/03/02/the-node-version-dilemma) for production use.
+Node.js with Express. JavaScript used to be looked down on 
+([misunderstood?](http://davidwalsh.name/javascript-objects)) in some quarters, but it is gaining 
+understanding as a mature and valid language (the benefits of prototypal inheritance are starting to 
+be appreciated, rather than seen as ‘classical inheritance got wrong’). It’s certainly vastly better 
+to work with than PHP :)
 
 The app is built with a modular approach. There are three (*composed*) sub-apps: the bare bones of a
 public site, a web-based password-protected admin system using handlebars-templated html pages, and
