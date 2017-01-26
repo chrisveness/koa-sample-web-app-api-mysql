@@ -18,12 +18,20 @@ const session  = require('koa-session');    // session for passport login, flash
 const mysql    = require('mysql2/promise'); // fast mysql driver
 const debug    = require('debug')('app');   // small debugging utility
 
+require('dotenv').config(); // loads environment variables from .env file (if available - eg dev env)
+
 const app = module.exports = koa();
 
 
 // MySQL connection pool (set up on app initialisation)
-const config = require('./config/db-'+app.env+'.json');
-global.connectionPool = mysql.createPool(config.db); // put in global to pass to sub-apps
+const config = {
+    host:     process.env.DB_HOST,
+    port:     process.env.DB_PORT,
+    user:     process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+};
+global.connectionPool = mysql.createPool(config); // put in global to pass to sub-apps
 
 
 /* set up middleware which will be applied to each request - - - - - - - - - - - - - - - - - - -  */
@@ -94,10 +102,8 @@ app.use(function* composeSubapp() { // note no 'next' after composed subapp
 
 
 if (!module.parent) {
-    /* eslint no-console:off */
     app.listen(process.env.PORT||3000);
-    const db = require('./config/db-'+app.env+'.json').db.database;
-    console.log(process.version+' listening on port '+(process.env.PORT||3000)+' ('+app.env+'/'+db+')');
+    console.info(`${process.version} listening on port ${process.env.PORT||3000} (${app.env}/${config.database})`);
 }
 
 

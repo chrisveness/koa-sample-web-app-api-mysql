@@ -17,7 +17,7 @@ const request = supertest.agent(app.listen());
 const headers = { Host: 'api.localhost' }; // set host header (note Accept is defaulted to application/json)
 
 
-describe('API'+' ('+app.env+'/'+require('../config/db-'+app.env+'.json').db.database+')', function() {
+describe('API'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
     let userId = null, userPw = null;
 
     describe('/auth', function() {
