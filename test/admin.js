@@ -16,7 +16,7 @@ const request = supertest.agent(app.listen());
 
 const headers = { Host: 'admin.localhost:3000' }; // set host header
 
-describe('Admin app'+' ('+app.env+'/'+require('../config/db-'+app.env+'.json').db.database+')', function() {
+describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
 
     describe('login', function() {
         let location = null;

@@ -119,7 +119,7 @@ compression, *passport* logins with remember-me, logging, flash messages, etc, a
 for testing (I’ve ignored i18n which would introduce considerable complexity). Full details of course
 in [package.json](/chrisveness/koa-sample-web-app-api-mysql/blob/master/package.json).
 
-It uses the database set out below, with connection details as per `/config/db-development.json`.
+It uses the database set out below, with connection details as per `.env`.
 
 ### Demo
 
@@ -129,7 +129,7 @@ There is a running version of the app at [koa-sample-app.movable-type.co.uk](htt
 ### Local copy
 
 If you would like to make a local copy to experiment with, you of course need Node.js and Git 
-installed, and also MySQL.
+installed, and also MySQL (with connection details as per `.env`).
 
 You will need `admin.`, `api.`, and `www.` subdomains available; to do this, add a line such as 
 `127.0.0.1 www.localhost api.localhost admin.localhost` to `/etc/hosts` (on Unix/Mac), or 
@@ -209,9 +209,6 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   ├── app-www.js
 │   ├── handlers-www.js
 │   └── routes-www.js
-├── config
-│   ├── db-development.json
-│   └── db-production.json
 ├── lib
 │   └── lib.js
 ├── logs
@@ -230,6 +227,7 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   ├── admin.js
 │   └── api.js
 ├─ app.js
+├─ .env
 ├─ LICENSE
 ├─ package.json
 └─ README.md
