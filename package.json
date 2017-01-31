@@ -56,11 +56,11 @@
     "cheerio": "^0.22.0",
     "eslint": "^3.10.2",
     "mocha": "^3.1.2",
+    "co-mocha": "^1.2.0",
     "nodemon": "^1.11.0",
     "npm-check": "^5.4.0",
     "npm-check-updates": "^2.8.6",
-    "supertest": "^2.0.1",
-    "supertest-as-promised": "^4.0.2"
+    "supertest": "^3.0.0"
   },
   "eslintConfig": {
     "env": {
