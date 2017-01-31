@@ -4,10 +4,10 @@
 
 'use strict';
 
-const supertest = require('supertest-as-promised'); // supertest with a promise interface
-const expect    = require('chai').expect;           // BDD/TDD assertion library
-const cheerio   = require('cheerio');               // core jQuery for the server
-require('mocha');                                   // simple, flexible, fun test framework
+const supertest = require('supertest');   // SuperAgent driven library for testing HTTP servers
+const expect    = require('chai').expect; // BDD/TDD assertion library
+const cheerio   = require('cheerio');     // core jQuery for the server
+require('mocha');                         // simple, flexible, fun test framework
 
 const app = require('../app.js');
 
