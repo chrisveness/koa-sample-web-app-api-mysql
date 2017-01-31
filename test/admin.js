@@ -6,7 +6,7 @@
 
 const supertest = require('supertest');   // SuperAgent driven library for testing HTTP servers
 const expect    = require('chai').expect; // BDD/TDD assertion library
-const cheerio   = require('cheerio');     // core jQuery for the server
+const jsdom     = require('jsdom').jsdom; // JavaScript implementation of DOM and HTML standards
 require('mocha');                         // simple, flexible, fun test framework
 
 const app = require('../app.js');
@@ -24,9 +24,9 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
         it('has home page with login link in nav when not logged-in', async function() {
             const response = await request.get('/').set(headers);
             expect(response.status).to.equal(200, response.text);
-            const $ = cheerio.load(response.text);
-            expect($('title').html().slice(0, 14)).to.equal('Koa Sample App');
-            expect($('nav ul li').length).to.equal(2); // nav should be just '/', 'login'
+            const doc = jsdom(response.text);
+            expect(doc.querySelector('title').textContent.slice(0, 14)).to.equal('Koa Sample App');
+            expect(doc.querySelectorAll('nav ul li').length).to.equal(2); // nav should be just '/', 'login'
         });
 
         it('redirects to / on login', async function() {
@@ -41,9 +41,9 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
             // get from location supplied by login
             const response = await request.get(location).set(headers);
             expect(response.status).to.equal(200, response.text);
-            const $ = cheerio.load(response.text);
-            expect($('title').html().slice(0, 14)).to.equal('Koa Sample App');
-            expect($('nav ul li').length).to.equal(4); // nav should be '/', 'members', 'teams', 'logout'
+            const doc = jsdom(response.text);
+            expect(doc.querySelector('title').textContent.slice(0, 14)).to.equal('Koa Sample App');
+            expect(doc.querySelectorAll('nav ul li').length).to.equal(4); // nav should be '/', 'members', 'teams', 'logout'
         });
     });
 
@@ -61,15 +61,15 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
         it('lists members including test member', async function() {
             const response = await request.get('/members').set(headers);
             expect(response.status).to.equal(200, response.text);
-            const $ = cheerio.load(response.text);
-            expect($('#'+id+' a').html()).to.equal('Test');
+            const doc = jsdom(response.text);
+            expect(doc.getElementById(id).querySelector('a').textContent).to.equal('Test');
         });
 
         it('gets details of test member', async function() {
             const response = await request.get('/members/'+id).set(headers);
             expect(response.status).to.equal(200, response.text);
-            const $ = cheerio.load(response.text);
-            expect($('h1').html()).to.equal('Test User');
+            const doc = jsdom(response.text);
+            expect(doc.querySelector('h1').textContent).to.equal('Test User');
         });
 
         it('deletes test member', async function() {
@@ -128,15 +128,15 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
         it('returns 404 for non-existent page', async function() {
             const response = await request.get('/zzzzzz').set(headers);
             expect(response.status).to.equal(404, response.text);
-            const $ = cheerio.load(response.text);
-            expect($('h1').html()).to.equal(':(');
+            const doc = jsdom(response.text);
+            expect(doc.querySelector('h1').textContent).to.equal(':(');
         });
 
         it('returns 404 for non-existent member', async function() {
             const response = await request.get('/members/999999').set(headers);
             expect(response.status).to.equal(404, response.text);
-            const $ = cheerio.load(response.text);
-            expect($('h1').html()).to.equal(':(');
+            const doc = jsdom(response.text);
+            expect(doc.querySelector('h1').textContent).to.equal(':(');
         });
     });
 

@@ -53,7 +53,6 @@
   "devDependencies": {
     "apidoc": "^0.16.1",
     "chai": "^3.5.0",
-    "cheerio": "^0.22.0",
     "eslint": "^3.12.2",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
