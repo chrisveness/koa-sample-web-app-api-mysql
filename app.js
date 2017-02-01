@@ -101,10 +101,8 @@ app.use(async function composeSubapp(ctx) { // note no 'next' after composed sub
 /* create server - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 
-if (!module.parent) {
-    app.listen(process.env.PORT||3000);
-    console.info(`${process.version} listening on port ${process.env.PORT||3000} (${app.env}/${config.database})`);
-}
+app.listen(process.env.PORT||3000);
+console.info(`${process.version} listening on port ${process.env.PORT||3000} (${app.env}/${config.database})`);
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
