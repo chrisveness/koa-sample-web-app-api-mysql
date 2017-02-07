@@ -44,8 +44,12 @@ passport.use(new LocalStrategy(function(username, password, done) {
         const user = users[0];
 
         // verify password matches
-        const match = yield scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
-        if (!match) return false; // no password match
+        try {
+            const match = yield scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
+            if (!match) return false; // no password match
+        } catch (e) {
+            return false; // e.g. "data is not a valid scrypt-encrypted block"
+        }
 
         // validated ok, record return user details
         return user;

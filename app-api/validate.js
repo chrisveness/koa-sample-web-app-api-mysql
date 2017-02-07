@@ -91,8 +91,12 @@ validate.userByEmail = function*(username, password) {
     const user = users[0];
 
     // check password
-    const match = yield scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
-    if (!match) return null;
+    try {
+        const match = yield scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
+        if (!match) return null; // bad password
+    } catch (e) {
+        return null; // e.g. "data is not a valid scrypt-encrypted block"
+    }
 
     // validates ok - record api token for subsequent api requests; the stored api token is the
     // issue timestamp, the token given out is its sha1 hash
