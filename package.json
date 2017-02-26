@@ -23,6 +23,7 @@
   "dependencies": {
     "basic-auth": "^1.1.0",
     "bunyan": "^1.8.5",
+    "child-process-promise": "^2.2.0",
     "debug": "^2.4.5",
     "dotenv": "^4.0.0",
     "forever": "^0.15.3",
@@ -46,7 +47,6 @@
     "node-fetch": "^1.6.3",
     "nodejs-info": "^1.0.1",
     "passport-local": "^1.0.0",
-    "promised-spawn": "^0.0.1",
     "scrypt": "^6.0.3",
     "xmlify": "^1.1.0"
   },

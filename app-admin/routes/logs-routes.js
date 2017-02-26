@@ -4,9 +4,9 @@
 
 'use strict';
 
-const router = require('koa-router')();   // router middleware for koa
-const spawn  = require('promised-spawn'); // child_process.spawn with promise
-const path   = require('path');           // nodejs.org/api/path.html
+const router = require('koa-router')();                // router middleware for koa
+const spawn  = require('child-process-promise').spawn; // promises wrapper around child_process
+const path   = require('path');                        // nodejs.org/api/path.html
 
 
 // logs - quick'n'dirty visibility of bunyan logs
@@ -19,10 +19,9 @@ router.get('/logs/:logfile', async function logs(ctx) {
 
     try {
 
-        let stdout = '';
-        await spawn([ bunyan, [args] ], { stdout: data => stdout += data });
+        const proc = await spawn(bunyan, [args], { capture: [ 'stdout', 'stderr' ]});
 
-        await ctx.render('logs', { bunyan: stdout, logfile: ctx.params.logfile });
+        await ctx.render('logs', { bunyan: proc.stdout, logfile: ctx.params.logfile });
 
     } catch (e) {
         // log file not found?
