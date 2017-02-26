@@ -10,26 +10,26 @@
   },
   "main": "app.js",
   "scripts": {
-    "start": "forever -c 'node --harmony' --minUptime 1000 --spinSleepTime 1000 app.js",
-    "start-dev": "nodemon --harmony -e js,json,html app.js",
-    "start-devtools": "nodemon --harmony --inspect -e js,json,html app.js",
-    "test": "mocha --harmony test/admin.js test/api.js",
+    "start": "forever --minUptime 1000 --spinSleepTime 1000 app.js",
+    "start-dev": "nodemon -e js,json,html app.js",
+    "start-devtools": "nodemon --inspect -e js,json,html app.js",
+    "test": "mocha test/admin.js test/api.js",
     "lint": "eslint --ignore-pattern app-api/apidoc .",
     "apidoc": "apidoc -i app-api -o app-api/apidoc/apidoc"
   },
   "engines": {
-    "node": "^7.2.1"
+    "node": "^7.6.0"
   },
   "dependencies": {
     "basic-auth": "^1.1.0",
     "bunyan": "^1.8.5",
     "child-process-promise": "^2.2.0",
-    "debug": "^2.4.5",
+    "debug": "^2.6.1",
     "dotenv": "^4.0.0",
     "forever": "^0.15.3",
-    "js-yaml": "^3.7.0",
-    "jsdom": "^9.9.1",
-    "koa": "^2.0.0",
+    "js-yaml": "^3.8.1",
+    "jsdom": "^9.11.0",
+    "koa": "^2.0.1",
     "koa-body": "^2.0.0",
     "koa-bunyan": "^1.0.0",
     "koa-compose": "^3.2.1",
@@ -41,8 +41,8 @@
     "koa-router": "^7.0.1",
     "koa-session": "^3.4.0",
     "koa-static": "^3.0.0",
-    "markdown-it": "^8.2.2",
-    "mysql2": "^1.1.2",
+    "markdown-it": "^8.3.0",
+    "mysql2": "^1.2.0",
     "mz": "^2.6.0",
     "node-fetch": "^1.6.3",
     "nodejs-info": "^1.0.1",
@@ -51,13 +51,13 @@
     "xmlify": "^1.1.0"
   },
   "devDependencies": {
-    "apidoc": "^0.16.1",
+    "apidoc": "^0.17.5",
     "chai": "^3.5.0",
-    "eslint": "^3.12.2",
+    "eslint": "^3.16.1",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
     "npm-check": "^5.4.0",
-    "npm-check-updates": "^2.8.8",
+    "npm-check-updates": "^2.10.3",
     "supertest": "^3.0.0"
   },
   "eslintConfig": {
