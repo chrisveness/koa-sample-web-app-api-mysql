@@ -65,17 +65,18 @@ class Team {
             return result.insertId;
 
         } catch (e) {
-            switch (e.code) {
-                // recognised errors for Team.update - just use default MySQL messages for now
+            switch (e.code) { // just use default MySQL messages for now
                 case 'ER_BAD_NULL_ERROR':
                 case 'ER_NO_REFERENCED_ROW_2':
                 case 'ER_NO_DEFAULT_FOR_FIELD':
                     throw ModelError(403, e.message); // Forbidden
                 case 'ER_DUP_ENTRY':
                     throw ModelError(409, e.message); // Conflict
+                case 'ER_BAD_FIELD_ERROR':
+                    throw ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
                     Lib.logException('Team.insert', e);
-                    throw ModelError(500, e.message); // Internal Server Error
+                    throw ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
     }
@@ -95,17 +96,17 @@ class Team {
             //console.log('Team.update', id, new Date); // eg audit trail?
 
         } catch (e) {
-            switch (e.code) {
+            switch (e.code) { // just use default MySQL messages for now
                 case 'ER_BAD_NULL_ERROR':
                 case 'ER_DUP_ENTRY':
-                case 'ER_ROW_IS_REFERENCED_': // trailing underscore?
                 case 'ER_ROW_IS_REFERENCED_2':
                 case 'ER_NO_REFERENCED_ROW_2':
-                    // recognised errors for Team.update - just use default MySQL messages for now
                     throw ModelError(403, e.message); // Forbidden
+                case 'ER_BAD_FIELD_ERROR':
+                    throw ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
                     Lib.logException('Team.update', e);
-                    throw ModelError(500, e.message); // Internal Server Error
+                    throw ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
     }
