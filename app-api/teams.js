@@ -37,7 +37,7 @@ class TeamsHandlers {
 
             const [teams] = await ctx.state.db.query(sql, ctx.query);
 
-            if (teams.length == 0) ctx.throw(204); // No Content (preferred to returning 200 with empty list)
+            if (teams.length == 0) { ctx.status = 204; return; } // No Content (preferred to returning 200 with empty list)
 
             // just id & uri attributes in list
             for (let m=0; m<teams.length; m++) {

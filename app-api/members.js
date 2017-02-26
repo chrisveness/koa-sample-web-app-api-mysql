@@ -39,7 +39,7 @@ class MembersHandlers {
             const result = await ctx.state.db.query(sql, ctx.query);
             const [members] = castBoolean.fromMysql(result);
 
-            if (members.length == 0) ctx.throw(204); // No Content (preferred to returning 200 with empty list)
+            if (members.length == 0) { ctx.status = 204; return; } // No Content (preferred to returning 200 with empty list)
 
             // just id & uri attributes in list
             for (let m=0; m<members.length; m++) {
