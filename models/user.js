@@ -43,8 +43,8 @@ class User {
 
         } catch (e) {
             switch (e.code) {
-                case 'ER_BAD_FIELD_ERROR': throw ModelError(403, 'Unrecognised User field '+field);
-                default: Lib.logException('User.getBy', e); throw ModelError(500, e.message);
+                case 'ER_BAD_FIELD_ERROR': throw new ModelError(403, 'Unrecognised User field '+field);
+                default: Lib.logException('User.getBy', e); throw new ModelError(500, e.message);
             }
         }
     }
@@ -69,14 +69,14 @@ class User {
                 case 'ER_BAD_NULL_ERROR':
                 case 'ER_NO_REFERENCED_ROW_2':
                 case 'ER_NO_DEFAULT_FOR_FIELD':
-                    throw ModelError(403, e.message); // Forbidden
+                    throw new ModelError(403, e.message); // Forbidden
                 case 'ER_DUP_ENTRY':
-                    throw ModelError(409, e.message); // Conflict
+                    throw new ModelError(409, e.message); // Conflict
                 case 'ER_BAD_FIELD_ERROR':
-                    throw ModelError(500, e.message); // Internal Server Error for programming errors
+                    throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
                     Lib.logException('User.insert', e);
-                    throw ModelError(500, e.message); // Internal Server Error for uncaught exception
+                    throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
     }
@@ -101,12 +101,12 @@ class User {
                 case 'ER_DUP_ENTRY':
                 case 'ER_ROW_IS_REFERENCED_2':
                 case 'ER_NO_REFERENCED_ROW_2':
-                    throw ModelError(403, e.message); // Forbidden
+                    throw new ModelError(403, e.message); // Forbidden
                 case 'ER_BAD_FIELD_ERROR':
-                    throw ModelError(500, e.message); // Internal Server Error for programming errors
+                    throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
                     Lib.logException('User.update', e);
-                    throw ModelError(500, e.message); // Internal Server Error for uncaught exception
+                    throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
     }
@@ -128,7 +128,7 @@ class User {
             switch (e.code) {
                 default:
                     Lib.logException('User.delete', e);
-                    throw ModelError(500, e.message); // Internal Server Error
+                    throw new ModelError(500, e.message); // Internal Server Error
             }
         }
     }
