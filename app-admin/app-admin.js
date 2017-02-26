@@ -174,7 +174,7 @@ app.use(serve('app-api/apidoc', { maxage: 1000*60*60 }));
 
 
 // end of the line: 404 status for any resource not found
-app.use(async function notFound(ctx) { // note no 'next'
+app.use(function notFound(ctx) { // note no 'next'
     ctx.throw(404);
 });
 

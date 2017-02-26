@@ -37,7 +37,7 @@ class Www {
     /**
      * POST /contact - process contact page
      */
-    static async processContact(ctx) {
+    static async processContact(ctx) { // eslint-disable-line
         // just an illustration - a real app would log/notify the contact request
         ctx.flash = ctx.request.body;
         ctx.redirect('/contact');

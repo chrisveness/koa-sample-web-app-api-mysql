@@ -100,7 +100,7 @@ app.use(koaLogger(logger, {}));
 app.use(require('./routes-www.js'));
 
 // end of the line: 404 status for any resource not found
-app.use(async function notFound(ctx) { // note no 'next'
+app.use(function notFound(ctx) { // note no 'next'
     ctx.throw(404);
 });
 

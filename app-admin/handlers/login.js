@@ -26,7 +26,7 @@ class LoginHandlers {
     /**
      * GET /logout - logout user
      */
-    static async getLogout(ctx) {
+    static getLogout(ctx) {
         ctx.logout();
         ctx.session = null;
         ctx.redirect('/');
@@ -39,7 +39,7 @@ class LoginHandlers {
     /**
      * POST /login - process login
      */
-    static async postLogin(ctx, next) {
+    static postLogin(ctx, next) {
         // qv github.com/rkusa/koa-passport-example/blob/master/server.js#L32
         // for remember-me function, qv examples in github.com/jaredhanson/passport-local
 

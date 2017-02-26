@@ -63,6 +63,7 @@
   "eslintConfig": {
     "env": {
       "node": true,
+      "es6": true,
       "mocha": true
     },
     "parserOptions": {
@@ -84,6 +85,7 @@
       "object-curly-spacing": [ "error", "always" ],
       "prefer-const": "error",
       "quotes": [ "error", "single", "avoid-escape" ],
+      "require-await": "error",
       "semi": [ "error", "always" ],
       "strict": [ "error", "global" ]
     }
