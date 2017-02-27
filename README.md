@@ -1,8 +1,7 @@
 # Koa Sample App (handlebars templating + RESTful API using MySQL, on Node.js)
 
-> *Now that async/await is available (behind a `--harmony` flag) without transpiling, there is a Koa 
-v2 version available on the [koa-v2](../../tree/koa-v2) branch. The Koa v1 version remains on the 
-[master](../../) branch, until Koa v2 is published @latest.*
+> *This is an archive copy of the Koa v1 version of the sample app. The Koa v2 version is available 
+on the [master](../../) branch.*
 
 This is the result of a self-learning exercise on how to put together a complete Node.js
 MySQL-driven [Koa](http://koajs.com) app.
