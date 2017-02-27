@@ -14,6 +14,6 @@ router.post(  '/team-members',       teams.postTeamMembers);          // add new
 router.delete('/team-members/:id',   teams.deleteTeamMemberById);     // delete team membership
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

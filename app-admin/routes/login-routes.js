@@ -16,6 +16,6 @@ router.get('/logout',      login.getLogout);   // log user out
 router.post(/\/login(.*)/, login.postLogin);   // process login
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

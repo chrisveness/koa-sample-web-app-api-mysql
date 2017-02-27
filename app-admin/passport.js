@@ -9,7 +9,6 @@
 
 'use strict';
 
-const co            = require('co');           // generator async control flow goodness
 const passport      = require('koa-passport'); // authentication
 const scrypt        = require('scrypt');       // scrypt library
 const LocalStrategy = require('passport-local').Strategy;
@@ -23,63 +22,36 @@ passport.serializeUser(function(user, done) {
 });
 
 
-// deserialise user: restore user details to this.passport.user from id stored in session
-passport.deserializeUser(function(id, done) {
-    // koa-passport can't deserialize through generator functions, so use co to wrap yieldable calls
-    co(function*() {
-        // lookup user
-        const user = yield User.get(id);
-        return user || null;
-    }).then(function(result) { done(null, result); }, done);
+// deserialise user: restore user details to ctx.state.user from id stored in session
+// qv github.com/rkusa/koa-passport-example/blob/master/auth.js#L15
+passport.deserializeUser(async function(id, done) {
+    try {
+        const user = await User.get(id); // lookup user
+        done(null, user);
+    } catch (e) {
+        done(e);
+    }
 });
 
 
 // use local strategy - passportjs.org/guide/username-password
-passport.use(new LocalStrategy(function(username, password, done) {
-    // LocalStrategy doesn't know about generator functions, so use co to wrap yieldable calls
-    co(function*() {
-        // lookup user
-        const users = yield User.getBy('Email', username);
-        if (users.length == 0) return false; // user not found
-        const user = users[0];
+passport.use(new LocalStrategy(async function(username, password, done) {
+    const users = await User.getBy('Email', username); // lookup user
 
-        // verify password matches
+    let user = users.length>0 ? users[0] : null; // user found?
+
+    if (user) { // verify password matches
         try {
-            const match = yield scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
-            if (!match) return false; // no password match
+            const match = await scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
+            if (!match) user = null; // bad password
         } catch (e) {
-            return false; // e.g. "data is not a valid scrypt-encrypted block"
+            user = null; // e.g. "data is not a valid scrypt-encrypted block"
         }
+    }
 
-        // validated ok, record return user details
-        return user;
-    }).then(function(result) { done(null, result); }, done);
+    done(null, user||false); // if validated ok, record user details
 }));
 
-
-/* perhaps one day we'll have simpler usage something like:
-
-passport.serializeUser(function*(user) {
-    return user.id;
-});
-
-passport.deserializeUser(function*(id) {
-    return yield User.findById(id);
-});
-
-passport.use(new LocalStrategy(function*(username, password, done) {
-    const users = yield User.getBy('Email', username);
-    if (users.length == 0) return false; // user not found
-    const user = users[0];
-
-    // verify password matches
-    const match = yield scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
-    if (!match) return false; // no password match
-
-    // validated ok, return user details
-    return user;
-});
-*/
 
 // for other providers (facebook, twitter, google, etc) see passportjs.org/guide
 

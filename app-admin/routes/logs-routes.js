@@ -4,31 +4,33 @@
 
 'use strict';
 
-const router  = require('koa-router')();     // router middleware for koa
-
-const spawn   = require('co-child-process'); // spawn a child process using co
-const path    = require('path');             // nodejs.org/api/path.html
+const router = require('koa-router')();                // router middleware for koa
+const spawn  = require('child-process-promise').spawn; // promises wrapper around child_process
+const path   = require('path');                        // nodejs.org/api/path.html
 
 
 // logs - quick'n'dirty visibility of bunyan logs
-router.get('/logs/:logfile', function* logs() {
-    if (this.passport.user.Role != 'su') return this.redirect('/login'+this.url);
-    const bunyan = require.resolve('bunyan/bin/bunyan');
-    const logfile = path.join(__dirname, '../../logs/'+this.params.logfile);
-    const args = this.query.options ? [ logfile, this.query.options ] : [logfile];
+router.get('/logs/:logfile', async function logs(ctx) {
+    if (ctx.state.user.Role != 'su') return ctx.redirect('/login'+ctx.url);
+
+    const bunyan = require.resolve('bunyan/bin/bunyan'); // full path to bunyan command
+    const logfile = path.join(__dirname, '../../logs/'+ctx.params.logfile);
+    const args = ctx.query.options ? [ logfile, ctx.query.options ] : [logfile];
 
     try {
 
-        const log = yield spawn(bunyan, args);
-        yield this.render('logs', { bunyan: log, logfile: this.params.logfile });
+        const proc = await spawn(bunyan, [args], { capture: [ 'stdout', 'stderr' ]});
+
+        await ctx.render('logs', { bunyan: proc.stdout, logfile: ctx.params.logfile });
 
     } catch (e) {
-        yield this.render('logs', { bunyan: e.message, logfile: this.params.logfile });
+        // log file not found?
+        await ctx.render('logs', { bunyan: `Log file ${ctx.params.logfile} not found`, logfile: ctx.params.logfile });
     }
 
 });
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

@@ -7,11 +7,11 @@
 const router = require('koa-router')(); // router middleware for koa
 
 
-router.get('/', function* getIndexPage() {
-    yield this.render('index');
+router.get('/', async function getIndexPage(ctx) {
+    await ctx.render('index');
 });
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

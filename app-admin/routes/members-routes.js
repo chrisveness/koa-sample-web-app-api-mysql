@@ -20,6 +20,6 @@ router.post('/members/:id/edit',   members.processEdit);   // process edit membe
 router.post('/members/:id/delete', members.processDelete); // process delete member
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

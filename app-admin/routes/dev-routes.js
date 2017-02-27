@@ -8,9 +8,11 @@ const router   = require('koa-router')(); // router middleware for koa
 const nodeinfo = require('nodejs-info');  // node info
 
 
-router.get('/dev/nodeinfo', function() { this.body = nodeinfo(this.req); });
+router.get('/dev/nodeinfo', function(ctx) {
+    ctx.body = nodeinfo(ctx.req);
+});
 
-
-module.exports = router.middleware();
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

@@ -16,6 +16,6 @@ router.patch( '/members/:id', members.patchMemberById);  // update member detail
 router.delete('/members/:id', members.deleteMemberById); // delete member
 
 
-module.exports = router.middleware();
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = router.middleware();

@@ -4,8 +4,7 @@
 
 'use strict';
 
-
-const koa        = require('koa');            // koa framework
+const Koa        = require('koa');            // koa framework
 const handlebars = require('koa-handlebars'); // handlebars templating
 const flash      = require('koa-flash');      // flash messages
 const lusca      = require('koa-lusca');      // security header middleware
@@ -13,7 +12,8 @@ const serve      = require('koa-static');     // static file serving middleware
 const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
 
-const app = module.exports = koa(); // www app
+
+const app = new Koa(); // www app
 
 
 // serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
@@ -29,24 +29,24 @@ app.use(handlebars({
 
 
 // handle thrown or uncaught exceptions anywhere down the line
-app.use(function* handleErrors(next) {
+app.use(async function handleErrors(ctx, next) {
     try {
 
-        yield next;
+        await next();
 
     } catch (e) {
-        this.status = e.status || 500;
-        switch (this.status) {
+        ctx.status = e.status || 500;
+        switch (ctx.status) {
             case 404: // Not Found
                 const context404 = { msg: e.message=='Not Found'?null:e.message };
-                yield this.render('404-not-found', context404);
+                await ctx.render('404-not-found', context404);
                 break;
             default:
             case 500: // Internal Server Error
-                console.error(e.status||'500', e.message);
+                console.error(ctx.status, e.message);
                 const context500 = app.env=='production' ? {} : { e: e };
-                yield this.render('500-internal-server-error', context500);
-                this.app.emit('error', e, this); // github.com/koajs/examples/blob/master/errors/app.js
+                await ctx.render('500-internal-server-error', context500);
+                ctx.app.emit('error', e, ctx); // github.com/koajs/koa/wiki/Error-Handling
                 break;
         }
     }
@@ -54,14 +54,14 @@ app.use(function* handleErrors(next) {
 
 
 // clean up post data - trim & convert blank fields to null
-app.use(function* cleanPost(next) {
-    if (this.request.body !== undefined) {
-        for (const key in this.request.body) {
-            this.request.body[key] = this.request.body[key].trim();
-            if (this.request.body[key] == '') this.request.body[key] = null;
+app.use(async function cleanPost(ctx, next) {
+    if (ctx.request.body !== undefined) {
+        for (const key in ctx.request.body) {
+            ctx.request.body[key] = ctx.request.body[key].trim();
+            if (ctx.request.body[key] == '') ctx.request.body[key] = null;
         }
     }
-    yield next;
+    await next();
 });
 
 
@@ -82,9 +82,9 @@ app.use(lusca({
 
 
 // add the domain (host without subdomain) into koa ctx (used in navpartial template)
-app.use(function* ctxAddDomain(next) {
-    this.state.domain = this.host.replace('www.', '');
-    yield next;
+app.use(async function ctxAddDomain(ctx, next) {
+    ctx.state.domain = ctx.host.replace('www.', '');
+    await next();
 });
 
 
@@ -99,11 +99,12 @@ app.use(koaLogger(logger, {}));
 
 app.use(require('./routes-www.js'));
 
-
 // end of the line: 404 status for any resource not found
-app.use(function* notFound() { // note no 'next'
-    this.throw(404);
+app.use(function notFound(ctx) { // note no 'next'
+    ctx.throw(404);
 });
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+module.exports = app;
