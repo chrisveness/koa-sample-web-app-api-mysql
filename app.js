@@ -17,6 +17,7 @@ const compress = require('koa-compress');   // HTTP compression
 const session  = require('koa-session');    // session for passport login, flash messages
 const mysql    = require('mysql2/promise'); // fast mysql driver
 const debug    = require('debug')('app');   // small debugging utility
+const convert  = require('koa-convert');
 
 require('dotenv').config(); // loads environment variables from .env file (if available - eg dev env)
 
@@ -63,7 +64,7 @@ app.use(body());
 
 // session for passport login, flash messages
 app.keys = ['koa-sample-app'];
-app.use(session(app)); // note koa-session@3.4.0 is v1 middleware which generates deprecation notice
+app.use(convert(session(app))); // note koa-session@3.4.0 is v1 middleware which generates deprecation notice
 
 
 // sometimes useful to be able to track each request...
