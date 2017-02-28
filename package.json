@@ -39,7 +39,7 @@
     "koa-lusca": "^2.2.0",
     "koa-passport": "^3.0.0-rc.2",
     "koa-router": "^7.0.1",
-    "koa-session": "^3.4.0",
+    "koa-session": "^4.0.0",
     "koa-static": "^3.0.0",
     "markdown-it": "^8.3.0",
     "mysql2": "^1.2.0",
