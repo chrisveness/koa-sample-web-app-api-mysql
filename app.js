@@ -14,7 +14,7 @@ const Koa      = require('koa');            // Koa framework
 const body     = require('koa-body');       // body parser
 const compose  = require('koa-compose');    // middleware composer
 const compress = require('koa-compress');   // HTTP compression
-const session  = require('koa-session');    // session for passport login, flash messages
+const session  = require('koa-session');    // session for flash messages
 const mysql    = require('mysql2/promise'); // fast mysql driver
 const debug    = require('debug')('app');   // small debugging utility
 
@@ -61,8 +61,10 @@ app.use(async function robots(ctx, next) {
 app.use(body());
 
 
-// session for passport login, flash messages
+// set signed cookie keys for JWT cookie & session cookie
 app.keys = ['koa-sample-app'];
+
+// session for flash messages (uses signed session cookies, with no server storage)
 app.use(session(app)); // note koa-session@3.4.0 is v1 middleware which generates deprecation notice
 
 

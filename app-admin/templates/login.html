@@ -17,10 +17,10 @@
 
 <main>
 
-{{#if @koa.state.user}}
+{{#if user}}
 
-<p>You are currently logged in as {{@koa.state.user.Firstname}} {{@koa.state.user.Lastname}}
-    (with {{@koa.state.user.Role}} privileges).</p>
+<p>You are currently logged in as {{user.Firstname}} {{user.Lastname}}
+    (with {{user.Role}} privileges).</p>
 
 {{else}}
 
@@ -28,7 +28,7 @@
     <ul>
         <li>
             <label for="username">E-mail</label>
-            <input name="username" id="username" type="email" value="{{username}}" required autofocus>
+            <input name="username" id="username" type="email" value="{{@koa.flash.formdata.username}}" required autofocus>
         </li>
         <li>
             <label for="password">Password</label>
@@ -37,7 +37,7 @@
         <li>
             <label></label>
             <input type="checkbox" name="remember-me" id="remember-me">
-            <label for="remember-me" class="grey">remember me</label>
+            <label for="remember-me" title="for up to 7 days inactivity" class="grey">remember me</label>
         </li>
         <li>
             <label></label>
@@ -47,13 +47,13 @@
     </ul>
 </form>
 
-{{/if}}
-
 <p>Test logins:</p>
 <ul>
     <li><i>guest@user.com/guest</i> for read-only access</li>
     <li><i>admin@user.com/admin</i> for full access</li>
 </ul>
+
+{{/if}}
 
 </main>
 

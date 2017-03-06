@@ -9,8 +9,8 @@ const Koa        = require('koa');            // koa framework
 const handlebars = require('koa-handlebars'); // handlebars templating
 const flash      = require('koa-flash');      // flash messages
 const lusca      = require('koa-lusca');      // security header middleware
-const passport   = require('koa-passport');   // authentication
 const serve      = require('koa-static');     // static file serving middleware
+const jwt        = require('jsonwebtoken');   // JSON Web Token implementation
 const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
 const document   = require('jsdom').jsdom().defaultView.document; // DOM Document interface in Node!
@@ -52,6 +52,9 @@ app.use(async function handleErrors(ctx, next) {
     } catch (e) {
         ctx.status = e.status || 500;
         switch (ctx.status) {
+            case 401: // Unauthorised
+                ctx.redirect('/login'+ctx.url);
+                break;
             case 404: // Not Found
                 const context404 = { msg: e.message=='Not Found'?null:e.message };
                 await ctx.render('404-not-found', context404);
@@ -93,12 +96,6 @@ app.use(async function mysqlConnection(ctx, next) {
         throw e;
     }
 });
-
-
-// use passport authentication (local auth)
-require('./passport.js');
-app.use(passport.initialize());
-app.use(passport.session());
 
 
 // clean up post data - trim & convert blank fields to null
@@ -145,20 +142,30 @@ app.use(koaLogger(logger, {}));
 
 // ------------ routing
 
+
+// check if user is signed in; leaves id in ctx.status.user.id if JWT verified
+// (do this before login routes, as login page indicates if user is already logged in)
+app.use(verifyJwt);
+
+
 // public (unsecured) modules first
 
 app.use(require('./routes/index-routes.js'));
 app.use(require('./routes/login-routes.js'));
 
-// verify user has authenticated...
 
-app.use(async function authSecureRoutes(ctx, next) {
-    if (ctx.isAuthenticated()) {
+// verify user is signed in...
+
+app.use(async function isSignedIn(ctx, next) {
+    if (ctx.state.user) {
         await next();
     } else {
+        // authentication failed: redirect to login page
+        ctx.flash = { loginfailmsg: 'Session expired: please sign in again' };
         ctx.redirect('/login'+ctx.url);
     }
 });
+
 
 // ... as subsequent modules require authentication
 
@@ -178,6 +185,57 @@ app.use(function notFound(ctx) { // note no 'next'
     ctx.throw(404);
 });
 
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+
+/**
+ * Verify the JSON Web Token authentication supplied in (signed) cookie.
+ *
+ * If the token verifies, record the payload in ctx.state.user: the UserId is held in ctx.state.user.id.
+ *
+ * Issued tokens have 24-hour validity. If the cookie contains an expired token, and the user logged
+ * with using the 'remember-me' option, then issue a replacement 24-hour token, and renew the cookie
+ * for a further 7 days. The 'remember-me' function will lapse after 7 days inactivity.
+ */
+async function verifyJwt(ctx, next) {
+    const roles = { g: 'guest', a: 'admin', s: 'su' };
+
+    const token = ctx.cookies.get('koa:jwt', { signed: true });
+
+    if (token) {
+        try {
+            const  payload = jwt.verify(token, 'koa-sample-app-signature-key'); // throws on invalid token
+
+            // valid token: accept it...
+            ctx.state.user = payload;                  // for user id  to look up user details
+            ctx.state.user.Role = roles[payload.role]; // for authorisation checks
+            ctx.state.user.jwt = token;                // for ajax->api calls
+        } catch (err) {
+            // verify failed - retry with ignore expire option
+            try {
+                const payload = jwt.verify(token, 'koa-sample-app-signature-key', { ignoreExpiration: true });
+
+                // valid token except for exp: accept it...
+                ctx.state.user = Object.assign({}, payload); // (preserve original payload for reuse)
+                ctx.state.user.Role = roles[payload.role];
+                ctx.state.user.jwt = token;
+
+                // ... and re-issue a replacement token for a further 24 hours
+                delete payload.exp;
+                const replacementToken = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
+                const options = { signed: true };
+                if (payload.remember) options.expires = new Date(Date.now() + 1000*60*60*24*7); // remember-me for 7d
+                ctx.cookies.set('koa:jwt', replacementToken, options);
+            } catch (e) {
+                if (e.message == 'invalid token') ctx.throw(401, 'Invalid authentication'); // verify (both!) failed
+                ctx.throw(e.status||500, e.message); // Internal Server Error
+            }
+        }
+    }
+
+    await next();
+}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 

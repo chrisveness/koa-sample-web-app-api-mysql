@@ -19,7 +19,7 @@ router.get('/logs/:logfile', async function logs(ctx) {
 
     try {
 
-        const proc = await spawn(bunyan, [args], { capture: [ 'stdout', 'stderr' ]});
+        const proc = await spawn(bunyan, [args], { capture: [ 'stdout', 'stderr' ] });
 
         await ctx.render('logs', { bunyan: proc.stdout, logfile: ctx.params.logfile });
 

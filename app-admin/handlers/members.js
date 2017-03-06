@@ -116,7 +116,7 @@ class MembersHandlers {
 
 
     /**
-     * POST /members - process add-member
+     * POST /members/add - process add-member
      */
     static async processAdd(ctx) {
         if (ctx.state.user.Role != 'admin') return ctx.redirect('/login'+ctx.url);

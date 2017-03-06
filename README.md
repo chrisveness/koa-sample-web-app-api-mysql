@@ -22,12 +22,12 @@ components operating together may be helpful.
 
 It is of course simplistic, but unlike many tutorials, it assembles together many of the components
 of a complete system: in this case, basic interactive tools for viewing, adding, editing, and
-deleting ([CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)), with *passport*
-login/authentication, and a matching
-[REST](http://en.wikipedia.org/wiki/Representational_state_transfer)ful API to do the same (using
-basic access authentication). Many systems may not require an API, but the API app can be used for 
-RESTful ajax functions (illustrated in the edit member/team pages). Of course, real systems do much 
-more, but generally build on these core functions.
+deleting ([CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)), with 
+[JWT](https://jwt.io/)-based authentication/login, and a matching
+[REST](http://en.wikipedia.org/wiki/Representational_state_transfer)ful API to do the same. Many 
+systems may not require an API, but the API app can be used for RESTful ajax functions (illustrated 
+in the edit member/team pages). Of course, real systems do much more, but often build on these 
+core functions.
 
 The database includes a couple of tables with related data and referential integrity – one step
 beyond where most tutorials go. Hence code is included for handling basic validation and referential
@@ -36,7 +36,7 @@ integrity errors returned from the database.
 Otherwise I’ve stripped it down to essentials. There’s no pretty styling! There’s no great UI. Just 
 the bare building-blocks.
 
-There are also sample integration/acceptance tests using mocha / supertest / chai / cheerio.
+There are also sample integration/acceptance tests using mocha / supertest / chai.
 
 I don’t have time to put together a full tutorial, but I’ve tried to make everything clear & well
 structured, and I’ve liberally commented the code.
@@ -50,7 +50,10 @@ understanding as a mature and valid language (the benefits of prototypal inherit
 be appreciated, rather than seen as ‘classical inheritance got wrong’). It’s certainly vastly better 
 to work with than PHP :)
 
-The app is built with a modular approach. There are three (*composed*) sub-apps: the bare bones of a
+The app is a classic web application, not a single-page app 
+(‘[SPA](https://medium.com/@stilkov/why-i-hate-your-single-page-app-f08bb4ff9134)’).
+
+It is built with a modular approach. There are three (*composed*) sub-apps: the bare bones of a
 public site, a web-based password-protected admin system using handlebars-templated html pages, and
 a REST API. Each of these is structured in a modular fashion; mostly each admin module has JavaScript
 handlers to handle GET and POST requests, and a set of handlebars templates; each API module has
@@ -58,8 +61,8 @@ JavaScript handlers for GET, POST, PATCH, DELETE requests.
 
 The highly-structured applications I work on require ACID SQL databases with referential integrity,
 so MongoDB was out for me. MySQL and PostgreSQL should be pretty similar, but PostgreSQL is not yet
-so well supported for Koa. (Actually, I’ve since built applications using MongoDB, sometimes 
-together with MySQL for different datastores in the same application).
+so well supported for Koa. [Actually, I’ve since built applications using MongoDB, sometimes 
+together with MySQL for different datastores in the same application].
 
 For some people, a full JavaScript framework will work better. If you’re happy to plan out your own
 preferred structure, designing your own patterns means one less component to learn / conform to.
@@ -76,8 +79,8 @@ generally include and build on these basics.
 I find [Handlebars](http://handlebarsjs.com/) offers a good minimal-logic templates (mustache is too
 limiting, but I like to work with HTML).
 
-The main admin/app.js sets up the database connection, handlebars templating, passport
-authentication, 404/500 handling, etc.
+The main *app-admin.js* sets up the database connection, handlebars templating, JWT authentication, 
+4xx/500 handling, etc (JWT authentication is held in (signed) cookies, for stateless sessions).
 
 I’ve divided the app into  routes, matching handlers/controllers, and a set of templates. The 
 handlers have one function for each method/route, and either render a view, redirect (e.g. after 
@@ -87,14 +90,14 @@ POST), or throw an error.
 
 The API returns JSON or XML (or plain text) according to the *Accepts* request header.
 
-The main api/app.js sets up the database connection, content negotiation, passport authentication,
-and 404/500 handling.
+The main *app-api.js* sets up the database connection, content negotiation, JWT authentication,  
+4xx/500 handling, etc (JWT authentication is supplied in Bearer Authorization HTTP headers).
 
 Routes are grouped into members, teams, team membership, and authentication. All but the simplest of
 these then go on to call related handlers.
 
-The api/members.js and api/teams.js then handle the API requests. I use PATCH in preference to PUT so
-that a subset of entity fields can be supplied (correctly, a PUT will set unsupplied fields to null);
+The *members.js* and *teams.js* then handle the API requests. I use PATCH in preference to PUT so 
+that a subset of entity fields can be supplied (correctly, a PUT will set unsupplied fields to null); 
 otherwise everything is very straightforward REST API, hopefully all following best practice.
 
 Special provision is made for boolean values, which are typically stored in MySQL as BIT(1) or
@@ -113,12 +116,12 @@ SQL queries).
 ### Dependencies
 
 While very basic, this sample app incorporates together many of the components of a real application;
-as well as handlebars templates & MySQL, there’s static file serving, body-parser for post data,
-compression, *passport* logins with remember-me, logging, flash messages, etc, and mocha/chai/cheerio
-for testing (I’ve ignored i18n which would introduce considerable complexity). Full details of course
-in [package.json](/chrisveness/koa-sample-web-app-api-mysql/blob/master/package.json).
+as well as handlebars templates, MySQL, & JWT-managed logins, there’s static file serving, body-parser 
+for post data, lusca security headers, compression, logging, flash messages, etc, and mocha/chai for 
+testing (I’ve ignored i18n which would introduce considerable complexity). Full details of course in 
+[package.json](/chrisveness/koa-sample-web-app-api-mysql/blob/master/package.json).
 
-It uses the database set out below, with connection details as per `.env`.
+The app uses the database set out below, with connection details as per `.env`.
 
 ### Demo
 
@@ -185,8 +188,7 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   │   ├── teams-edit.html
 │   │   ├── teams-list.html
 │   │   └── teams-view.html
-│   ├── app-admin.js
-│   └── passport.js
+│   └── app-admin.js
 ├── app-api
 │   ├── app-api.js
 │   ├── members.js
@@ -196,8 +198,7 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   ├── routes-team-members.js
 │   ├── routes-teams.js
 │   ├── team-members.js
-│   ├── teams.js
-│   └── validate.js
+│   └── teams.js
 ├── app-www
 │   ├── templates
 │   │   ├── 404-not-found.html
@@ -237,7 +238,7 @@ but I’ve since found it more convenient to work with a flatter structure (here
 unproductive to be constantly expanding and contracting folders. Go with what works for you.
 
 Simpler applications can use a much flatter structure still, at the limit with no sub-folders at all; 
-more complex ones might use a deeper structure. “Horses for courses”, my dad used to say.
+more complex ones might use a deeper structure. “Horses for courses”, as they say.
 
 ## Database schema
 
@@ -282,7 +283,6 @@ create table User (
   Lastname  text,
   Email     text not null,
   Password  text,
-  ApiToken  text,
   Role      text,
   primary key       (UserId),
   unique  key Email (Email(24))

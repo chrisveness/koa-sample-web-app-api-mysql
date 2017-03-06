@@ -5,35 +5,48 @@
 'use strict';
 
 const router = require('koa-router')(); // router middleware for koa
-const crypto = require('crypto');       // nodejs.org/api/crypto.html
+const jwt    = require('jsonwebtoken'); // JSON Web Token implementation
+const scrypt = require('scrypt');       // scrypt library
+
+const User   = require('../models/user.js');
 
 
 /**
- * @api {get} /auth Get authentication token for subsequent API requests
+ * @api {get} /auth Get JWT authentication token for subsequent API requests
  * @apiName   GetAuth
  * @apiGroup  Auth
  *
- * @apiDescription Subsequent requests are made with basic auth username = id, password = token.
+ * @apiDescription Subsequent requests requiring authentication are made with the JSON Web Token
+ *   obtained from /auth, supplied in the Bearer Authorization HTTP header.
  *
- *   Note validation for /auth is by email+pw using scrypt.validateKdf() which is slow, so auth is
- *   done once and token is retained temporarily by client; subsequent requests have a fast check of
- *   the token.
+ *   Note that since this does a KDF verification, it is a *slow* operation. The returned token has a
+ *   24-hour limited lifetime.
  *
- *   The token has a 24-hour limited lifetime.
- *
- * @apiHeader  Authorization            Basic Access Authentication {email, password}
+ * @apiParam   username                 Email of user to be authenticated.
+ * @apiParam   password                 Password of user to be authenticated.
  * @apiHeader  [Accept=application/xml] application/json, application/xml.
- * @apiSuccess id                       Id to be used for subsequent Authorization header ‘username’
- * @apiSuccess token                    Token to be used for subsequent Authorization header ‘password’
+ * @apiSuccess jwt                      JSON Web Token be used for subsequent Authorization header
  */
-router.get('/auth', function getAuth(ctx) {
-    // (middleware has already validated user at this point, just return the hashed token timestamp)
+router.get('/auth', async function getAuth(ctx) {
+    const [user] = await User.getBy('Email', ctx.query.username);
 
-    // the stored api token is the issue timestamp; the token given out is its sha1 hash
-    const token = crypto.createHash('sha1').update(ctx.state.auth.user.ApiToken).digest('hex');
+    if (!user) ctx.throw(404, 'Username/password not found');
 
-    ctx.body = { id: ctx.state.auth.user.UserId, token: token };
-    ctx.body.root = 'auth';
+    // check password
+    try {
+        const match = await scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), ctx.query.password);
+
+        if (!match) ctx.throw(404, 'Username/password not found');
+
+        const payload = {
+            id:   user.UserId,                         // to get user details
+            role: user.Role.slice(0, 1).toLowerCase(), // make role available without db query
+        };
+        const token = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
+        ctx.body = { jwt: token, root: 'Auth' };
+    } catch (e) { // e.g. "data is not a valid scrypt-encrypted block"
+        ctx.throw(404, 'Username/password not found');
+    }
 });
 
 

@@ -22,7 +22,7 @@ class TeamsHandlers {
      * @apiSuccess (Success 2xx) 200/OK        List of teams with id, uri attributes.
      * @apiSuccess (Success 2xx) 204/NoContent No matching teams found.
      * @apiError   403/Forbidden               Unrecognised Team field in query.
-     * @apiError   401/Unauthorized            Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized            Invalid JWT auth credentials supplied.
      */
     static async getTeams(ctx) {
         try {
@@ -64,7 +64,7 @@ class TeamsHandlers {
      * @apiHeader  Authorization             Basic Access Authentication token.
      * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
      * @apiSuccess (Success 2xx) 200/OK      Full details of specified team.
-     * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized          Invalid JWT auth credentials supplied.
      * @apiError   404/NotFound              Team not found.
      */
     static async getTeamById(ctx) {
@@ -95,11 +95,11 @@ class TeamsHandlers {
      * @apiHeader  Authorization             Basic Access Authentication token.
      * @apiHeader  Content-Type              application/x-www-form-urlencoded.
      * @apiSuccess (Success 2xx) 201/Created Details of newly created team.
-     * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized          Invalid JWT auth credentials supplied.
      * @apiError   403/Forbidden             Admin auth required.
      */
     static async postTeams(ctx) {
-        if (ctx.state.auth.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         const id = await Team.insert(ctx.request.body);
 
@@ -120,12 +120,12 @@ class TeamsHandlers {
      * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
      * @apiHeader  Content-Type              application/x-www-form-urlencoded.
      * @apiSuccess (Success 2xx) 200/OK      Updated team details.
-     * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized          Invalid JWT auth credentials supplied.
      * @apiError   403/Forbidden             Admin auth required.
      * @apiError   404/NotFound              Team not found.
      */
     static async patchTeamById(ctx) {
-        if (ctx.state.auth.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         await Team.update(ctx.params.id, ctx.request.body);
 
@@ -144,12 +144,12 @@ class TeamsHandlers {
      *
      * @apiHeader  Authorization        Basic Access Authentication token.
      * @apiSuccess (Success 2xx) 200/OK Full details of deleted team.
-     * @apiError   401/Unauthorized     Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized     Invalid JWT auth credentials supplied.
      * @apiError   403/Forbidden        Admin auth required.
      * @apiError   404/NotFound         Team not found.
      */
     static async deleteTeamById(ctx) {
-        if (ctx.state.auth.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         // return deleted team details
         const team = await Team.get(ctx.params.id);

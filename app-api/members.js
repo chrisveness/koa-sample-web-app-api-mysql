@@ -23,7 +23,7 @@ class MembersHandlers {
      * @apiSuccess (Success 2xx) 200/OK        List of members with id, uri attributes.
      * @apiSuccess (Success 2xx) 204/NoContent No matching members found.
      * @apiError   403/Forbidden               Unrecognised Member field in query.
-     * @apiError   401/Unauthorized            Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized            Invalid JWT auth credentials supplied.
      */
     static async getMembers(ctx) {
         try {
@@ -66,7 +66,7 @@ class MembersHandlers {
      * @apiHeader  Authorization            Basic Access Authentication token.
      * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
      * @apiSuccess (Success 2xx) 200/OK     Full details of specified member.
-     * @apiError   401/Unauthorized         Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized         Invalid JWT auth credentials supplied.
      * @apiError   404/NotFound             Member not found.
      */
     static async getMemberById(ctx) {
@@ -99,11 +99,11 @@ class MembersHandlers {
      * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
      * @apiHeader  Content-Type              application/x-www-form-urlencoded.
      * @apiSuccess (Success 2xx) 201/Created Details of newly created member.
-     * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized          Invalid JWT auth credentials supplied.
      * @apiError   403/Forbidden             Admin auth required.
      */
     static async postMembers(ctx) {
-        if (ctx.state.auth.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         ctx.request.body = await castBoolean.fromStrings('Member', ctx.request.body);
 
@@ -126,12 +126,12 @@ class MembersHandlers {
      * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
      * @apiHeader  Content-Type              application/x-www-form-urlencoded.
      * @apiSuccess (Success 2xx) 200/OK      Updated member details.
-     * @apiError   401/Unauthorized          Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized          Invalid JWT auth credentials supplied.
      * @apiError   403/Forbidden             Admin auth required.
      * @apiError   404/NotFound              Member not found.
      */
     static async patchMemberById(ctx) {
-        if (ctx.state.auth.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         ctx.request.body = await castBoolean.fromStrings('Member', ctx.request.body);
 
@@ -152,12 +152,12 @@ class MembersHandlers {
      *
      * @apiHeader  Authorization        Basic Access Authentication token.
      * @apiSuccess (Success 2xx) 200/OK Full details of deleted member.
-     * @apiError   401/Unauthorized     Invalid basic auth credentials supplied.
+     * @apiError   401/Unauthorized     Invalid JWT auth credentials supplied.
      * @apiError   403/Forbidden        Admin auth required.
      * @apiError   404/NotFound         Member not found.
      */
     static async deleteMemberById(ctx) {
-        if (ctx.state.auth.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         // return deleted member details
         const member = await Member.get(ctx.params.id);

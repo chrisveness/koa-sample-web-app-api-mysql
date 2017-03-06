@@ -11,13 +11,12 @@
 
 'use strict';
 
-const Koa       = require('koa');        // Koa framework
-const xmlify    = require('xmlify');     // JS object to XML
-const yaml      = require('js-yaml');    // JS object to YAML
-const bunyan    = require('bunyan');     // logging
-const koaLogger = require('koa-bunyan'); // logging
-
-const validate  = require('./validate.js');
+const Koa       = require('koa');          // Koa framework
+const jwt       = require('jsonwebtoken'); // JSON Web Token implementation
+const xmlify    = require('xmlify');       // JS object to XML
+const yaml      = require('js-yaml');      // JS object to YAML
+const bunyan    = require('bunyan');       // logging
+const koaLogger = require('koa-bunyan');   // logging
 
 
 const app = new Koa(); // API app
@@ -122,15 +121,31 @@ app.use(koaLogger(logger, {}));
 // public (unsecured) modules first
 
 app.use(require('./routes-root.js'));
-
-// if requested url is /auth, require 'user' basic auth (e-mail + password)
-
-app.use(validate.confirmBasicAuthUser('/auth')); // (only applies to /auth)
 app.use(require('./routes-auth.js'));
 
-// remaining routes require 'token' basic auth (obtained from /auth)
+// remaining routes require JWT auth (obtained from /auth and supplied in bearer authorization header)
 
-app.use(validate.confirmBasicAuthToken());
+app.use(async function verifyJwt(ctx, next) {
+    if (!ctx.header.authorization) ctx.throw(401, 'Authorisation required');
+    const [ scheme, token ] = ctx.header.authorization.split(' ');
+    if (scheme != 'Bearer') ctx.throw(401, 'Invalid authorisation');
+
+    const roles = { g: 'guest', a: 'admin', s: 'su' };
+
+    try {
+        const payload = jwt.verify(token, 'koa-sample-app-signature-key'); // throws on invalid token
+
+        // valid token: accept it...
+        ctx.state.user = payload;                  // for user id  to look up user details
+        ctx.state.user.Role = roles[payload.role]; // for authorisation checks
+    } catch (e) {
+        if (e.message == 'invalid token') ctx.throw(401, 'Invalid JWT'); // Unauthorized
+        ctx.throw(e.status||500, e.message); // Internal Server Error
+    }
+
+    await next();
+});
+
 app.use(require('./routes-members.js'));
 app.use(require('./routes-teams.js'));
 app.use(require('./routes-team-members.js'));

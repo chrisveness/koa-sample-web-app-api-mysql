@@ -4,7 +4,7 @@
 /* This holds app-specific ajax calls (none specified in this sample app), and passes through     */
 /* other generic requests to the API.                                                             */
 /*                                                                                                */
-/* Being placed after passport in the middleware stack, ajax calls are password-protected.        */
+/* Being placed after auth test in the middleware stack, ajax calls are password-protected.       */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 'use strict';
