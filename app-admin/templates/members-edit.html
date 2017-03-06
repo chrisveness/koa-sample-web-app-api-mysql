@@ -10,67 +10,80 @@
     <link rel="stylesheet" href="/css/admin.css">
     <style>
         table button { background: none; border: none; padding: 0; }
+        table button:hover { cursor: pointer; }
     </style>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $(document).on('click', 'button.add-membership', function() {
-                $('select.add-membership').show().focus();
-            });
+        document.addEventListener('DOMContentLoaded', async function() {
+            'use strict';
+            var doc = document; doc.qrySel = doc.querySelector; doc.qrySelAll = doc.querySelectorAll;
 
-            $(document).on('change', 'select.add-membership', function() {
-                if (!this.value) return;
+            doc.qrySel('button.add-membership').onclick = function() {
+                const select = doc.qrySel('select.add-membership');
+                select.classList.toggle('hide');
+                select.focus();
+            };
 
-                var details = {
+            doc.qrySel('select.add-membership').onchange = addMembership;
+
+            doc.qrySelAll('button.delete-membership').forEach(button => button.onclick = deleteMembership);
+
+            async function addMembership(event) {
+                const select = event.target;
+                var values = JSON.stringify({
                     MemberId: {{MemberId}},
                     TeamId:   this.value,
                     JoinedOn: new Date().toISOString().replace('T',' ').split('.')[0],
-                }
-                $.ajax('/ajax/team-members', {
-                    method:  'POST',
-                    data:    details,
-                    headers: { Accept: 'application/json' },
-                    context: this,
-                })
-                .done(function(result) {
-                    // add new row, remove from select
-                    var $thisRow = $(this).closest('tr');
-                    var $newRow = $thisRow.next().clone();
-                    $newRow.prop('id', this.value);
-                    $newRow.find('td').eq(0).html($(this).find('option:selected').text());
-                    $newRow.find('button').prop('value', result.TeamMemberId);
-                    $thisRow.after($newRow);
-                    $(`select.add-membership option[value=${this.value}]`).remove();
-                    $('select.add-membership').hide();
-                })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    alert(jqXHR.responseText);
                 });
-            });
-
-            $(document).on('click', 'button.delete-membership', function() {
-                $.ajax('/ajax/team-members/'+this.value, {
-                    method:  'DELETE',
-                    headers: { Accept: 'application/json' },
-                    context: this,
-                })
-                .done(function(result) {
-                    // remove row, add to select
-                    var teamId = $(this).closest('tr').attr('id');
-                    $('#'+teamId).remove();
-                    var name = $(this).closest('tr').find('td').eq(0).html();
-                    $('select.add-membership').append(`<option value=${teamId}>${name}</option>option>`);
-                })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    alert(jqXHR.responseText);
-                });
-            });
-
-            $(document).keyup(function(e) {
-                if (e.keyCode == 27) { // escape key maps to keycode `27`
-                    $('select.add-membership').hide();
+                const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
+                const credentials = 'same-origin';
+                const response = await fetch('/ajax/team-members', { method: 'POST', body: values, headers, credentials });
+                if (response.ok) {
+                    // add new row (cloned from 1st membership row), remove entry from select
+                    const body = await response.json();
+                    const thisRow = select.closest('tr');
+                    if (thisRow.nextElementSibling) {
+                        const newRow = thisRow.nextElementSibling.cloneNode(true);
+                        newRow.id = select.value;
+                        newRow.children[0].textContent = select.options[select.selectedIndex].label;
+                        newRow.querySelector('button').value = body.TeamMemberId;
+                        newRow.querySelector('button').onclick = deleteMembership; // onclick doesn't get cloned
+                        thisRow.insertAdjacentElement('afterend', newRow);
+                        select.remove(select.selectedIndex);
+                        select.classList.add('hide');
+                    } else {
+                        // no tr to clone - cop out & reload page for now...
+                        window.location.reload();
+                    }
+                } else {
+                    alert(response.statusText)
                 }
-            });
+            };
+
+            async function deleteMembership(event) {
+                const button = event.target;
+                const teamMembershipId = button.value;
+                const headers = { Accept: 'application/json' };
+                const credentials = 'same-origin';
+                const response = await fetch('/ajax/team-members/'+teamMembershipId, { method: 'DELETE', headers, credentials });
+                if (response.ok) {
+                    const thisRow = button.closest('tr');
+                    const teamId = thisRow.id;
+                    const teamName = thisRow.children[0].textContent;
+                    const selector = button.closest('table').querySelector('select');
+                    const opt = document.createElement('option');
+                    opt.value = teamId;
+                    opt.text = teamName;
+                    selector.add(opt);
+                    thisRow.remove();
+                } else {
+                    alert(response.statusText)
+                }
+            }
+
+            // escape will hide 'add-membership' select if it is displayed
+            document.onkeyup = function(event) {
+                if (event.key == 'Escape') doc.qrySel('select.add-membership').classList.add('hide');
+            }
         });
     </script>
 </head>

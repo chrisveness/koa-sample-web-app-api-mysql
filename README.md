@@ -121,6 +121,8 @@ for post data, lusca security headers, compression, logging, flash messages, etc
 testing (I’ve ignored i18n which would introduce considerable complexity). Full details of course in 
 [package.json](/chrisveness/koa-sample-web-app-api-mysql/blob/master/package.json).
 
+For Ajax, I use native JavaScript DOM API / fetch API rather than jQuery (e.g. `document.querySelector()`).
+
 The app uses the database set out below, with connection details as per `.env`.
 
 ### Demo

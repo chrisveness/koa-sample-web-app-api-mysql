@@ -102,8 +102,10 @@ app.use(async function mysqlConnection(ctx, next) {
 app.use(async function cleanPost(ctx, next) {
     if (ctx.request.body !== undefined) {
         for (const key in ctx.request.body) {
-            ctx.request.body[key] = ctx.request.body[key].trim();
-            if (ctx.request.body[key] == '') ctx.request.body[key] = null;
+            if (typeof ctx.request.body[key] == 'string') {
+                ctx.request.body[key] = ctx.request.body[key].trim();
+                if (ctx.request.body[key] == '') ctx.request.body[key] = null;
+            }
         }
     }
     await next();
