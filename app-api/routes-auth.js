@@ -22,10 +22,10 @@ const User   = require('../models/user.js');
  *   Note that since this does a KDF verification, it is a *slow* operation. The returned token has a
  *   24-hour limited lifetime.
  *
- * @apiParam   username                 Email of user to be authenticated.
- * @apiParam   password                 Password of user to be authenticated.
- * @apiHeader  [Accept=application/xml] application/json, application/xml.
- * @apiSuccess jwt                      JSON Web Token be used for subsequent Authorization header
+ * @apiParam   username                  Email of user to be authenticated.
+ * @apiParam   password                  Password of user to be authenticated.
+ * @apiHeader  [Accept=application/json] application/json, application/xml, text/yaml, text/plain.
+ * @apiSuccess jwt                       JSON Web Token be used for subsequent Authorization header
  */
 router.get('/auth', async function getAuth(ctx) {
     const [user] = await User.getBy('Email', ctx.query.username);
