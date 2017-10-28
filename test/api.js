@@ -130,7 +130,8 @@ describe('API'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
                 const values = { Firstname: 'Test', Lastname: 'User', Email: 'test@user.com' };
                 const response = await request.post('/members').set(headers).auth(jwt, { type: 'bearer' }).send(values);
                 expect(response.status).to.equal(409, response.text);
-                expect(response.text).to.equal("Duplicate entry 'test@user.com' for key 'Email'");
+                expect(response.body).to.be.an('object');
+                expect(response.body.message).to.equal("Duplicate entry 'test@user.com' for key 'Email'");
             });
 
             it('deletes a member', async function() {
