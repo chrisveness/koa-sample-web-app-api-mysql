@@ -242,6 +242,21 @@ unproductive to be constantly expanding and contracting folders. Go with what wo
 Simpler applications can use a much flatter structure still, at the limit with no sub-folders at all; 
 more complex ones might use a deeper structure. “Horses for courses”, as they say.
 
+## .env
+
+Sensitive information  such as database login credentials, SMTP parameters, etc, are held in 
+environment variables. For local development, these can be kept in a .env file (which is not not 
+checked in to a repository). For production, they will be set as environment variables and not 
+stored in the file system.
+
+A .env file for this project might look like:
+
+    DB_HOST     = localhost
+    DB_PORT     = 3306
+    DB_USER     = koa-sample
+    DB_PASSWORD = demo
+    DB_DATABASE = koa-sample-sandbox
+
 ## Database schema
 
 ```sql
