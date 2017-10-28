@@ -6,7 +6,7 @@
 
 'use strict';
 
-const fs = require('mz/fs');         // 'modernised' node api
+const fs = require('fs-extra');      // fs with extra methods & promise interface
 const md = require('markdown-it')(); // markdown parser
 
 
