@@ -16,8 +16,9 @@ const koaLogger  = require('koa-bunyan');     // logging
 const app = new Koa(); // www app
 
 
-// serve static files (html, css, js); allow browser to cache for 1 hour (note css/js req'd before login)
-app.use(serve('public', { maxage: 1000*60*60 }));
+// serve static files (html, css, js); allow browser to cache for 1 day (note css/js req'd before login)
+const maxage = app.env=='production' ? 1000*60*60*24 : 1000;
+app.use(serve('public', { maxage: maxage }));
 
 
 // handlebars templating
