@@ -14,6 +14,8 @@ const jwt        = require('jsonwebtoken');   // JSON Web Token implementation
 const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
 const document   = require('jsdom').jsdom().defaultView.document; // DOM Document interface in Node!
+const koaRouter  = require('koa-router');     // router middleware for koa
+const router = koaRouter();
 
 
 const app = new Koa(); // admin app
@@ -179,7 +181,15 @@ app.use(require('./routes/dev-routes.js'));
 
 
 // serve static apidoc files (http://admin.localhost/apidoc) (note login required)
-app.use(serve('app-api/apidoc', { maxage: 1000*60*60 }));
+app.use(serve('app-api/apidoc', { maxage:  1000*60*60 }));
+
+
+// 404 status for any unrecognised ajax requests (don't throw as don't want to return html page)
+router.all(/\/ajax\/(.*)/, function(ctx) {
+    ctx.body = { message: 'Not Found' };
+    ctx.body.root = 'error';
+    ctx.status = 404; // Not Found
+});
 
 
 // end of the line: 404 status for any resource not found
