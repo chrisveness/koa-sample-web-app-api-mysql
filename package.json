@@ -13,7 +13,7 @@
     "start": "forever --minUptime 1000 --spinSleepTime 1000 app.js",
     "start-dev": "nodemon -e js,json,html app.js",
     "start-devtools": "nodemon --inspect -e js,json,html app.js",
-    "test": "mocha test/admin.js test/api.js",
+    "test": "mocha test/*.js",
     "lint": "eslint --ignore-pattern app-api/apidoc .",
     "apidoc": "apidoc -i app-api -o app-api/apidoc/apidoc"
   },
