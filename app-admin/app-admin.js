@@ -13,9 +13,10 @@ const serve      = require('koa-static');     // static file serving middleware
 const jwt        = require('jsonwebtoken');   // JSON Web Token implementation
 const bunyan     = require('bunyan');         // logging
 const koaLogger  = require('koa-bunyan');     // logging
-const document   = require('jsdom').jsdom().defaultView.document; // DOM Document interface in Node!
 const koaRouter  = require('koa-router');     // router middleware for koa
 const router = koaRouter();
+
+const HandlebarsHelpers = require('../lib/handlebars-helpers.js');
 
 
 const app = new Koa(); // admin app
@@ -27,22 +28,11 @@ app.use(serve('public', { maxage: maxage }));
 
 
 // handlebars templating
-
-const hbsSelectedHelper = function(value, options) {   // stackoverflow.com/questions/13046401#answer-15373215
-    const select = document.createElement('select');   // create a select element
-    select.innerHTML = options.fn(this);               // populate it with the option HTML
-    select.value = value;                              // set the value
-    if (select.children[select.selectedIndex]) {        // if selected node exists add 'selected' attribute
-        select.children[select.selectedIndex].setAttribute('selected', true);
-    }
-    return select.innerHTML;
-};
-
 app.use(handlebars({
     extension:   [ 'html', 'handlebars' ],
     viewsDir:    'app-admin/templates',
     partialsDir: 'app-admin/templates/partials',
-    helpers:     { selected: hbsSelectedHelper },
+    helpers:     { selected: HandlebarsHelpers.selected, checked: HandlebarsHelpers.checked },
 }));
 
 
