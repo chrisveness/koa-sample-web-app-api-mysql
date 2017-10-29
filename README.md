@@ -245,9 +245,9 @@ more complex ones might use a deeper structure. “Horses for courses”, as the
 ## .env
 
 Sensitive information  such as database login credentials, SMTP parameters, etc, are held in 
-environment variables. For local development, these can be kept in a .env file (which is not not 
-checked in to a repository). For production, they will be set as environment variables and not 
-stored in the file system.
+environment variables. For local development, these can be kept in a .env file (which is 
+*.gitignore*’d, not checked in to a repository). For production, they will be set as environment 
+variables and not stored in the file system.
 
 A .env file for this project might look like:
 
@@ -256,6 +256,11 @@ A .env file for this project might look like:
     DB_USER     = koa-sample
     DB_PASSWORD = demo
     DB_DATABASE = koa-sample-sandbox
+    
+    SMTP_HOST = smtp.gmail.com
+    SMTP_PORT = 587
+    SMTP_USER = me@gmail.com
+    SMTP_PASS = mypassword
 
 ## Database schema
 
@@ -295,12 +300,12 @@ create table TeamMember (
 ) engine=InnoDB charset=utf8 auto_increment=100001;
 
 create table User (
-  UserId    integer unsigned not null auto_increment,
-  Firstname text,
-  Lastname  text,
-  Email     text not null,
-  Password  text,
-  Role      text,
+  UserId               integer unsigned not null auto_increment,
+  Firstname            text,
+  Lastname             text,
+  Email                text not null,
+  Password             text,
+  Role                 text,
   primary key       (UserId),
   unique  key Email (Email(24))
 ) engine=InnoDB charset=utf8 auto_increment=100001;

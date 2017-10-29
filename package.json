@@ -27,6 +27,7 @@
     "dotenv": "^4.0.0",
     "forever": "^0.15.3",
     "fs-extra": "4.0.2",
+    "html-to-text": "^3.2.0",
     "js-yaml": "^3.8.2",
     "jsdom": "^9.11.0",
     "jsonwebtoken": "^7.3.0",
@@ -45,6 +46,7 @@
     "mysql2": "^1.2.0",
     "node-fetch": "^1.6.3",
     "nodejs-info": "^1.0.1",
+    "nodemailer": "^4.3.1",
     "scrypt": "^6.0.3",
     "xmlify": "^1.1.0"
   },
