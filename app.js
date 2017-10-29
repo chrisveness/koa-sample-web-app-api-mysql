@@ -58,7 +58,8 @@ app.use(async function robots(ctx, next) {
 
 
 // parse request body into ctx.request.body
-app.use(body());
+// - multipart allows parsing of enctype=multipart/form-data
+app.use(body({ multipart: true }));
 
 
 // set signed cookie keys for JWT cookie & session cookie
