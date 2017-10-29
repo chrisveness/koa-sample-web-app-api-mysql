@@ -149,6 +149,7 @@ app.use(verifyJwt);
 
 app.use(require('./routes/index-routes.js'));
 app.use(require('./routes/login-routes.js'));
+app.use(require('./routes/password-routes.js'));
 
 
 // verify user is signed in...

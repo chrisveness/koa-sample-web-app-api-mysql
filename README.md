@@ -262,6 +262,9 @@ A .env file for this project might look like:
     SMTP_USER = me@gmail.com
     SMTP_PASS = mypassword
 
+    TESTUSER = guest@user.com
+    TESTPASS = guest
+
 ## Database schema
 
 ```sql
@@ -305,6 +308,7 @@ create table User (
   Lastname             text,
   Email                text not null,
   Password             text,
+  PasswordResetRequest text,
   Role                 text,
   primary key       (UserId),
   unique  key Email (Email(24))
@@ -337,8 +341,8 @@ INSERT INTO TeamMember VALUES
  (100007,100004,100003,'2013-03-17');
  
 INSERT INTO User VALUES
-  (100001,'Guest','User','guest@user.com','c2NyeXB0AA8AAAAIAAAAAadRWAxJ7PVQ8T6zW7orsuCiHr38TPYJ9TGVbHEK5hvdbC7lCKxKdebdo0T0wR9Aiye4GQDHbLkcBNVVQZpBDtWGfezCWZvtcw4JZ90HDuhb','guest'),
-  (100002,'Admin','User','admin@user.com','c2NyeXB0AA4AAAAIAAAAAfvrpUA5jkh3ObPPUPNQEjbkHXk4vj4xPWH6N8yLEvbgkKqW5zqv3AgsHtTcSL2lzfviyMkXjybHPXeqDY62ZxHEvmTgEY6THddbqOUAOzTQ','admin');
+  (100001,'Guest','User','guest@user.com','c2NyeXB0AA8AAAAIAAAAAadRWAxJ7PVQ8T6zW7orsuCiHr38TPYJ9TGVbHEK5hvdbC7lCKxKdebdo0T0wR9Aiye4GQDHbLkcBNVVQZpBDtWGfezCWZvtcw4JZ90HDuhb',null,'guest'),
+  (100002,'Admin','User','admin@user.com','c2NyeXB0AA4AAAAIAAAAAfvrpUA5jkh3ObPPUPNQEjbkHXk4vj4xPWH6N8yLEvbgkKqW5zqv3AgsHtTcSL2lzfviyMkXjybHPXeqDY62ZxHEvmTgEY6THddbqOUAOzTQ',null,'admin');
 ```
 
 The full sample app is around 1,000 lines of JavaScript.
