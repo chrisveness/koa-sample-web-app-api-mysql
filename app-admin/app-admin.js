@@ -94,8 +94,9 @@ app.use(async function mysqlConnection(ctx, next) {
 // clean up post data - trim & convert blank fields to null
 app.use(async function cleanPost(ctx, next) {
     if (ctx.request.body !== undefined) {
-        // enctype=multipart/form-data puts fields in body.fields, otherwise in body
-        const body = typeof ctx.request.body.fields=='object' ? ctx.request.body.fields : ctx.request.body;
+        // koa-body puts multipart/form-data form fields in request.body.{fields,files}
+        const multipart = 'fields' in ctx.request.body && 'files' in ctx.request.body;
+        const body =  multipart ? ctx.request.body.fields : ctx.request.body;
         for (const key in body) {
             if (typeof body[key] == 'string') {
                 body[key] = body[key].trim();
