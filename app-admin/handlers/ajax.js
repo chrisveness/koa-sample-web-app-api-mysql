@@ -33,7 +33,7 @@ handler.ajaxApiPassthrough = async function(ctx) {
     const host = ctx.host.replace('admin', 'api');
     const url = ctx.protocol+'://'+host+'/'+resource;
 
-    const body = JSON.stringify(ctx.request.body)=='{}' ? '' : JSON.stringify(ctx.request.body);
+    const body = JSON.stringify(ctx.request.body)=='{}' ? null : JSON.stringify(ctx.request.body);
     const hdrs = {
         'Content-Type':  'application/json',
         'Accept':        ctx.header.accept || '*/*',

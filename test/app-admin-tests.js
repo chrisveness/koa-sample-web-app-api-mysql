@@ -6,8 +6,7 @@
 
 const supertest = require('supertest');   // SuperAgent driven library for testing HTTP servers
 const expect    = require('chai').expect; // BDD/TDD assertion library
-const jsdom     = require('jsdom').jsdom; // JavaScript implementation of DOM and HTML standards
-require('mocha');       // simple, flexible, fun test framework
+const jsdom     = require('jsdom');       // JavaScript implementation of DOM and HTML standards
 
 const app = require('../app.js');
 
@@ -28,7 +27,7 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
         it('sees password reset page', async function() {
             const response = await request.get('/password/reset-request').set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('input').name).to.equal('email');
         });
 
@@ -44,21 +43,21 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
         it('sees password reset request confirmation page', async function() {
             const response = await request.get('/password/reset-request-confirm').set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('title').textContent).to.equal('Reset password request');
         });
 
         it('sees password reset page', async function() {
             const response = await request.get(`/password/reset/${resetToken}`).set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('input').name).to.equal('password');
         });
 
         it('throws out invalid token', async function() {
             const response = await request.get('/password/reset/not-a-good-token').set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('p').textContent).to.equal('This password reset link is either invalid, expired, or previously used.');
         });
 
@@ -67,7 +66,7 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
             const expiredTimestamp = (parseInt(timestamp, 36) - 60*60*24 - 1).toString(36);
             const response = await request.get(`/password/reset/${expiredTimestamp}-${hash}`).set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('p').textContent).to.equal('This password reset link is either invalid, expired, or previously used.');
         });
 
@@ -76,7 +75,7 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
             const [ timestamp ] = resetToken.split('-'); // (we don't need the hash here)
             const response = await request.get(`/password/reset/${timestamp}-abcdefgh`).set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('p').textContent).to.equal('This password reset link is either invalid, expired, or previously used.');
         });
 
@@ -97,7 +96,7 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
         it('sees password reset confirmation page', async function() {
             const response = await request.get('/password/reset/confirm').set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('title').textContent).to.equal('Reset password');
         });
     });
@@ -108,7 +107,7 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
         it('has home page with login link in nav when not logged-in', async function() {
             const response = await request.get('/').set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('title').textContent.slice(0, 14)).to.equal('Koa Sample App');
             expect(doc.querySelectorAll('nav ul li').length).to.equal(2); // nav should be just '/', 'login'
         });
@@ -125,7 +124,7 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
             // get from location supplied by login
             const response = await request.get(location).set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('title').textContent.slice(0, 14)).to.equal('Koa Sample App');
             expect(doc.querySelectorAll('nav ul li').length).to.equal(4); // nav should be '/', 'members', 'teams', 'logout'
         });
@@ -145,14 +144,14 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
         it('lists members including test member', async function() {
             const response = await request.get('/members').set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.getElementById(id).querySelector('a').textContent).to.equal('Test');
         });
 
         it('gets details of test member', async function() {
             const response = await request.get('/members/'+id).set(headers);
             expect(response.status).to.equal(200);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('h1').textContent).to.equal('Test User');
         });
 
@@ -212,14 +211,14 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
         it('returns 404 for non-existent page', async function() {
             const response = await request.get('/zzzzzz').set(headers);
             expect(response.status).to.equal(404);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('h1').textContent).to.equal(':(');
         });
 
         it('returns 404 for non-existent member', async function() {
             const response = await request.get('/members/999999').set(headers);
             expect(response.status).to.equal(404);
-            const doc = jsdom(response.text);
+            const doc = new jsdom.JSDOM(response.text).window.document;
             expect(doc.querySelector('h1').textContent).to.equal(':(');
         });
     });
