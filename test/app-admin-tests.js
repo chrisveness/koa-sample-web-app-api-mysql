@@ -36,7 +36,8 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal('/password/reset-request-confirm');
             resetToken = response.headers['x-reset-token'];
-            console.info('reset token', resetToken);
+            console.info('\treset token', response.headers['x-reset-token']);
+            console.info('\tsendmail response', response.headers['x-sendmail-response']);
             // any way to test e-mail gets sent?
         });
 

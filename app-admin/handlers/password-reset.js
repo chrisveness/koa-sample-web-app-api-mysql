@@ -59,9 +59,11 @@ class PasswordResetHandlers {
         await User.update(user.UserId, { PasswordResetRequest: token });
 
         // send e-mail with generated token
-        Mail.send(email, 'password-reset.email', { firstname: user.firstname, host: ctx.host, token: token });
+        const context = { firstname: user.firstname, host: ctx.host, token: token };
+        const info = await Mail.send(email, 'password-reset.email', context);
 
-        ctx.set('X-Reset-Token', token); // for testing
+        ctx.set('X-Reset-Token', token);               // for testing
+        ctx.set('X-Sendmail-Response', info.response); // for testing
 
         ctx.redirect('/password/reset-request-confirm');
     }
