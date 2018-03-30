@@ -24,14 +24,9 @@ const app = new Koa();
 
 
 // MySQL connection pool (set up on app initialisation)
-const config = {
-    host:     process.env.DB_HOST,
-    port:     process.env.DB_PORT,
-    user:     process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-};
-global.connectionPool = mysql.createPool(config); // put in global to pass to sub-apps
+const dbConfigKeyVal = process.env.DB_CONNECTION.split(';').map(v => v.trim().split('='));
+const dbConfig = dbConfigKeyVal.reduce((config, v) => { config[v[0].toLowerCase()] = v[1]; return config; }, {});
+global.connectionPool = mysql.createPool(dbConfig); // put in global to pass to sub-apps
 
 
 /* set up middleware which will be applied to each request - - - - - - - - - - - - - - - - - - -  */
@@ -105,7 +100,7 @@ app.use(async function composeSubapp(ctx) { // note no 'next' after composed sub
 
 
 app.listen(process.env.PORT||3000);
-console.info(`${process.version} listening on port ${process.env.PORT||3000} (${app.env}/${config.database})`);
+console.info(`${process.version} listening on port ${process.env.PORT||3000} (${app.env}/${dbConfig.database})`);
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */

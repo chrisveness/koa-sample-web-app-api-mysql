@@ -251,16 +251,9 @@ variables and not stored in the file system.
 
 A .env file for this project might look like:
 
-    DB_HOST     = localhost
-    DB_PORT     = 3306
-    DB_USER     = koa-sample
-    DB_PASSWORD = demo
-    DB_DATABASE = koa-sample-sandbox
+    DB_CONNECTION = Host=localhost; Port=3306; User=koa-sample; Password=demo; Database=koa-sample-sandbox
     
-    SMTP_HOST = smtp.gmail.com
-    SMTP_PORT = 587
-    SMTP_USER = me@gmail.com
-    SMTP_PASS = mypassword
+    SMTP_CONNECTION = Host=smtp.gmail.com; Port=587; User=me@gmail.com; Pass=mypassword
 
     TESTUSER = guest@user.com
     TESTPASS = guest
