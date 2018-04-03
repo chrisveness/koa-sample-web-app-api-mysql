@@ -21,8 +21,7 @@
     "node": "^8.0.0"
   },
   "dependencies": {
-    "bunyan": "^1.8.5",
-    "child-process-promise": "^2.2.0",
+    "dateformat": "^3.0.3",
     "debug": "^3.1.0",
     "dotenv": "^5.0.1",
     "forever": "^0.15.3",
@@ -34,7 +33,6 @@
     "jsonwebtoken": "^8.2.0",
     "koa": "^2.0.1",
     "koa-body": "^2.0.0",
-    "koa-bunyan": "^1.0.0",
     "koa-compose": "^4.0.0",
     "koa-compress": "^2.0.0",
     "koa-flash": "^1.0.0",
@@ -44,11 +42,13 @@
     "koa-session": "^5.8.1",
     "koa-static": "^4.0.2",
     "markdown-it": "^8.3.0",
+    "mongodb": "^3.0.5",
     "mysql2": "^1.2.0",
     "node-fetch": "^2.1.1",
     "nodejs-info": "^1.0.1",
     "nodemailer": "^4.3.1",
     "scrypt": "^6.0.3",
+    "useragent": "^2.3.0",
     "xmlify": "^1.1.0"
   },
   "devDependencies": {

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Error Logs</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <style>
+        pre  {
+            font: 80% 'Lucida Console', Consolas, Monaco, 'Andale Mono', monospace;
+            line-height: 1.2;
+            overflow: visible;
+        }
+        label:first-child { display: inline-block; min-width: 8em; }
+        .toggle { color: #999999; cursor: pointer; }
+    </style>
+    <script>
+        'use strict';
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input,select').forEach(el => el.onchange = function() {
+                this.form.submit(); // autosubmit form on change
+            });
+
+            // toggle stack trace displays
+            document.querySelectorAll('.toggle').forEach(el => el.onclick = function() {
+                this.parentElement.nextElementSibling.classList.toggle('hide');
+                this.textContent = this.textContent=='▼' ? '▲' : '▼';
+            });
+        });
+    </script>
+</head>
+<body>
+
+<header>
+
+{{>navpartial}}
+
+</header>
+
+<main>
+
+<h1>Error Logs</h1>
+
+<form>
+    <ul>
+        <li>
+            <label for="from">From</label>
+            <input type="date" name="from" id="from" value="{{filter.from}}" min="{{filterMin}}" max="{{filterMax}}">
+            <label for="to">to</label>
+            <input type="date" name="to" id="to" value="{{filter.to}}" min="{{filterMin}}" max="{{filterMax}}">
+        </li>
+    </ul>
+</form>
+
+<p class="grey">Roll mouse over URL to see query strings; hover mouse over platform to see
+    originating ip. Click ▼ to see stack trace for status 500 errors.</p>
+
+<table class="small">
+    {{#entries}}
+    <tr class="{{status-colour}}">
+        <td class="nowrap">{{time}}</td>
+        <td>{{method}}</td>
+        <td class="grey">{{host}}</td>
+        <td title="{{qs}}">{{path}}</td>
+        <td class="nowrap">{{db}}</td>
+        <td class="grey">{{user}}</td>
+        <td title="{{redir}}">{{status}}</td>
+        <td class="grey nowrap">{{ua}}</td>
+        <td class="grey nowrap" title="{{ip}}">{{os}}</td>
+        <td class="toggle {{showstack}}" title="stack trace">▼</td>
+    </tr>
+    {{#if stack}}
+    <tr class="hide">
+        <td colspan="10"><pre>{{stack}}</pre></td>
+    </tr>
+    {{/if}}
+    {{/entries}}
+</table>
+</main>
+
+</body>
+</html>

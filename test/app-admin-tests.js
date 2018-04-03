@@ -18,7 +18,7 @@ const request = supertest.agent(app.listen());
 
 const headers = { Host: 'admin.localhost:3000' }; // set host header
 
-describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
+describe(`Admin app (${app.env})`, function() {
     this.timeout(5e3); // 5 sec
 
     describe('password reset', function() {
@@ -73,7 +73,7 @@ describe('Admin app'+' ('+app.env+'/'+process.env.DB_DATABASE+')', function() {
 
         it('throws out token with valid timestamp but invalid hash', async function() {
             // the token is a timestamp in base36 and a hash separated by a hyphen
-            const [ timestamp ] = resetToken.split('-'); // (we don't need the hash here)
+            const [timestamp] = resetToken.split('-'); // (we don't need the hash here)
             const response = await request.get(`/password/reset/${timestamp}-abcdefgh`).set(headers);
             expect(response.status).to.equal(200);
             const doc = new jsdom.JSDOM(response.text).window.document;

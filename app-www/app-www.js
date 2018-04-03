@@ -9,8 +9,8 @@ const handlebars = require('koa-handlebars'); // handlebars templating
 const flash      = require('koa-flash');      // flash messages
 const lusca      = require('koa-lusca');      // security header middleware
 const serve      = require('koa-static');     // static file serving middleware
-const bunyan     = require('bunyan');         // logging
-const koaLogger  = require('koa-bunyan');     // logging
+
+const Log = require('../lib/log.js');
 
 
 const app = new Koa(); // www app
@@ -19,6 +19,16 @@ const app = new Koa(); // www app
 // serve static files (html, css, js); allow browser to cache for 1 day (note css/js req'd before login)
 const maxage = app.env=='production' ? 1000*60*60*24 : 1000;
 app.use(serve('public', { maxage: maxage }));
+
+
+// log requests (excluding static files, into mongodb capped collection)
+app.use(async function logAccess(ctx, next) {
+    const t1 = Date.now();
+    await next();
+    const t2 = Date.now();
+
+    await Log.access(ctx, t2 - t1);
+});
 
 
 // handlebars templating
@@ -92,13 +102,6 @@ app.use(async function ctxAddDomain(ctx, next) {
     ctx.state.domain = ctx.host.replace('www.', '');
     await next();
 });
-
-
-// logging
-const access = { type: 'rotating-file', path: './logs/www-access.log', level: 'trace', period: '1d', count: 4 };
-const error  = { type: 'rotating-file', path: './logs/www-error.log',  level: 'error', period: '1d', count: 4 };
-const logger = bunyan.createLogger({ name: 'www', streams: [ access, error ] });
-app.use(koaLogger(logger, {}));
 
 
 // ------------ routing

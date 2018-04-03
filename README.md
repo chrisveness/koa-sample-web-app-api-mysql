@@ -59,10 +59,14 @@ a REST API. Each of these is structured in a modular fashion; mostly each admin 
 handlers to handle GET and POST requests, and a set of handlebars templates; each API module has
 JavaScript handlers for GET, POST, PATCH, DELETE requests.
 
-The highly-structured applications I work on require ACID SQL databases with referential integrity,
-so MongoDB was out for me. MySQL and PostgreSQL should be pretty similar, but PostgreSQL is not yet
-so well supported for Koa. [Actually, I’ve since built applications using MongoDB, sometimes 
-together with MySQL for different datastores in the same application].
+The highly-structured applications I work on often require ACID SQL databases with referential 
+integrity, so MongoDB was out for me. MySQL and PostgreSQL should be pretty similar, but PostgreSQL 
+is not yet so well supported for Koa.
+
+Sometimes both SQL and object-oriented databases such as MongoDB are appropriate within the same
+app. To illustrate how simple this is, I have used MongoDB for access/error logging. And if you have 
+no need for SQL, this sample app is also good boiler-plate for purely MongoDB-based app: just remove
+the MySQL elements.
 
 For some people, a full JavaScript framework will work better. If you’re happy to plan out your own
 preferred structure, designing your own patterns means one less component to learn / conform to.
@@ -249,10 +253,11 @@ environment variables. For local development, these can be kept in a .env file (
 *.gitignore*’d, not checked in to a repository). For production, they will be set as environment 
 variables and not stored in the file system.
 
-A .env file for this project might look like:
+A .env file for this project might look something like:
 
-    DB_CONNECTION = Host=localhost; Port=3306; User=koa-sample; Password=demo; Database=koa-sample-sandbox
-    
+    DB_CONNECTION = Host=eu-cdbr-west-01.cleardb.com; User=abcdef12345678; Password=abcdef12; Database=heroku_abcdef012345678
+    DB_MONGO = mongodb://heroku_abcdefgh:abcdefghijklmnoparstuvwxyz@ds123456.mlab.com:12345/heroku_abcdefgh
+
     SMTP_CONNECTION = Host=smtp.gmail.com; Port=587; User=me@gmail.com; Pass=mypassword
 
     TESTUSER = guest@user.com

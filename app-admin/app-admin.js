@@ -11,12 +11,11 @@ const flash      = require('koa-flash');      // flash messages
 const lusca      = require('koa-lusca');      // security header middleware
 const serve      = require('koa-static');     // static file serving middleware
 const jwt        = require('jsonwebtoken');   // JSON Web Token implementation
-const bunyan     = require('bunyan');         // logging
-const koaLogger  = require('koa-bunyan');     // logging
 const koaRouter  = require('koa-router');     // router middleware for koa
 const router = koaRouter();
 
 const HandlebarsHelpers = require('../lib/handlebars-helpers.js');
+const Log               = require('../lib/log.js');
 
 
 const app = new Koa(); // admin app
@@ -25,6 +24,16 @@ const app = new Koa(); // admin app
 // serve static files (html, css, js); allow browser to cache for 1 day (note css/js req'd before login)
 const maxage = app.env=='production' ? 1000*60*60*24 : 1000;
 app.use(serve('public', { maxage: maxage }));
+
+
+// log requests (excluding static files, into mongodb capped collection)
+app.use(async function logAccess(ctx, next) {
+    const t1 = Date.now();
+    await next();
+    const t2 = Date.now();
+
+    await Log.access(ctx, t2 - t1);
+});
 
 
 // handlebars templating
@@ -45,7 +54,7 @@ app.use(async function handleErrors(ctx, next) {
     } catch (e) {
         ctx.status = e.status || 500;
         switch (ctx.status) {
-            case 401: // Unauthorised
+            case 401: // Unauthorised (eg invalid JWT auth token)
                 ctx.redirect('/login'+ctx.url);
                 break;
             case 404: // Not Found
@@ -58,12 +67,12 @@ app.use(async function handleErrors(ctx, next) {
                 break;
             default:
             case 500: // Internal Server Error
-                console.error(ctx.status, e.message);
                 const context500 = app.env=='production' ? {} : { e: e };
                 await ctx.render('500-internal-server-error', context500);
-                ctx.app.emit('error', e, ctx); // github.com/koajs/koa/wiki/Error-Handling
+                // ctx.app.emit('error', e, ctx); // github.com/koajs/koa/wiki/Error-Handling
                 break;
         }
+        await Log.error(ctx, e);
     }
 });
 
@@ -131,13 +140,6 @@ app.use(async function ctxAddDomain(ctx, next) {
 });
 
 
-// logging
-const access = { type: 'rotating-file', path: './logs/admin-access.log', level: 'trace', period: '1d', count: 4 };
-const error  = { type: 'rotating-file', path: './logs/admin-error.log',  level: 'error', period: '1d', count: 4 };
-const logger = bunyan.createLogger({ name: 'admin', streams: [ access, error ] });
-app.use(koaLogger(logger, {}));
-
-
 // ------------ routing
 
 
@@ -171,7 +173,6 @@ app.use(async function isSignedIn(ctx, next) {
 app.use(require('./routes/members-routes.js'));
 app.use(require('./routes/teams-routes.js'));
 app.use(require('./routes/ajax-routes.js'));
-app.use(require('./routes/logs-routes.js'));
 app.use(require('./routes/dev-routes.js'));
 
 
