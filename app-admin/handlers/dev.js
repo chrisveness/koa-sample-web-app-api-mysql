@@ -99,12 +99,13 @@ class Dev {
         // add in extra fields to each entry
         const entries = entriesFiltered.map(e => {
             return Object.assign(e, {
-                time: dateFormat(e._id.getTimestamp(), 'yyyy-mm-dd HH:MM:ss'),
-                path: e.url.split('?')[0] + (e.url.split('?').length>1 ? '?…' : ''),
-                qs:   e.url.split('?')[1],
-                os:   Number(e.ua.os.major) ? `${e.ua.os.family} ${e.ua.os.major}` : e.ua.os.family,
-                ua:   Number(e.ua.major) ? e.ua.family+'-'+ e.ua.major : e.ua.family,
-                ip:   e.ip,
+                time:      dateFormat(e._id.getTimestamp(), 'yyyy-mm-dd HH:MM:ss'),
+                path:      e.url.split('?')[0] + (e.url.split('?').length>1 ? '?…' : ''),
+                qs:        e.url.split('?')[1],
+                os:        Number(e.ua.os.major) ? `${e.ua.os.family} ${e.ua.os.major}` : e.ua.os.family,
+                ua:        Number(e.ua.major) ? e.ua.family+'-'+ e.ua.major : e.ua.family,
+                ip:        e.ip,
+                showstack: e.stack ? 'show' : 'hide',
             });
         });
 

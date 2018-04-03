@@ -16,15 +16,13 @@
 
 <main>
 
-{{#if msg}}
-<p>{{msg}}.</p>
+{{#if err.message}}
+<p>{{err.message}}.</p>
 {{else}}
 <p>Couldn’t find that one!...</p>
 {{/if}}
 
-{{#if e}}
-<pre class="small grey">{{e.stack}}.</pre>
-{{/if}}
+<pre class="small grey">{{err.stack}}</pre>
 
 </main>
 

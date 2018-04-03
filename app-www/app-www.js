@@ -45,21 +45,21 @@ app.use(async function handleErrors(ctx, next) {
 
         await next();
 
-    } catch (e) {
-        ctx.status = e.status || 500;
+    } catch (err) {
+        ctx.status = err.status || 500;
+        if (app.env == 'development') delete err.stack; // don't leak sensitive info!
         switch (ctx.status) {
             case 404: // Not Found
-                const context404 = { msg: e.message=='Not Found'?null:e.message };
-                await ctx.render('404-not-found', context404);
+                if (err.message == 'Not Found') err.message = null; // personalised 404
+                await ctx.render('404-not-found', { err });
                 break;
             default:
             case 500: // Internal Server Error
-                console.error(ctx.status, e.message);
-                const context500 = app.env=='production' ? {} : { e: e };
-                await ctx.render('500-internal-server-error', context500);
-                ctx.app.emit('error', e, ctx); // github.com/koajs/koa/wiki/Error-Handling
+                await ctx.render('500-internal-server-error', { err });
+                // ctx.app.emit('error', err, ctx); // github.com/koajs/koa/wiki/Error-Handling
                 break;
         }
+        await Log.error(ctx, err);
     }
 });
 
@@ -82,13 +82,13 @@ app.use(async function cleanPost(ctx, next) {
 
 
 // flash messages
-app.use(flash());
+app.use(flash()); // note koa-flash@1.0.0 is v1 middleware which generates deprecation notice
 
 
 // lusca security headers
 const luscaCspTrustedCdns = 'ajax.googleapis.com cdnjs.cloudflare.com maxcdn.bootstrapcdn.com';
 const luscaCspDefaultSrc = `'self' 'unsafe-inline' ${luscaCspTrustedCdns}`; // 'unsafe-inline' required for <style> blocks
-app.use(lusca({
+app.use(lusca({ // note koa-lusca@2.2.0 is v1 middleware which generates deprecation notice
     csp:           { policy: { 'default-src': luscaCspDefaultSrc } }, // Content-Security-Policy
     cto:           'nosniff',                                         // X-Content-Type-Options
     hsts:          { maxAge: 31536000, includeSubDomains: true },     // HTTP Strict-Transport-Security (1 year)

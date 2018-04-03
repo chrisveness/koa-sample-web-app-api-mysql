@@ -90,7 +90,7 @@ app.use(async function handleErrors(ctx, next) {
                 console.error(ctx.status, e.message);
                 ctx.body = { message: e.message, root: 'error' };
                 if (app.env != 'production') ctx.body.stack = e.stack;
-                ctx.app.emit('error', e, ctx); // github.com/koajs/koa/wiki/Error-Handling
+                // ctx.app.emit('error', e, ctx); // github.com/koajs/koa/wiki/Error-Handling
                 break;
         }
     }
