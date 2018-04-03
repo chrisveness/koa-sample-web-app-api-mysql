@@ -1,6 +1,8 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-/*  Public routes (available with no login                                                        */
+/* Public routes (available with no login                                                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+/* eslint space-in-parens: off */
 
 'use strict';
 

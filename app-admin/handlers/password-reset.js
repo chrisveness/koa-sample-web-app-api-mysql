@@ -6,8 +6,8 @@
 
 'use strict';
 
-const crypto     = require('crypto'); // nodejs.org/api/crypto.html
-const scrypt     = require('scrypt'); // scrypt library
+const crypto = require('crypto'); // nodejs.org/api/crypto.html
+const scrypt = require('scrypt'); // scrypt library
 
 const User = require('../../models/user.js');
 const Mail = require('../../lib/mail.js');
@@ -49,7 +49,7 @@ class PasswordResetHandlers {
 
         // random sha256 hash; 1st 8 chars of hash in base36 gives 42 bits of entropy
         const hash = crypto.createHash('sha256').update(Math.random().toString());
-        const rndHash = parseInt(hash.digest('hex'), 16).toString(36).slice(0,8);
+        const rndHash = parseInt(hash.digest('hex'), 16).toString(36).slice(0, 8);
         const token = now+'-'+rndHash; // note use timestamp first so it is easier to identify old tokens in db
 
         // note: do createHash() before checking if user exists to mitigate against timing attacks

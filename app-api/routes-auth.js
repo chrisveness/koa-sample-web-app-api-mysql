@@ -28,7 +28,7 @@ const User   = require('../models/user.js');
  * @apiSuccess jwt                       JSON Web Token be used for subsequent Authorization header
  */
 router.get('/auth', async function getAuth(ctx) {
-    const [user] = await User.getBy('Email', ctx.query.username);
+    const [ user ] = await User.getBy('Email', ctx.query.username);
 
     if (!user) ctx.throw(404, 'Username/password not found');
 

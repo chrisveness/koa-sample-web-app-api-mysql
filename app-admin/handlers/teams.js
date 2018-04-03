@@ -29,7 +29,7 @@ class TeamsHandlers {
 
         try {
 
-            const [teams] = await ctx.state.db.query(sql, ctx.query);
+            const [ teams ] = await ctx.state.db.query(sql, ctx.query);
 
             await ctx.render('teams-list', { teams });
 
@@ -53,7 +53,7 @@ class TeamsHandlers {
         const sql = `Select TeamMemberId, MemberId, Firstname, Lastname
                  From Member Inner Join TeamMember Using (MemberId)
                  Where TeamId = :id`;
-        const [members] = await ctx.state.db.query(sql, { id: ctx.params.id });
+        const [ members ] = await ctx.state.db.query(sql, { id: ctx.params.id });
 
         const context = team;
         context.members = members;
@@ -84,17 +84,17 @@ class TeamsHandlers {
                   From TeamMember Inner Join Member Using (MemberId)
                   Where TeamId = :id
                   Order By Firstname, Lastname`;
-        const [teamMembers] = await ctx.state.db.query(sqlT, { id: ctx.params.id });
+        const [ teamMembers ] = await ctx.state.db.query(sqlT, { id: ctx.params.id });
         team.teamMembers = teamMembers;
 
         // members not in this team (for add picklist)
         let members = team.teamMembers.map(function(m) { return m.MemberId; }); // array of id's
-        if (members.length == 0) members = [0]; // dummy to satisfy sql 'in' syntax
+        if (members.length == 0) members = [ 0 ]; // dummy to satisfy sql 'in' syntax
         const sqlM = `Select MemberId, Firstname, Lastname
                   From Member
                   Where MemberId Not In (`+members.join(',')+`)
                   Order By Firstname, Lastname`;
-        const [notTeamMembers] = await ctx.state.db.query(sqlM, members);
+        const [ notTeamMembers ] = await ctx.state.db.query(sqlM, members);
         team.notTeamMembers = notTeamMembers;
 
         const context = team;

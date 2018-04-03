@@ -45,7 +45,7 @@ app.use(compress({}));
 // only search-index www subdomain
 app.use(async function robots(ctx, next) {
     await next();
-    if (ctx.hostname.slice(0,3) != 'www') ctx.response.set('X-Robots-Tag', 'noindex, nofollow');
+    if (ctx.hostname.slice(0, 3) != 'www') ctx.response.set('X-Robots-Tag', 'noindex, nofollow');
 });
 
 
@@ -55,7 +55,7 @@ app.use(body({ multipart: true }));
 
 
 // set signed cookie keys for JWT cookie & session cookie
-app.keys = ['koa-sample-app'];
+app.keys = [ 'koa-sample-app' ];
 
 // session for flash messages (uses signed session cookies, with no server storage)
 app.use(session(app)); // note koa-session@3.4.0 is v1 middleware which generates deprecation notice

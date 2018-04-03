@@ -19,7 +19,7 @@ class Member {
      * @returns {Object} Member details.
      */
     static async get(id) {
-        const [members] = await global.db.query('Select * From Member Where MemberId = :id', { id });
+        const [ members ] = await global.db.query('Select * From Member Where MemberId = :id', { id });
         const member = members[0];
         return member;
     }
@@ -37,7 +37,7 @@ class Member {
 
             const sql = `Select * From Member Where ${field} = :${field} Order By Firstname, Lastname`;
 
-            const [members] = await global.db.query(sql, { [field]: value });
+            const [ members ] = await global.db.query(sql, { [field]: value });
 
             return members;
 
@@ -65,7 +65,7 @@ class Member {
 
         try {
 
-            const [result] = await global.db.query('Insert Into Member Set ?', [values]);
+            const [ result ] = await global.db.query('Insert Into Member Set ?', [ values ]);
             //console.log('Member.insert', result.insertId, new Date); // eg audit trail?
             return result.insertId;
 

@@ -35,7 +35,7 @@ class TeamsHandlers {
             }
             sql +=  ' Order By Name';
 
-            const [teams] = await ctx.state.db.query(sql, ctx.query);
+            const [ teams ] = await ctx.state.db.query(sql, ctx.query);
 
             if (teams.length == 0) { ctx.status = 204; return; } // No Content (preferred to returning 200 with empty list)
 
@@ -77,7 +77,7 @@ class TeamsHandlers {
 
         // team membership
         const sql = 'Select MemberId As _id, concat("/members/",MemberId) As _uri From TeamMember Where TeamId = :id';
-        const [members] = await ctx.state.db.query(sql,  { id: ctx.params.id });
+        const [ members ] = await ctx.state.db.query(sql,  { id: ctx.params.id });
         team.Members = members;
 
         ctx.body = team;

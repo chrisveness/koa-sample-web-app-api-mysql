@@ -29,7 +29,7 @@ class MembersHandlers {
 
         try {
 
-            const [members] = await ctx.state.db.query(sql, ctx.query);
+            const [ members ] = await ctx.state.db.query(sql, ctx.query);
 
             await ctx.render('members-list', { members });
 
@@ -54,7 +54,7 @@ class MembersHandlers {
         const sql = `Select TeamMemberId, TeamId, Name
                      From TeamMember Inner Join Team Using (TeamId)
                      Where MemberId = :id`;
-        const [teams] = await ctx.state.db.query(sql, { id: ctx.params.id });
+        const [ teams ] = await ctx.state.db.query(sql, { id: ctx.params.id });
 
         const context = member;
         context.teams = teams;
@@ -85,14 +85,14 @@ class MembersHandlers {
                       From TeamMember Inner Join Team Using (TeamId)
                       Where MemberId = :id
                       Order By Name`;
-        const [memberOfTeams] = await ctx.state.db.query(sqlT, { id: ctx.params.id });
+        const [ memberOfTeams ] = await ctx.state.db.query(sqlT, { id: ctx.params.id });
         member.memberOfTeams = memberOfTeams;
 
         // teams this member is not a member of (for add picklist)
         let teams = member.memberOfTeams.map(function(t) { return t.TeamId; }); // array of id's
-        if (teams.length == 0) teams = [0]; // dummy to satisfy sql 'in' syntax
+        if (teams.length == 0) teams = [ 0 ]; // dummy to satisfy sql 'in' syntax
         const sqlM = `Select TeamId, Name From Team Where TeamId Not In (${teams.join(',')}) Order By Name`;
-        const [notMemberOfTeams] = await ctx.state.db.query(sqlM, teams);
+        const [ notMemberOfTeams ] = await ctx.state.db.query(sqlM, teams);
         member.notMemberOfTeams = notMemberOfTeams;
 
         const context = member;

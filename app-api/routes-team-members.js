@@ -1,6 +1,8 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-/*  Team-members routes                                                                           */
+/* Team-members routes                                                                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+/* eslint space-in-parens: off */
 
 'use strict';
 

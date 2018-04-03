@@ -52,7 +52,7 @@ class LoginHandlers {
         const username = ctx.request.body.username;
         const password = ctx.request.body.password;
 
-        let [user] = await User.getBy('Email', username); // lookup user
+        let [ user ] = await User.getBy('Email', username); // lookup user
 
         if (user) { // verify password matches
             try {

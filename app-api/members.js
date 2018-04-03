@@ -37,7 +37,7 @@ class MembersHandlers {
             sql +=  ' Order By Firstname, Lastname';
 
             const result = await ctx.state.db.query(sql, ctx.query);
-            const [members] = castBoolean.fromMysql(result);
+            const [ members ] = castBoolean.fromMysql(result);
 
             if (members.length == 0) { ctx.status = 204; return; } // No Content (preferred to returning 200 with empty list)
 
@@ -71,7 +71,7 @@ class MembersHandlers {
      */
     static async getMemberById(ctx) {
         const result = await global.db.query('Select * From Member Where MemberId = :id', { id: ctx.params.id });
-        const [members] = castBoolean.fromMysql(result);
+        const [ members ] = castBoolean.fromMysql(result);
         const member = members[0];
 
         if (!member) ctx.throw(404, `No member ${ctx.params.id} found`); // Not Found
@@ -81,7 +81,7 @@ class MembersHandlers {
 
         // team membership
         const sql = 'Select TeamId As _id, concat("/teams/",TeamId) As _uri From TeamMember Where MemberId = :id';
-        const [teams] = await ctx.state.db.query(sql, { id: ctx.params.id });
+        const [ teams ] = await ctx.state.db.query(sql, { id: ctx.params.id });
         member.Teams = teams;
 
         ctx.body = member;

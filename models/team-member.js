@@ -20,7 +20,7 @@ class TeamMember {
      * @returns {Object} TeamMember details.
      */
     static async get(id) {
-        const [teamMembers] = await global.db.query('Select * From TeamMember Where TeamMemberId =  :id', { id });
+        const [ teamMembers ] = await global.db.query('Select * From TeamMember Where TeamMemberId =  :id', { id });
         return teamMembers[0];
     }
 
@@ -39,7 +39,7 @@ class TeamMember {
 
         try {
 
-            const [result] = await global.db.query('Insert Into TeamMember Set ?', [values]);
+            const [ result ] = await global.db.query('Insert Into TeamMember Set ?', [ values ]);
             //console.log('TeamMember.insert', result.insertId, new Date); // eg audit trail?
             return result.insertId;
 

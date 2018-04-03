@@ -72,11 +72,13 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-      "array-bracket-spacing": [ "error", "always", { "singleValue": false } ],
+      "array-bracket-spacing": [ "error", "always" ],
       "comma-dangle": [ "error", "always-multiline" ],
+      "comma-spacing": [ "error" ],
       "curly": [ "error", "multi-line" ],
       "indent": [ "error", 4, { "SwitchCase": 1 } ],
       "key-spacing": [ "error", { "align": "value" } ],
+      "keyword-spacing": [ "error" ],
       "no-case-declarations": "off",
       "no-console": [ "warn", { "allow": [ "error", "info" ] } ],
       "no-redeclare": "warn",
@@ -88,6 +90,8 @@
       "quotes": [ "error", "single", "avoid-escape" ],
       "require-await": "error",
       "semi": [ "error", "always" ],
+      "space-before-blocks": [ "error", "always" ],
+      "space-in-parens": [ "error" ],
       "strict": [ "error", "global" ]
     }
   }
