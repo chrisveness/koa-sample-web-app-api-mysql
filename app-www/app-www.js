@@ -47,7 +47,7 @@ app.use(async function handleErrors(ctx, next) {
 
     } catch (err) {
         ctx.status = err.status || 500;
-        if (app.env == 'development') delete err.stack; // don't leak sensitive info!
+        if (app.env == 'production') delete err.stack; // don't leak sensitive info!
         switch (ctx.status) {
             case 404: // Not Found
                 if (err.message == 'Not Found') err.message = null; // personalised 404

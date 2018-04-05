@@ -53,7 +53,7 @@ app.use(async function handleErrors(ctx, next) {
 
     } catch (err) {
         ctx.status = err.status || 500;
-        if (app.env == 'development') delete err.stack; // don't leak sensitive info!
+        if (app.env == 'production') delete err.stack; // don't leak sensitive info!
         switch (ctx.status) {
             case 401: // Unauthorised (eg invalid JWT auth token)
                 ctx.redirect('/login'+ctx.url);
@@ -67,7 +67,7 @@ app.use(async function handleErrors(ctx, next) {
                 await ctx.render('400-bad-request', { err });
                 break;
             default:
-            case 500: // Internal Server Error
+            case 500: // Internal Server Error (for uncaught or programming errors)
                 await ctx.render('500-internal-server-error', { err });
                 // ctx.app.emit('error', err, ctx); // github.com/koajs/koa/wiki/Error-Handling
                 break;
