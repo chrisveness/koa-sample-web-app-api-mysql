@@ -71,8 +71,8 @@ app.use(async function handleErrors(ctx, next) {
 
         await next();
 
-    } catch (e) {
-        ctx.status = e.status || 500;
+    } catch (err) {
+        ctx.status = err.status || 500;
         switch (ctx.status) {
             case 204: // No Content
                 break;
@@ -83,16 +83,17 @@ app.use(async function handleErrors(ctx, next) {
             case 404: // Not Found
             case 406: // Not Acceptable
             case 409: // Conflict
-                ctx.body = { message: e.message, root: 'error' };
+                ctx.body = { message: err.message, root: 'error' };
                 break;
             default:
             case 500: // Internal Server Error (for uncaught or programming errors)
-                console.error(ctx.status, e.message);
-                ctx.body = { message: e.message, root: 'error' };
-                if (app.env != 'production') ctx.body.stack = e.stack;
-                // ctx.app.emit('error', e, ctx); // github.com/koajs/koa/wiki/Error-Handling
+                console.error(ctx.status, err.message);
+                ctx.body = { message: err.message, root: 'error' };
+                if (app.env != 'production') ctx.body.stack = err.stack;
+                // ctx.app.emit('error', err, ctx); // github.com/koajs/koa/wiki/Error-Handling
                 break;
         }
+        await Log.error(ctx, err);
     }
 });
 
