@@ -49,6 +49,7 @@ class Dev {
         const entries = entriesFiltered.map(e => {
             return Object.assign(e, {
                 time:  dateFormat(e._id.getTimestamp(), 'yyyy-mm-dd HH:MM:ss'),
+                host:  e.host.replace('koa-sample-app.movable-type.co.uk', ''),
                 path:  e.url.split('?')[0] + (e.url.split('?').length>1 ? '?…' : ''),
                 qs:    e.url.split('?')[1],
                 os:    Number(e.ua.os.major) ? `${e.ua.os.family} ${e.ua.os.major}` : e.ua.os.family,
@@ -100,6 +101,7 @@ class Dev {
         const entries = entriesFiltered.map(e => {
             return Object.assign(e, {
                 time:      dateFormat(e._id.getTimestamp(), 'yyyy-mm-dd HH:MM:ss'),
+                host:      e.host.replace('koa-sample-app.movable-type.co.uk', ''),
                 path:      e.url.split('?')[0] + (e.url.split('?').length>1 ? '?…' : ''),
                 qs:        e.url.split('?')[1],
                 os:        Number(e.ua.os.major) ? `${e.ua.os.family} ${e.ua.os.major}` : e.ua.os.family,
