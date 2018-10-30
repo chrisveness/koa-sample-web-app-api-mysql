@@ -8,7 +8,8 @@
 
 const supertest = require('supertest');   // SuperAgent driven library for testing HTTP servers
 const expect    = require('chai').expect; // BDD/TDD assertion library
-require('mocha');                         // simple, flexible, fun test framework
+const dotenv    = require('dotenv');      // load environment variables from a .env file into process.env
+dotenv.config();
 
 const app = require('../app.js');
 

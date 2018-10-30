@@ -21,8 +21,6 @@ const debug    = require('debug')('app');   // small debugging utility
 
 const MongoClient = MongoDB.MongoClient;
 
-require('dotenv').config(); // loads environment variables from .env file (if available - eg dev env)
-
 const app = new Koa();
 
 

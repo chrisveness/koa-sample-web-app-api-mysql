@@ -11,8 +11,8 @@
   "main": "app.js",
   "scripts": {
     "start": "forever --minUptime 1000 --spinSleepTime 1000 app.js",
-    "start-dev": "nodemon -e js,json,html app.js",
-    "start-devtools": "nodemon --inspect -e js,json,html app.js",
+    "start-dev": "nodemon -e js,json,html -r dotenv/config app.js",
+    "start-devtools": "nodemon --inspect -e js,json,html -r dotenv/config app.js",
     "test": "mocha --exit test/*.js",
     "lint": "eslint --ignore-pattern app-api/apidoc .",
     "apidoc": "apidoc -i app-api -o app-api/apidoc/apidoc"
@@ -23,7 +23,6 @@
   "dependencies": {
     "dateformat": "^3.0.3",
     "debug": "^3.1.0",
-    "dotenv": "^5.0.1",
     "forever": "^0.15.3",
     "fs-extra": "5.0.0",
     "handlebars": "^4.0.11",
@@ -54,6 +53,7 @@
   "devDependencies": {
     "apidoc": "^0.17.5",
     "chai": "^4.1.2",
+    "dotenv": "^6.1.0",
     "eslint": "^4.19.1",
     "mocha": "^5.0.5",
     "nodemon": "^1.11.0",
