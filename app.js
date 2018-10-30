@@ -58,7 +58,7 @@ app.use(body({ multipart: true }));
 app.keys = [ 'koa-sample-app' ];
 
 // session for flash messages (uses signed session cookies, with no server storage)
-app.use(session(app)); // note koa-session@3.4.0 is v1 middleware which generates deprecation notice
+app.use(session(app));
 
 
 // sometimes useful to be able to track each request...
@@ -113,7 +113,7 @@ global.connectionPool = mysql.createPool(dbConfig); // put in global to pass to 
 
 // MongoDB connection pool (set up on app initialisation) - mongo has no synchronous connect, so emit
 // 'mongodbReady' when connected (note mongodbReady lister has to be set before event is emitted)
-MongoClient.connect(process.env.DB_MONGO)
+MongoClient.connect(process.env.DB_MONGO, { useNewUrlParser: true })
     .then(client => {
         global.mongoDb = client.db(client.s.options.dbName);
         // if empty db, create capped collections for logs (if not createCollection() calls do nothing)
