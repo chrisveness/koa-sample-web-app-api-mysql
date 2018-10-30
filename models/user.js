@@ -6,7 +6,7 @@
 
 'use strict';
 
-const Lib        = require('../lib/lib.js');
+const Log        = require('../lib/log.js');
 const ModelError = require('./modelerror.js');
 
 
@@ -44,7 +44,7 @@ class User {
         } catch (e) {
             switch (e.code) {
                 case 'ER_BAD_FIELD_ERROR': throw new ModelError(403, 'Unrecognised User field '+field);
-                default: Lib.logException('User.getBy', e); throw new ModelError(500, e.message);
+                default: Log.exception('User.getBy', e); throw new ModelError(500, e.message);
             }
         }
     }
@@ -75,7 +75,7 @@ class User {
                 case 'ER_BAD_FIELD_ERROR':
                     throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
-                    Lib.logException('User.insert', e);
+                    Log.exception('User.insert', e);
                     throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
@@ -105,7 +105,7 @@ class User {
                 case 'ER_BAD_FIELD_ERROR':
                     throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
-                    Lib.logException('User.update', e);
+                    Log.exception('User.update', e);
                     throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
@@ -127,7 +127,7 @@ class User {
         } catch (e) {
             switch (e.code) {
                 default:
-                    Lib.logException('User.delete', e);
+                    Log.exception('User.delete', e);
                     throw new ModelError(500, e.message); // Internal Server Error
             }
         }

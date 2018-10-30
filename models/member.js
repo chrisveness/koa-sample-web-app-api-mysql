@@ -6,7 +6,7 @@
 
 'use strict';
 
-const Lib        = require('../lib/lib.js');
+const Log        = require('../lib/log.js');
 const ModelError = require('./modelerror.js');
 
 
@@ -44,7 +44,7 @@ class Member {
         } catch (e) {
             switch (e.code) {
                 case 'ER_BAD_FIELD_ERROR': throw new ModelError(403, 'Unrecognised Member field '+field);
-                default: Lib.logException('Member.getBy', e); throw new ModelError(500, e.message);
+                default: Log.exception('Member.getBy', e); throw new ModelError(500, e.message);
             }
         }
     }
@@ -80,7 +80,7 @@ class Member {
                 case 'ER_BAD_FIELD_ERROR':
                     throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
-                    Lib.logException('Member.insert', e);
+                    Log.exception('Member.insert', e);
                     throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
@@ -115,7 +115,7 @@ class Member {
                 case 'ER_BAD_FIELD_ERROR':
                     throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
-                    Lib.logException('Member.update', e);
+                    Log.exception('Member.update', e);
                     throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
@@ -141,7 +141,7 @@ class Member {
                     // related record exists in TeamMember
                     throw new ModelError(403, 'Member belongs to team(s)'); // Forbidden
                 default:
-                    Lib.logException('Member.delete', e);
+                    Log.exception('Member.delete', e);
                     throw new ModelError(500, e.message); // Internal Server Error
             }
         }

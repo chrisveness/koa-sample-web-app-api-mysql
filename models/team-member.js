@@ -6,7 +6,7 @@
 
 'use strict';
 
-const Lib        = require('../lib/lib.js');
+const Log        = require('../lib/log.js');
 const ModelError = require('./modelerror.js');
 
 
@@ -54,7 +54,7 @@ class TeamMember {
                 case 'ER_BAD_FIELD_ERROR':
                     throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
-                    Lib.logException('TeamMember.insert', e);
+                    Log.exception('TeamMember.insert', e);
                     throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
@@ -84,7 +84,7 @@ class TeamMember {
                 case 'ER_BAD_FIELD_ERROR':
                     throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
-                    Lib.logException('TeamMember.update', e);
+                    Log.exception('TeamMember.update', e);
                     throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
@@ -109,7 +109,7 @@ class TeamMember {
                     // recognised errors for TeamMember.update - just use default MySQL messages for now
                     throw new ModelError(403, e.message); // Forbidden
                 default:
-                    Lib.logException('TeamMember.delete', e);
+                    Log.exception('TeamMember.delete', e);
                     throw new ModelError(500, e.message); // Internal Server Error
             }
         }

@@ -6,7 +6,7 @@
 
 'use strict';
 
-const Lib        = require('../lib/lib.js');
+const Log        = require('../lib/log.js');
 const ModelError = require('./modelerror.js');
 
 
@@ -44,7 +44,7 @@ class Team {
         } catch (e) {
             switch (e.code) {
                 case 'ER_BAD_FIELD_ERROR': throw new ModelError(403, 'Unrecognised Team field '+field);
-                default: Lib.logException('Member.getBy', e); throw new ModelError(500, e.message);
+                default: Log.exception('Member.getBy', e); throw new ModelError(500, e.message);
             }
         }
     }
@@ -75,7 +75,7 @@ class Team {
                 case 'ER_BAD_FIELD_ERROR':
                     throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
-                    Lib.logException('Team.insert', e);
+                    Log.exception('Team.insert', e);
                     throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
@@ -105,7 +105,7 @@ class Team {
                 case 'ER_BAD_FIELD_ERROR':
                     throw new ModelError(500, e.message); // Internal Server Error for programming errors
                 default:
-                    Lib.logException('Team.update', e);
+                    Log.exception('Team.update', e);
                     throw new ModelError(500, e.message); // Internal Server Error for uncaught exception
             }
         }
@@ -131,7 +131,7 @@ class Team {
                     // related record exists in TeamMember
                     throw new ModelError(403, 'Cannot delete team with members'); // Forbidden
                 default:
-                    Lib.logException('Team.delete', e);
+                    Log.exception('Team.delete', e);
                     throw new ModelError(500, e.message); // Internal Server Error
             }
         }
