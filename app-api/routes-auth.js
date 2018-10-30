@@ -6,7 +6,7 @@
 
 const router = require('koa-router')(); // router middleware for koa
 const jwt    = require('jsonwebtoken'); // JSON Web Token implementation
-const scrypt = require('scrypt');       // scrypt library
+const Scrypt = require('scrypt-kdf');   // scrypt key derivation function
 
 const User   = require('../models/user.js');
 
@@ -28,25 +28,25 @@ const User   = require('../models/user.js');
  * @apiSuccess jwt                       JSON Web Token be used for subsequent Authorization header
  */
 router.get('/auth', async function getAuth(ctx) {
-    const [ user ] = await User.getBy('Email', ctx.query.username);
+    let [ user ] = await User.getBy('Email', ctx.query.username);
 
-    if (!user) ctx.throw(404, 'Username/password not found');
-
-    // check password
+    // always invoke verify() (whether email found or not) to mitigate against timing attacks on login function
+    const passwordHash = user ? user.Password : '0123456789abcdef'.repeat(8);
+    let passwordMatch = null;
     try {
-        const match = await scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), ctx.query.password);
-
-        if (!match) ctx.throw(404, 'Username/password not found');
-
-        const payload = {
-            id:   user.UserId,                         // to get user details
-            role: user.Role.slice(0, 1).toLowerCase(), // make role available without db query
-        };
-        const token = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
-        ctx.body = { jwt: token, root: 'Auth' };
-    } catch (e) { // e.g. "data is not a valid scrypt-encrypted block"
-        ctx.throw(404, 'Username/password not found');
+        passwordMatch = await Scrypt.verify(passwordHash, ctx.query.password);
+    } catch (e) {
+        user = null; // e.g. "Invalid key"
     }
+
+    if (!user || !passwordMatch) ctx.throw(404, 'Username/password not found');
+
+    const payload = {
+        id:   user.UserId,                         // to get user details
+        role: user.Role.slice(0, 1).toLowerCase(), // make role available without db query
+    };
+    const token = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
+    ctx.body = { jwt: token, root: 'Auth' };
 });
 
 

@@ -18,7 +18,7 @@
     "apidoc": "apidoc -i app-api -o app-api/apidoc/apidoc"
   },
   "engines": {
-    "node": "^8.0.0"
+    "node": "^10.5.0"
   },
   "dependencies": {
     "dateformat": "^3.0.3",
@@ -47,7 +47,7 @@
     "node-fetch": "^2.1.1",
     "nodejs-info": "^1.0.1",
     "nodemailer": "^4.3.1",
-    "scrypt": "^6.0.3",
+    "scrypt-kdf": "^1.0.1",
     "useragent": "^2.3.0",
     "xmlify": "^1.1.0"
   },

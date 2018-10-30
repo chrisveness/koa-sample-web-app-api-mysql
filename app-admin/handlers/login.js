@@ -6,7 +6,7 @@
 
 'use strict';
 
-const scrypt = require('scrypt');       // scrypt library
+const Scrypt = require('scrypt-kdf');   // scrypt key derivation function
 const jwt    = require('jsonwebtoken'); // JSON Web Token implementation
 
 const User = require('../../models/user.js');
@@ -49,47 +49,46 @@ class LoginHandlers {
      * obvious), and whether the token can be renewed for a ‘remember-me’ function.
      */
     static async postLogin(ctx) {
-        const username = ctx.request.body.username;
-        const password = ctx.request.body.password;
+        const body = ctx.request.body;
 
-        let [ user ] = await User.getBy('Email', username); // lookup user
+        let [ user ] = await User.getBy('Email', body.username); // lookup user
 
-        if (user) { // verify password matches
-            try {
-                const match = await scrypt.verifyKdf(Buffer.from(user.Password, 'base64'), password);
-                if (!match) user = null; // bad password
-            } catch (e) {
-                user = null; // e.g. "data is not a valid scrypt-encrypted block"
-            }
+        // always invoke verify() (whether email found or not) to mitigate against timing attacks on login function
+        const passwordHash = user ? user.Password : '0123456789abcdef'.repeat(8);
+        let passwordMatch = null;
+        try {
+            passwordMatch = await Scrypt.verify(passwordHash, body.password);
+        } catch (e) {
+            user = null; // e.g. "Invalid key"
         }
 
-        if (user) {
-            // submitted credentials validate: create JWT & record it in a cookie
-
-            const payload = {
-                id:       user.UserId,                                    // to get user details
-                role:     user.Role.slice(0, 1).toLowerCase(),            // make role available without db query
-                remember: ctx.request.body['remember-me'] ? true : false, // whether token can be renewed
-            };
-            const token = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
-
-            // record the jwt payload in ctx.state.user
-            ctx.state.user = payload;
-
-            // record token in signed cookie; if 'remember-me', set cookie for 1 week, otherwise set session only
-            const options = { signed: true };
-            if (ctx.request.body['remember-me']) options.expires = new Date(Date.now() + 1000*60*60*24*7);
-
-            ctx.cookies.set('koa:jwt', token, options);
-
-            // if we were provided with a redirect URL after the /login, redirect there, otherwise /
-            ctx.redirect(ctx.url=='/login' ? '/' : ctx.url.replace('/login', ''));
-        } else {
+        if (!user || !passwordMatch) {
             // login failed: redisplay login page with login fail message
             const loginfailmsg = 'E-mail / password not recognised';
-            ctx.flash = { formdata: ctx.request.body, loginfailmsg: loginfailmsg };
-            ctx.redirect(ctx.url);
+            ctx.flash = { formdata: body, loginfailmsg: loginfailmsg };
+            return ctx.redirect(ctx.url);
         }
+
+        // submitted credentials validate: create JWT & record it in a cookie to 'log in' user
+
+        const payload = {
+            id:       user.UserId,                         // to get user details
+            role:     user.Role.slice(0, 1).toLowerCase(), // make role available without db query
+            remember: body['remember-me'] ? true : false,  // whether token can be renewed
+        };
+        const token = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
+
+        // record the jwt payload in ctx.state.user
+        ctx.state.user = payload;
+
+        // record token in signed cookie; if 'remember-me', set cookie for 1 week, otherwise set session only
+        const options = { signed: true };
+        if (body['remember-me']) options.expires = new Date(Date.now() + 1000*60*60*24*7);
+
+        ctx.cookies.set('koa:jwt', token, options);
+
+        // if we were provided with a redirect URL after the /login, redirect there, otherwise /
+        ctx.redirect(ctx.url=='/login' ? '/' : ctx.url.replace('/login', ''));
     }
 
 }

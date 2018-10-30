@@ -6,8 +6,8 @@
 
 'use strict';
 
-const crypto = require('crypto'); // nodejs.org/api/crypto.html
-const scrypt = require('scrypt'); // scrypt library
+const crypto = require('crypto');     // nodejs.org/api/crypto.html
+const Scrypt = require('scrypt-kdf'); // scrypt key derivation function
 
 const User = require('../../models/user.js');
 const Mail = require('../../lib/mail.js');
@@ -114,8 +114,8 @@ class PasswordResetHandlers {
         }
 
         // set the password and clear the password reset token
-        const password = await scrypt.kdf(ctx.request.body.password, await scrypt.params(0.5));
-        await User.update(user.UserId, { password: password.toString('base64'), PasswordResetRequest: null });
+        const password = await Scrypt.kdf(ctx.request.body.password, { logN: 15 });
+        await User.update(user.UserId, { password: password, PasswordResetRequest: null });
 
         ctx.redirect('/password/reset/confirm');
     }
