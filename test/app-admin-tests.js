@@ -38,10 +38,8 @@ describe(`Admin app (${app.env})`, function() {
             const response = await appAdmin.post('/password/reset-request').send({ email: testuser });
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal('/password/reset-request-confirm');
-            console.info('\tsendmail response', response.headers['x-sendmail-response']);
             resetToken = response.headers['x-reset-token'];
             console.info('\treset token', resetToken);
-            // any way to test e-mail gets sent?
         });
 
         it('sees password reset request confirmation page', async function() {
