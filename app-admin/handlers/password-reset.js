@@ -42,7 +42,7 @@ class PasswordResetHandlers {
     static async processRequest(ctx) {
         const email = ctx.request.body.email;
 
-        const [ user ] = await User.getBy('email', email);
+        const [ user ] = await User.getBy('Email', email);
 
         // current timestamp for token expiry in base36
         const now = Math.floor(Date.now()/1000).toString(36);
@@ -59,10 +59,10 @@ class PasswordResetHandlers {
         await User.update(user.UserId, { PasswordResetRequest: token });
 
         // send e-mail with generated token
-        const context = { firstname: user.firstname, host: ctx.host, token: token };
+        const context = { firstname: user.Firstname, host: ctx.host, token: token };
         const info = await Mail.send(email, 'password-reset.email', context);
 
-        ctx.set('X-Reset-Token', token);               // for testing
+        ctx.set('X-Reset-Token', token); // for testing
         ctx.set('X-Sendmail-Response', info.response); // for testing
 
         ctx.redirect('/password/reset-request-confirm');
