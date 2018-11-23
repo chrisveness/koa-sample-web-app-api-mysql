@@ -31,7 +31,7 @@ class LoginHandlers {
      */
     static getLogout(ctx) {
         ctx.cookies.set('koa:jwt', null, { signed: true }); // delete the cookie holding the JSON Web Token
-        ctx.redirect('/');
+        ctx.response.redirect('/');
     }
 
 
@@ -66,7 +66,7 @@ class LoginHandlers {
             // login failed: redisplay login page with login fail message
             const loginfailmsg = 'E-mail / password not recognised';
             ctx.flash = { formdata: body, loginfailmsg: loginfailmsg };
-            return ctx.redirect(ctx.url);
+            return ctx.response.redirect(ctx.request.url);
         }
 
         // submitted credentials validate: create JWT & record it in a cookie to 'log in' user
@@ -88,7 +88,7 @@ class LoginHandlers {
         ctx.cookies.set('koa:jwt', token, options);
 
         // if we were provided with a redirect URL after the /login, redirect there, otherwise /
-        ctx.redirect(ctx.url=='/login' ? '/' : ctx.url.replace('/login', ''));
+        ctx.response.redirect(ctx.request.url=='/login' ? '/' : ctx.request.url.replace('/login', ''));
     }
 
 }

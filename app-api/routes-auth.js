@@ -28,13 +28,13 @@ const User   = require('../models/user.js');
  * @apiSuccess jwt                       JSON Web Token be used for subsequent Authorization header
  */
 router.get('/auth', async function getAuth(ctx) {
-    let [ user ] = await User.getBy('Email', ctx.query.username);
+    let [ user ] = await User.getBy('Email', ctx.request.query.username);
 
     // always invoke verify() (whether email found or not) to mitigate against timing attacks on login function
     const passwordHash = user ? user.Password : '0123456789abcdef'.repeat(8);
     let passwordMatch = null;
     try {
-        passwordMatch = await Scrypt.verify(passwordHash, ctx.query.password);
+        passwordMatch = await Scrypt.verify(passwordHash, ctx.request.query.password);
     } catch (e) {
         user = null; // e.g. "Invalid key"
     }
@@ -46,7 +46,7 @@ router.get('/auth', async function getAuth(ctx) {
         role: user.Role.slice(0, 1).toLowerCase(), // make role available without db query
     };
     const token = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
-    ctx.body = { jwt: token, root: 'Auth' };
+    ctx.response.body = { jwt: token, root: 'Auth' };
 });
 
 

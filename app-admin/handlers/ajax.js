@@ -29,25 +29,25 @@ const handler = {};
  * It uses the same JSON Web Token to authenticate as was used for website sign-in.
  */
 handler.ajaxApiPassthrough = async function(ctx) {
-    const resource = ctx.url.replace('/ajax/', '');
-    const host = ctx.host.replace('admin', 'api');
-    const url = ctx.protocol+'://'+host+'/'+resource;
+    const resource = ctx.request.url.replace('/ajax/', '');
+    const host = ctx.request.host.replace('admin', 'api');
+    const url = ctx.request.protocol+'://'+host+'/'+resource;
 
     const body = JSON.stringify(ctx.request.body)=='{}' ? null : JSON.stringify(ctx.request.body);
     const hdrs = {
         'Content-Type':  'application/json',
-        'Accept':        ctx.header.accept || '*/*',
+        'Accept':        ctx.request.header.accept || '*/*',
         'Authorization': 'Bearer '+ctx.state.user.jwt,
     };
 
     try {
-        const response = await fetch(url, { method: ctx.method, body: body, headers: hdrs });
+        const response = await fetch(url, { method: ctx.request.method, body: body, headers: hdrs });
         const json = response.headers.get('content-type').match(/application\/json/);
-        ctx.status = response.status;
-        ctx.body = json ? await response.json() : await response.text();
+        ctx.response.status = response.status;
+        ctx.response.body = json ? await response.json() : await response.text();
     } catch (e) { // eg offline, DNS fail, etc
-        ctx.status = 500;
-        ctx.body = e.message;
+        ctx.response.status = 500;
+        ctx.response.body = e.message;
     }
 };
 

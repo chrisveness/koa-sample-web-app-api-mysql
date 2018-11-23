@@ -29,23 +29,23 @@ class TeamsHandlers {
 
             let sql = 'Select * From Team';
             // query-string filters?
-            if (ctx.querystring) {
-                const filter = Object.keys(ctx.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+            if (ctx.request.querystring) {
+                const filter = Object.keys(ctx.request.query).map(function(q) { return q+' = :'+q; }).join(' and ');
                 sql += ' Where '+filter;
             }
             sql +=  ' Order By Name';
 
-            const [ teams ] = await ctx.state.db.query(sql, ctx.query);
+            const [ teams ] = await ctx.state.db.query(sql, ctx.request.query);
 
-            if (teams.length == 0) { ctx.status = 204; return; } // No Content (preferred to returning 200 with empty list)
+            if (teams.length == 0) { ctx.response.status = 204; return; } // No Content (preferred to returning 200 with empty list)
 
             // just id & uri attributes in list
             for (let m=0; m<teams.length; m++) {
                 teams[m] = { _id: teams[m].TeamId, _uri: '/teams/'+teams[m].TeamId };
             }
 
-            ctx.body = teams;
-            ctx.body.root = 'Teams';
+            ctx.response.body = teams;
+            ctx.response.body.root = 'Teams';
 
         } catch (e) {
             switch (e.code) {
@@ -80,8 +80,8 @@ class TeamsHandlers {
         const [ members ] = await ctx.state.db.query(sql,  { id: ctx.params.id });
         team.Members = members;
 
-        ctx.body = team;
-        ctx.body.root = 'Team';
+        ctx.response.body = team;
+        ctx.response.body.root = 'Team';
     }
 
 
@@ -103,10 +103,10 @@ class TeamsHandlers {
 
         const id = await Team.insert(ctx.request.body);
 
-        ctx.body = await Team.get(id); // return created team details
-        ctx.body.root = 'Team';
-        ctx.set('Location', '/teams/'+id);
-        ctx.status = 201; // Created
+        ctx.response.body = await Team.get(id); // return created team details
+        ctx.response.body.root = 'Team';
+        ctx.response.set('Location', '/teams/'+id);
+        ctx.response.status = 201; // Created
     }
 
 
@@ -130,10 +130,10 @@ class TeamsHandlers {
         await Team.update(ctx.params.id, ctx.request.body);
 
         // return updated team details
-        ctx.body = await Team.get(ctx.params.id);
-        if (!ctx.body) ctx.throw(404, `No team ${ctx.params.id} found`); // Not Found
+        ctx.response.body = await Team.get(ctx.params.id);
+        if (!ctx.response.body) ctx.throw(404, `No team ${ctx.params.id} found`); // Not Found
 
-        ctx.body.root = 'Team';
+        ctx.response.body.root = 'Team';
     }
 
 
@@ -158,8 +158,8 @@ class TeamsHandlers {
 
         await Team.delete(ctx.params.id);
 
-        ctx.body = team; // deleted team details
-        ctx.body.root = 'Team';
+        ctx.response.body = team; // deleted team details
+        ctx.response.body.root = 'Team';
     }
 
 

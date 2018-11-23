@@ -15,7 +15,7 @@ class Dev {
      * Information about current Node versions.
      */
     static nodeinfo(ctx) {
-        ctx.body = nodeinfo(ctx.req);
+        ctx.response.body = nodeinfo(ctx.req);
     }
 
 
@@ -31,19 +31,19 @@ class Dev {
         // 'from' defaults to later of first entry or 1 month ago
         const oldest = entriesAll.reduce((old, e) => e._id.getTimestamp()<old ? e._id.getTimestamp() : old, new Date());
         const monthAgo = new Date(); monthAgo.setMonth(new Date().getMonth() - 1);
-        ctx.query.from = ctx.query.from || dateFormat(oldest<monthAgo ? monthAgo : oldest, 'yyyy-mm-dd');
+        ctx.request.query.from = ctx.request.query.from || dateFormat(oldest<monthAgo ? monthAgo : oldest, 'yyyy-mm-dd');
 
         // 'to' defaults to today
-        ctx.query.to = ctx.query.to || dateFormat('yyyy-mm-dd');
+        ctx.request.query.to = ctx.request.query.to || dateFormat('yyyy-mm-dd');
         // filter needs 1 day added to 'to' to made it end of the day
-        const toFilter = new Date(ctx.query.to); toFilter.setDate(toFilter.getDate() + 1);
+        const toFilter = new Date(ctx.request.query.to); toFilter.setDate(toFilter.getDate() + 1);
 
         // filter results according to query string
         const entriesFiltered = entriesAll
-            .filter(e => ctx.query.from ? e._id.getTimestamp() >= new Date(ctx.query.from) : true)
-            .filter(e => ctx.query.to ? e._id.getTimestamp() <= toFilter : true)
-            .filter(e => ctx.query.app ? RegExp('^'+ctx.query.app).test(e.host) : true)
-            .filter(e => ctx.query.time ? e.ms > ctx.query.time : true);
+            .filter(e => ctx.request.query.from ? e._id.getTimestamp() >= new Date(ctx.request.query.from) : true)
+            .filter(e => ctx.request.query.to ? e._id.getTimestamp() <= toFilter : true)
+            .filter(e => ctx.request.query.app ? RegExp('^'+ctx.request.query.app).test(e.host) : true)
+            .filter(e => ctx.request.query.time ? e.ms > ctx.request.query.time : true);
 
         // add in extra fields to each entry
         const entries = entriesFiltered.map(e => {
@@ -60,11 +60,11 @@ class Dev {
         });
 
         // for display, time defaults to 0
-        ctx.query.time = ctx.query.time || '0';
+        ctx.request.query.time = ctx.request.query.time || '0';
 
         const context = {
             entries:   entries,
-            filter:    ctx.query,
+            filter:    ctx.request.query,
             filterMin: dateFormat(oldest, 'yyyy-mm-dd'),
             filterMax: dateFormat('yyyy-mm-dd'),
         };
@@ -85,17 +85,17 @@ class Dev {
         // 'from' defaults to later of first entry or 1 month ago
         const oldest = entriesAll.reduce((old, e) => e._id.getTimestamp()<old ? e._id.getTimestamp() : old, new Date());
         const monthAgo = new Date(); monthAgo.setMonth(new Date().getMonth() - 1);
-        ctx.query.from = ctx.query.from || dateFormat(oldest<monthAgo ? monthAgo : oldest, 'yyyy-mm-dd');
+        ctx.request.query.from = ctx.request.query.from || dateFormat(oldest<monthAgo ? monthAgo : oldest, 'yyyy-mm-dd');
 
         // 'to' defaults to today
-        ctx.query.to = ctx.query.to || dateFormat('yyyy-mm-dd');
+        ctx.request.query.to = ctx.request.query.to || dateFormat('yyyy-mm-dd');
         // filter needs 1 day added to 'to' to made it end of the day
-        const toFilter = new Date(ctx.query.to); toFilter.setDate(toFilter.getDate() + 1);
+        const toFilter = new Date(ctx.request.query.to); toFilter.setDate(toFilter.getDate() + 1);
 
         // filter results according to query string
         const entriesFiltered = entriesAll
-            .filter(e => ctx.query.from ? e._id.getTimestamp() >= new Date(ctx.query.from) : true)
-            .filter(e => ctx.query.to ? e._id.getTimestamp() <= toFilter : true);
+            .filter(e => ctx.request.query.from ? e._id.getTimestamp() >= new Date(ctx.request.query.from) : true)
+            .filter(e => ctx.request.query.to ? e._id.getTimestamp() <= toFilter : true);
 
         // add in extra fields to each entry
         const entries = entriesFiltered.map(e => {
@@ -112,11 +112,11 @@ class Dev {
         });
 
         // for display, time defaults to 0
-        ctx.query.time = ctx.query.time || '0';
+        ctx.request.query.time = ctx.request.query.time || '0';
 
         const context = {
             entries:   entries,
-            filter:    ctx.query,
+            filter:    ctx.request.query,
             filterMin: dateFormat(oldest, 'yyyy-mm-dd'),
             filterMax: dateFormat('yyyy-mm-dd'),
         };

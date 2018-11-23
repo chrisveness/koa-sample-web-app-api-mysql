@@ -36,27 +36,27 @@ app.use(async function logAccess(ctx, next) {
 app.use(async function contentNegotiation(ctx, next) {
     await next();
 
-    if (!ctx.body) return; // no content to return
+    if (!ctx.response.body) return; // no content to return
 
     // check Accept header for preferred response type
-    const type = ctx.accepts('json', 'xml', 'yaml', 'text');
+    const type = ctx.request.accepts('json', 'xml', 'yaml', 'text');
 
     switch (type) {
         case 'json':
         default:
-            delete ctx.body.root; // xml root element
+            delete ctx.response.body.root; // xml root element
             break; // ... koa takes care of type
         case 'xml':
-            ctx.type = type;
-            const root = ctx.body.root; // xml root element
-            delete ctx.body.root;
-            ctx.body = xmlify(ctx.body, root);
+            ctx.response.type = type;
+            const root = ctx.response.body.root; // xml root element
+            delete ctx.response.body.root;
+            ctx.response.body = xmlify(ctx.response.body, root);
             break;
         case 'yaml':
         case 'text':
-            delete ctx.body.root; // xml root element
-            ctx.type = 'yaml';
-            ctx.body = yaml.dump(ctx.body);
+            delete ctx.response.body.root; // xml root element
+            ctx.response.type = 'yaml';
+            ctx.response.body = yaml.dump(ctx.response.body);
             break;
         case false:
             ctx.throw(406); // "Not acceptable" - can't furnish whatever was requested
@@ -72,24 +72,24 @@ app.use(async function handleErrors(ctx, next) {
         await next();
 
     } catch (err) {
-        ctx.status = err.status || 500;
-        switch (ctx.status) {
+        ctx.response.status = err.status || 500;
+        switch (ctx.response.status) {
             case 204: // No Content
                 break;
             case 401: // Unauthorized
-                ctx.set('WWW-Authenticate', 'Basic');
+                ctx.response.set('WWW-Authenticate', 'Basic');
                 break;
             case 403: // Forbidden
             case 404: // Not Found
             case 406: // Not Acceptable
             case 409: // Conflict
-                ctx.body = { message: err.message, root: 'error' };
+                ctx.response.body = { message: err.message, root: 'error' };
                 break;
             default:
             case 500: // Internal Server Error (for uncaught or programming errors)
-                console.error(ctx.status, err.message);
-                ctx.body = { message: err.message, root: 'error' };
-                if (app.env != 'production') ctx.body.stack = err.stack;
+                console.error(ctx.response.status, err.message);
+                ctx.response.body = { message: err.message, root: 'error' };
+                if (app.env != 'production') ctx.response.body.stack = err.stack;
                 // ctx.app.emit('error', err, ctx); // github.com/koajs/koa/wiki/Error-Handling
                 break;
         }
@@ -131,8 +131,8 @@ app.use(require('./routes-auth.js'));
 // remaining routes require JWT auth (obtained from /auth and supplied in bearer authorization header)
 
 app.use(async function verifyJwt(ctx, next) {
-    if (!ctx.header.authorization) ctx.throw(401, 'Authorisation required');
-    const [ scheme, token ] = ctx.header.authorization.split(' ');
+    if (!ctx.request.header.authorization) ctx.throw(401, 'Authorisation required');
+    const [ scheme, token ] = ctx.request.header.authorization.split(' ');
     if (scheme != 'Bearer') ctx.throw(401, 'Invalid authorisation');
 
     const roles = { g: 'guest', a: 'admin', s: 'su' };

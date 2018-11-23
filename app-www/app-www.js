@@ -46,9 +46,9 @@ app.use(async function handleErrors(ctx, next) {
         await next();
 
     } catch (err) {
-        ctx.status = err.status || 500;
+        ctx.response.status = err.status || 500;
         if (app.env == 'production') delete err.stack; // don't leak sensitive info!
-        switch (ctx.status) {
+        switch (ctx.response.status) {
             case 404: // Not Found
                 if (err.message == 'Not Found') err.message = null; // personalised 404
                 await ctx.render('404-not-found', { err });
@@ -99,7 +99,7 @@ app.use(lusca({ // note koa-lusca@2.2.0 is v1 middleware which generates depreca
 
 // add the domain (host without subdomain) into koa ctx (used in navpartial template)
 app.use(async function ctxAddDomain(ctx, next) {
-    ctx.state.domain = ctx.host.replace('www.', '');
+    ctx.state.domain = ctx.request.host.replace('www.', '');
     await next();
 });
 

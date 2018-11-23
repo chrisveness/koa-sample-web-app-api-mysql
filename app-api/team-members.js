@@ -28,8 +28,8 @@ class TeamsMembersHandlers {
         // return id as attribute / underscore-field
         teamMember._id = teamMember.TeamMemberId;
 
-        ctx.body = teamMember;
-        ctx.body.root = 'TeamMember';
+        ctx.response.body = teamMember;
+        ctx.response.body.root = 'TeamMember';
     }
 
 
@@ -51,10 +51,10 @@ class TeamsMembersHandlers {
 
         const id = await TeamMember.insert(ctx.request.body);
 
-        ctx.body = await TeamMember.get(id); // return created team-member details
-        ctx.body.root = 'TeamMember';
-        ctx.set('Location', '/team-members/'+id);
-        ctx.status = 201; // Created
+        ctx.response.body = await TeamMember.get(id); // return created team-member details
+        ctx.response.body.root = 'TeamMember';
+        ctx.response.set('Location', '/team-members/'+id);
+        ctx.response.status = 201; // Created
     }
 
 
@@ -79,8 +79,8 @@ class TeamsMembersHandlers {
 
         await TeamMember.delete(ctx.params.id);
 
-        ctx.body = teamMember; // deleted team-member details
-        ctx.body.root = 'TeamMember';
+        ctx.response.body = teamMember; // deleted team-member details
+        ctx.response.body.root = 'TeamMember';
     }
 
 }

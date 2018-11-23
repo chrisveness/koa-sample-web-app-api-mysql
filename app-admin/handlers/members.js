@@ -21,15 +21,15 @@ class MembersHandlers {
         // build sql query including any query-string filters; eg ?field1=val1&field2=val2 becomes
         // "Where field1 = :field1 And field2 = :field2"
         let sql = 'Select * From Member';
-        if (ctx.querystring) {
-            const filter = Object.keys(ctx.query).map(q => `${q} = :${q}`).join(' and ');
+        if (ctx.request.querystring) {
+            const filter = Object.keys(ctx.request.query).map(q => `${q} = :${q}`).join(' and ');
             sql += ' Where ' + filter;
         }
         sql += ' Order By Firstname, Lastname';
 
         try {
 
-            const [ members ] = await ctx.state.db.query(sql, ctx.query);
+            const [ members ] = await ctx.state.db.query(sql, ctx.request.query);
 
             await ctx.render('members-list', { members });
 
@@ -119,22 +119,22 @@ class MembersHandlers {
      * POST /members/add - process add-member
      */
     static async processAdd(ctx) {
-        if (ctx.state.user.Role != 'admin') return ctx.redirect('/login'+ctx.url);
+        if (ctx.state.user.Role != 'admin') return ctx.response.redirect('/login'+ctx.request.url);
 
         try {
 
             ctx.request.body.Active = ctx.request.body.Active ? true : false;
 
             const id = await Member.insert(ctx.request.body);
-            ctx.set('X-Insert-Id', id); // for integration tests
+            ctx.response.set('X-Insert-Id', id); // for integration tests
 
             // return to list of members
-            ctx.redirect('/members');
+            ctx.response.redirect('/members');
 
         } catch (e) {
             // stay on same page to report error (with current filled fields)
             ctx.flash = { formdata: ctx.request.body, _error: e.message };
-            ctx.redirect(ctx.url);
+            ctx.response.redirect(ctx.request.url);
         }
     }
 
@@ -143,7 +143,7 @@ class MembersHandlers {
      * POST /members/:id/edit - process edit-member
      */
     static async processEdit(ctx) {
-        if (ctx.state.user.Role != 'admin') return ctx.redirect('/login'+ctx.url);
+        if (ctx.state.user.Role != 'admin') return ctx.response.redirect('/login'+ctx.request.url);
 
         // update member details
         if ('Firstname' in ctx.request.body) {
@@ -154,12 +154,12 @@ class MembersHandlers {
                 await Member.update(ctx.params.id, ctx.request.body);
 
                 // return to list of members
-                ctx.redirect('/members');
+                ctx.response.redirect('/members');
 
             } catch (e) {
                 // stay on same page to report error (with current filled fields)
                 ctx.flash = { formdata: ctx.request.body, _error: e.message };
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
             }
         }
 
@@ -174,15 +174,15 @@ class MembersHandlers {
             try {
 
                 const id = await TeamMember.insert(values);
-                ctx.set('X-Insert-Id', id); // for integration tests
+                ctx.response.set('X-Insert-Id', id); // for integration tests
 
                 // stay on same page showing new team member
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
 
             } catch (e) {
                 // stay on same page to report error
                 ctx.flash = { formdata: ctx.request.body, _error: e.message };
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
             }
         }
 
@@ -192,12 +192,12 @@ class MembersHandlers {
 
                 await TeamMember.delete(ctx.request.body['del-team']);
                 // stay on same page showing new teams list
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
 
             } catch (e) {
                 // stay on same page to report error
                 ctx.flash = { _error: e.message };
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
             }
         }
     }
@@ -207,19 +207,19 @@ class MembersHandlers {
      * POST /members/:id/delete - process delete member
      */
     static async processDelete(ctx) {
-        if (ctx.state.user.Role != 'admin') return ctx.redirect('/login'+ctx.url);
+        if (ctx.state.user.Role != 'admin') return ctx.response.redirect('/login'+ctx.request.url);
 
         try {
 
             await Member.delete(ctx.params.id);
 
             // return to list of members
-            ctx.redirect('/members');
+            ctx.response.redirect('/members');
 
         } catch (e) {
             // stay on same page to report error
             ctx.flash = { _error: e.message };
-            ctx.redirect(ctx.url);
+            ctx.response.redirect(ctx.request.url);
         }
     }
 

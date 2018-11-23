@@ -52,11 +52,11 @@ app.use(async function handleErrors(ctx, next) {
         await next();
 
     } catch (err) {
-        ctx.status = err.status || 500;
+        ctx.response.status = err.status || 500;
         if (app.env == 'production') delete err.stack; // don't leak sensitive info!
-        switch (ctx.status) {
+        switch (ctx.response.status) {
             case 401: // Unauthorised (eg invalid JWT auth token)
-                ctx.redirect('/login'+ctx.url);
+                ctx.response.redirect('/login'+ctx.request.url);
                 break;
             case 404: // Not Found
                 if (err.message == 'Not Found') err.message = null; // personalised 404
@@ -135,7 +135,7 @@ app.use(lusca({ // note koa-lusca@2.2.0 is v1 middleware which generates depreca
 
 // add the domain (host without subdomain) into koa ctx (used in index.html)
 app.use(async function ctxAddDomain(ctx, next) {
-    ctx.state.domain = ctx.host.replace('admin.', '');
+    ctx.state.domain = ctx.request.host.replace('admin.', '');
     await next();
 });
 
@@ -143,7 +143,7 @@ app.use(async function ctxAddDomain(ctx, next) {
 // ------------ routing
 
 
-// check if user is signed in; leaves id in ctx.status.user.id if JWT verified
+// check if user is signed in; leaves id in ctx.state.user.id if JWT verified
 // (do this before login routes, as login page indicates if user is already logged in)
 app.use(verifyJwt);
 
@@ -163,7 +163,7 @@ app.use(async function isSignedIn(ctx, next) {
     } else {
         // authentication failed: redirect to login page
         ctx.flash = { loginfailmsg: 'Session expired: please sign in again' };
-        ctx.redirect('/login'+ctx.url);
+        ctx.response.redirect('/login'+ctx.request.url);
     }
 });
 
@@ -182,9 +182,9 @@ app.use(serve('app-api/apidoc', { maxage: maxage }));
 
 // 404 status for any unrecognised ajax requests (don't throw as don't want to return html page)
 router.all(/\/ajax\/(.*)/, function(ctx) {
-    ctx.body = { message: 'Not Found' };
-    ctx.body.root = 'error';
-    ctx.status = 404; // Not Found
+    ctx.response.body = { message: 'Not Found' };
+    ctx.response.body.root = 'error';
+    ctx.response.status = 404; // Not Found
 });
 
 

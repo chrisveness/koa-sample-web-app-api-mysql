@@ -21,15 +21,15 @@ class TeamsHandlers {
         // build sql query including any query-string filters; eg ?field1=val1&field2=val2 becomes
         // "Where field1 = :field1 And field2 = :field2"
         let sql = 'Select * From Team';
-        if (ctx.querystring) {
-            const filter = Object.keys(ctx.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+        if (ctx.request.querystring) {
+            const filter = Object.keys(ctx.request.query).map(function(q) { return q+' = :'+q; }).join(' and ');
             sql += ' Where '+filter;
         }
         sql +=  ' Order By Name';
 
         try {
 
-            const [ teams ] = await ctx.state.db.query(sql, ctx.query);
+            const [ teams ] = await ctx.state.db.query(sql, ctx.request.query);
 
             await ctx.render('teams-list', { teams });
 
@@ -121,20 +121,20 @@ class TeamsHandlers {
      * POST /teams/:id - process add-team
      */
     static async processAdd(ctx) {
-        if (ctx.state.user.Role != 'admin') return ctx.redirect('/login'+ctx.url);
+        if (ctx.state.user.Role != 'admin') return ctx.response.redirect('/login'+ctx.request.url);
 
         try {
 
             const id = await Team.insert(ctx.request.body);
-            ctx.set('X-Insert-Id', id); // for integration tests
+            ctx.response.set('X-Insert-Id', id); // for integration tests
 
             // return to list of members
-            ctx.redirect('/teams');
+            ctx.response.redirect('/teams');
 
         } catch (e) {
             // stay on same page to report error (with current filled fields)
             ctx.flash = { formdata: ctx.request.body, _error: e.message };
-            ctx.redirect(ctx.url);
+            ctx.response.redirect(ctx.request.url);
         }
     }
 
@@ -143,7 +143,7 @@ class TeamsHandlers {
      * POST /teams/:id/edit - process edit-team
      */
     static async processEdit(ctx) {
-        if (ctx.state.user.Role != 'admin') return ctx.redirect('/login'+ctx.url);
+        if (ctx.state.user.Role != 'admin') return ctx.response.redirect('/login'+ctx.request.url);
 
         // update team details
         if ('Name' in ctx.request.body) {
@@ -152,12 +152,12 @@ class TeamsHandlers {
                 await Team.update(ctx.params.id, ctx.request.body);
 
                 // return to list of members
-                ctx.redirect('/teams');
+                ctx.response.redirect('/teams');
 
             } catch (e) {
                 // stay on same page to report error (with current filled fields)
                 ctx.flash = { formdata: ctx.request.body, _error: e.message };
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
             }
         }
 
@@ -172,15 +172,15 @@ class TeamsHandlers {
             try {
 
                 const id = await TeamMember.insert(values);
-                ctx.set('X-Insert-Id', id); // for integration tests
+                ctx.response.set('X-Insert-Id', id); // for integration tests
 
                 // stay on same page showing new team member
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
 
             } catch (e) {
                 // stay on same page to report error
                 ctx.flash = { formdata: ctx.request.body, _error: e.message };
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
             }
         }
 
@@ -190,12 +190,12 @@ class TeamsHandlers {
 
                 await TeamMember.delete(ctx.request.body['del-member']);
                 // stay on same page showing new members list
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
 
             } catch (e) {
                 // stay on same page to report error
                 ctx.flash = { _error: e.message };
-                ctx.redirect(ctx.url);
+                ctx.response.redirect(ctx.request.url);
             }
         }
     }
@@ -205,19 +205,19 @@ class TeamsHandlers {
      * POST /teams/:id/delete - process delete-team
      */
     static async processDelete(ctx) {
-        if (ctx.state.user.Role != 'admin') return ctx.redirect('/login'+ctx.url);
+        if (ctx.state.user.Role != 'admin') return ctx.response.redirect('/login'+ctx.request.url);
 
         try {
 
             await Team.delete(ctx.params.id);
 
             // return to list of teams
-            ctx.redirect('/teams');
+            ctx.response.redirect('/teams');
 
         } catch (e) {
             // stay on same page to report error
             ctx.flash = { _error: e.message };
-            ctx.redirect(ctx.url);
+            ctx.response.redirect(ctx.request.url);
         }
     }
 

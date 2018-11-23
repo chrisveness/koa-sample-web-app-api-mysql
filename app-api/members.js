@@ -30,24 +30,24 @@ class MembersHandlers {
 
             let sql = 'Select * From Member';
             // query-string filters?
-            if (ctx.querystring) {
-                const filter = Object.keys(ctx.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+            if (ctx.request.querystring) {
+                const filter = Object.keys(ctx.request.query).map(function(q) { return q+' = :'+q; }).join(' and ');
                 sql += ' Where '+filter;
             }
             sql +=  ' Order By Firstname, Lastname';
 
-            const result = await ctx.state.db.query(sql, ctx.query);
+            const result = await ctx.state.db.query(sql, ctx.request.query);
             const [ members ] = castBoolean.fromMysql(result);
 
-            if (members.length == 0) { ctx.status = 204; return; } // No Content (preferred to returning 200 with empty list)
+            if (members.length == 0) { ctx.response.status = 204; return; } // No Content (preferred to returning 200 with empty list)
 
             // just id & uri attributes in list
             for (let m=0; m<members.length; m++) {
                 members[m] = { _id: members[m].MemberId, _uri: '/members/'+members[m].MemberId };
             }
 
-            ctx.body = members;
-            ctx.body.root = 'Members';
+            ctx.response.body = members;
+            ctx.response.body.root = 'Members';
 
         } catch (e) {
             switch (e.code) {
@@ -84,8 +84,8 @@ class MembersHandlers {
         const [ teams ] = await ctx.state.db.query(sql, { id: ctx.params.id });
         member.Teams = teams;
 
-        ctx.body = member;
-        ctx.body.root = 'Member';
+        ctx.response.body = member;
+        ctx.response.body.root = 'Member';
     }
 
 
@@ -109,10 +109,10 @@ class MembersHandlers {
 
         const id = await Member.insert(ctx.request.body);
 
-        ctx.body = await Member.get(id); // return created member details
-        ctx.body.root = 'Member';
-        ctx.set('Location', '/members/'+id);
-        ctx.status = 201; // Created
+        ctx.response.body = await Member.get(id); // return created member details
+        ctx.response.body.root = 'Member';
+        ctx.response.set('Location', '/members/'+id);
+        ctx.response.status = 201; // Created
     }
 
 
@@ -138,10 +138,10 @@ class MembersHandlers {
         await Member.update(ctx.params.id, ctx.request.body);
 
         // return updated member details
-        ctx.body = await Member.get(ctx.params.id);
-        if (!ctx.body) ctx.throw(404, `No member ${ctx.params.id} found`); // Not Found
+        ctx.response.body = await Member.get(ctx.params.id);
+        if (!ctx.response.body) ctx.throw(404, `No member ${ctx.params.id} found`); // Not Found
 
-        ctx.body.root = 'Member';
+        ctx.response.body.root = 'Member';
     }
 
 
@@ -166,8 +166,8 @@ class MembersHandlers {
 
         await Member.delete(ctx.params.id);
 
-        ctx.body = member; // deleted member details
-        ctx.body.root = 'Member';
+        ctx.response.body = member; // deleted member details
+        ctx.response.body.root = 'Member';
     }
 }
 

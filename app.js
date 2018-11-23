@@ -32,7 +32,7 @@ app.use(async function responseTime(ctx, next) {
     const t1 = Date.now();
     await next();
     const t2 = Date.now();
-    ctx.set('X-Response-Time', Math.ceil(t2-t1)+'ms');
+    ctx.response.set('X-Response-Time', Math.ceil(t2-t1)+'ms');
 });
 
 
@@ -43,7 +43,7 @@ app.use(compress({}));
 // only search-index www subdomain
 app.use(async function robots(ctx, next) {
     await next();
-    if (ctx.hostname.slice(0, 3) != 'www') ctx.response.set('X-Robots-Tag', 'noindex, nofollow');
+    if (ctx.request.hostname.slice(0, 3) != 'www') ctx.response.set('X-Robots-Tag', 'noindex, nofollow');
 });
 
 
@@ -61,7 +61,7 @@ app.use(session(app));
 
 // sometimes useful to be able to track each request...
 app.use(async function(ctx, next) {
-    debug(ctx.method + ' ' + ctx.url);
+    debug(ctx.request.method + ' ' + ctx.request.url);
     await next();
 });
 
@@ -73,7 +73,7 @@ app.use(async function(ctx, next) {
 
 app.use(async function subApp(ctx, next) {
     // use subdomain to determine which app to serve: www. as default, or admin. or api
-    ctx.state.subapp = ctx.hostname.split('.')[0]; // subdomain = part before first '.' of hostname
+    ctx.state.subapp = ctx.request.hostname.split('.')[0]; // subdomain = part before first '.' of hostname
     // note: could use root part of path instead of sub-domains e.g. ctx.request.url.split('/')[1]
     await next();
 });
@@ -85,7 +85,7 @@ app.use(async function composeSubapp(ctx) { // note no 'next' after composed sub
         case 'www':   await compose(require('./app-www/app-www.js').middleware)(ctx);     break;
         default: // no (recognised) subdomain? canonicalise host to www.host
             // note switch must include all registered subdomains to avoid potential redirect loop
-            ctx.redirect(ctx.protocol+'://'+'www.'+ctx.host+ctx.path+ctx.search);
+            ctx.response.redirect(ctx.request.protocol+'://'+'www.'+ctx.request.host+ctx.path+ctx.search);
             break;
     }
 });
