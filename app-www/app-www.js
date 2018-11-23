@@ -11,6 +11,7 @@ const lusca      = require('koa-lusca');      // security header middleware
 const serve      = require('koa-static');     // static file serving middleware
 
 const Log = require('../lib/log.js');
+const ssl = require('../lib/middleware-ssl.js');
 
 
 const app = new Koa(); // www app
@@ -105,6 +106,11 @@ app.use(async function ctxAddDomain(ctx, next) {
 
 
 // ------------ routing
+
+
+// force use of SSL (redirect http protocol to https)
+app.use(ssl({ trustProxy: true }));
+
 
 app.use(require('./routes-www.js'));
 

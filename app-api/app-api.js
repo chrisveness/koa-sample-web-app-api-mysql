@@ -17,6 +17,7 @@ const xmlify    = require('xmlify');       // JS object to XML
 const yaml      = require('js-yaml');      // JS object to YAML
 
 const Log = require('../lib/log.js');
+const ssl = require('../lib/middleware-ssl.js');
 
 
 const app = new Koa(); // API app
@@ -122,6 +123,11 @@ app.use(async function mysqlConnection(ctx, next) {
 
 
 // ------------ routing
+
+
+// force use of SSL (redirect http protocol to https)
+app.use(ssl({ trustProxy: true }));
+
 
 // public (unsecured) modules first
 
