@@ -9,11 +9,13 @@
 const Team       = require('../../models/team.js');
 const TeamMember = require('../../models/team-member.js');
 
+const validationErrors = require('../../lib/validation-errors.js');
+
 
 class TeamsHandlers {
 
     /**
-     * GET /teams - render list-teams page
+     * GET /teams - render list-teams page.
      *
      * Results can be filtered with URL query strings eg /teams?name=alpha.
      */
@@ -22,7 +24,7 @@ class TeamsHandlers {
         // "Where field1 = :field1 And field2 = :field2"
         let sql = 'Select * From Team';
         if (ctx.request.querystring) {
-            const filter = Object.keys(ctx.request.query).map(function(q) { return q+' = :'+q; }).join(' and ');
+            const filter = Object.keys(ctx.request.query).map(q => `${q} = :${q}` ).join(' and ');
             sql += ' Where '+filter;
         }
         sql +=  ' Order By Name';
@@ -43,16 +45,17 @@ class TeamsHandlers {
 
 
     /**
-     * GET /teams/:id - render view-team page
+     * GET /teams/:id - render view-team page.
      */
     static async view(ctx) {
+        // team details
         const team = await Team.get(ctx.params.id);
         if (!team) ctx.throw(404, 'Team not found');
 
         // team members
         const sql = `Select TeamMemberId, MemberId, Firstname, Lastname
-                 From Member Inner Join TeamMember Using (MemberId)
-                 Where TeamId = :id`;
+                     From Member Inner Join Team Using (MemberId)
+                     Where TeamId = :id`;
         const [ members ] = await ctx.state.db.query(sql, { id: ctx.params.id });
 
         const context = team;
@@ -71,7 +74,7 @@ class TeamsHandlers {
 
 
     /**
-     * GET /teams/:id/edit - render edit-team page
+     * GET /teams/:id/edit - render edit-team page.
      */
     static async edit(ctx) {
         // team details
@@ -81,9 +84,9 @@ class TeamsHandlers {
 
         // team members
         const sqlT = `Select TeamMemberId, MemberId, Firstname, Lastname
-                  From TeamMember Inner Join Member Using (MemberId)
-                  Where TeamId = :id
-                  Order By Firstname, Lastname`;
+                      From TeamMember Inner Join Member Using (MemberId)
+                      Where TeamId = :id
+                      Order By Firstname, Lastname`;
         const [ teamMembers ] = await ctx.state.db.query(sqlT, { id: ctx.params.id });
         team.teamMembers = teamMembers;
 
@@ -91,9 +94,9 @@ class TeamsHandlers {
         let members = team.teamMembers.map(function(m) { return m.MemberId; }); // array of id's
         if (members.length == 0) members = [ 0 ]; // dummy to satisfy sql 'in' syntax
         const sqlM = `Select MemberId, Firstname, Lastname
-                  From Member
-                  Where MemberId Not In (`+members.join(',')+`)
-                  Order By Firstname, Lastname`;
+                      From Member
+                      Where MemberId Not In (`+members.join(',')+`)
+                      Order By Firstname, Lastname`;
         const [ notTeamMembers ] = await ctx.state.db.query(sqlM, members);
         team.notTeamMembers = notTeamMembers;
 
@@ -103,7 +106,7 @@ class TeamsHandlers {
 
 
     /**
-     * GET /teams/:id/delete - render delete-team page
+     * GET /teams/:id/delete - render delete-team page.
      */
     static async delete(ctx) {
         const team = await Team.get(ctx.params.id);
@@ -115,17 +118,32 @@ class TeamsHandlers {
 
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+    /* POST processing                                                                            */
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 
     /**
-     * POST /teams/:id - process add-team
+     * POST /teams/add - process add-team.
      */
     static async processAdd(ctx) {
-        if (ctx.state.user.Role != 'admin') return ctx.response.redirect('/login'+ctx.request.url);
+        if (ctx.state.user.Role != 'admin') {
+            ctx.flash = { _error: 'Team management requires admin privileges' };
+            return ctx.response.redirect('/login'+ctx.request.url);
+        }
+
+        const body = ctx.request.body;
 
         try {
 
-            const id = await Team.insert(ctx.request.body);
+            const validation = { // back-end validation matching HTML5 validation
+                Name: 'required',
+            };
+
+            if (validationErrors(body, validation)) {
+                throw new Error(validationErrors(body, validation));
+            }
+
+            const id = await Team.insert(body);
             ctx.response.set('X-Insert-Id', id); // for integration tests
 
             // return to list of members
@@ -133,39 +151,52 @@ class TeamsHandlers {
 
         } catch (e) {
             // stay on same page to report error (with current filled fields)
-            ctx.flash = { formdata: ctx.request.body, _error: e.message };
+            ctx.flash = { formdata: body, _error: e.message };
             ctx.response.redirect(ctx.request.url);
         }
     }
 
 
     /**
-     * POST /teams/:id/edit - process edit-team
+     * POST /teams/:id/edit - process edit-team.
      */
     static async processEdit(ctx) {
-        if (ctx.state.user.Role != 'admin') return ctx.response.redirect('/login'+ctx.request.url);
+        if (ctx.state.user.Role != 'admin') {
+            ctx.flash = { _error: 'Team management requires admin privileges' };
+            return ctx.response.redirect('/login'+ctx.request.url);
+        }
+
+        const body = ctx.request.body;
 
         // update team details
-        if ('Name' in ctx.request.body) {
+        if ('Name' in body) {
             try {
 
-                await Team.update(ctx.params.id, ctx.request.body);
+                const validation = { // back-end validation matching HTML5 validation
+                    Name: 'required',
+                };
+
+                if (validationErrors(body, validation)) {
+                    throw new Error(validationErrors(body, validation));
+                }
+
+                await Team.update(ctx.params.id, body);
 
                 // return to list of members
                 ctx.response.redirect('/teams');
 
             } catch (e) {
                 // stay on same page to report error (with current filled fields)
-                ctx.flash = { formdata: ctx.request.body, _error: e.message };
+                ctx.flash = { formdata: body, _error: e.message };
                 ctx.response.redirect(ctx.request.url);
             }
         }
 
         // add member to team
-        if ('add-member' in ctx.request.body) {
+        if ('add-member' in body) {
             const values = {
                 TeamId:   ctx.params.id,
-                MemberId: ctx.request.body['add-member'],
+                MemberId: body['add-member'],
                 JoinedOn: new Date().toISOString().replace('T', ' ').split('.')[0],
             };
 
@@ -179,16 +210,16 @@ class TeamsHandlers {
 
             } catch (e) {
                 // stay on same page to report error
-                ctx.flash = { formdata: ctx.request.body, _error: e.message };
+                ctx.flash = { formdata: body, _error: e.message };
                 ctx.response.redirect(ctx.request.url);
             }
         }
 
         // remove member from team
-        if ('del-member' in ctx.request.body) {
+        if ('del-member' in body) {
             try {
 
-                await TeamMember.delete(ctx.request.body['del-member']);
+                await TeamMember.delete(body['del-member']);
                 // stay on same page showing new members list
                 ctx.response.redirect(ctx.request.url);
 
@@ -202,10 +233,13 @@ class TeamsHandlers {
 
 
     /**
-     * POST /teams/:id/delete - process delete-team
+     * POST /teams/:id/delete - process delete-team.
      */
     static async processDelete(ctx) {
-        if (ctx.state.user.Role != 'admin') return ctx.response.redirect('/login'+ctx.request.url);
+        if (ctx.state.user.Role != 'admin') {
+            ctx.flash = { _error: 'Team management requires admin privileges' };
+            return ctx.response.redirect('/login'+ctx.request.url);
+        }
 
         try {
 
@@ -220,7 +254,6 @@ class TeamsHandlers {
             ctx.response.redirect(ctx.request.url);
         }
     }
-
 
 }
 

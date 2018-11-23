@@ -58,7 +58,7 @@ class Member {
      * @throws  Error on validation or referential integrity errors.
      */
     static async insert(values) {
-        // validation - somewhat artificial example serves to illustrate principle
+        // validation - somewhat artificial example serves to illustrate principle of app-level validation
         if (values.Firstname==null && values.Lastname==null) {
             throw new ModelError(403, 'Firstname or Lastname must be supplied');
         }
