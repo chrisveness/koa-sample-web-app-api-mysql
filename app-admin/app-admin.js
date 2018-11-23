@@ -10,6 +10,7 @@ const handlebars = require('koa-handlebars'); // handlebars templating
 const flash      = require('koa-flash');      // flash messages
 const lusca      = require('koa-lusca');      // security header middleware
 const serve      = require('koa-static');     // static file serving middleware
+const convert    = require('koa-convert');    // until  koa-flash, koa-lusca updated to v2
 const jwt        = require('jsonwebtoken');   // JSON Web Token implementation
 const koaRouter  = require('koa-router');     // router middleware for koa
 const router = koaRouter();
@@ -119,19 +120,19 @@ app.use(async function cleanPost(ctx, next) {
 
 
 // flash messages
-app.use(flash()); // note koa-flash@1.0.0 is v1 middleware which generates deprecation notice
+app.use(convert(flash())); // note koa-flash@1.0.0 is v1 middleware which generates deprecation notice
 
 
 // lusca security headers
 const luscaCspTrustedCdns = 'ajax.googleapis.com cdnjs.cloudflare.com maxcdn.bootstrapcdn.com';
 const luscaCspDefaultSrc = `'self' 'unsafe-inline' ${luscaCspTrustedCdns}`; // 'unsafe-inline' required for <style> blocks
-app.use(lusca({ // note koa-lusca@2.2.0 is v1 middleware which generates deprecation notice
+app.use(convert(lusca({ // note koa-lusca@2.2.0 is v1 middleware which generates deprecation notice
     csp:           { policy: { 'default-src': luscaCspDefaultSrc } }, // Content-Security-Policy
     cto:           'nosniff',                                         // X-Content-Type-Options
     hsts:          { maxAge: 60*60*24*365, includeSubDomains: true }, // HTTP Strict-Transport-Security
     xframe:        'SAMEORIGIN',                                      // X-Frame-Options
     xssProtection: true,                                              // X-XSS-Protection
-}));
+})));
 
 
 // add the domain (host without subdomain) into koa ctx (used in index.html)
