@@ -15,14 +15,14 @@ const User = require('../../models/user.js');
 class LoginHandlers {
 
     /**
-     * GET /login - render login page
+     * GET /login(.*) - render login page.
      *
-     * Allow url after the 'login', to specify a redirect after a successful login
+     * A url can be supplied after the 'login', to specify a redirect after a successful login.
+     *
+     * If user is already logged in, login details are shown in place of login form.
      */
     static async getLogin(ctx) {
-        const user = ctx.state.user ? await User.get(ctx.state.user.id) : null;
-
-        await ctx.render('login', { user: user });
+        await ctx.render('login');
     }
 
 
@@ -72,9 +72,10 @@ class LoginHandlers {
         // submitted credentials validate: create JWT & record it in a cookie to 'log in' user
 
         const payload = {
-            id:       user.UserId,                         // to get user details
-            role:     user.Role.slice(0, 1).toLowerCase(), // make role available without db query
-            remember: body['remember-me'] ? true : false,  // whether token can be renewed
+            id:       user.UserId,                          // to get user details
+            name:     `${user.Firstname} ${user.Lastname}`, // make name available without db query
+            role:     user.Role.slice(0, 1).toLowerCase(),  // make role available without db query
+            remember: body['remember-me'] ? true : false,   // whether token can be renewed
         };
         const token = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
 
@@ -88,7 +89,8 @@ class LoginHandlers {
         ctx.cookies.set('koa:jwt', token, options);
 
         // if we were provided with a redirect URL after the /login, redirect there, otherwise /
-        ctx.response.redirect(ctx.request.url=='/login' ? '/' : ctx.request.url.replace('/login', ''));
+        const href = ctx.request.url=='/login' ? '/' : ctx.request.url.replace('/login', '');
+        ctx.response.redirect(href);
     }
 
 }

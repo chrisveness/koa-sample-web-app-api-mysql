@@ -17,10 +17,10 @@
 
 <main>
 
-{{#if user}}
+{{#if @koa.state.user}}
 
-<p>You are currently logged in as {{user.Firstname}} {{user.Lastname}}
-    (with {{user.Role}} privileges).</p>
+<p>You are currently logged in as <span id="name">{{@koa.state.user.name}}</span>
+    (with <span id="role">{{@koa.state.user.Role}}</span> privileges).</p>
 
 {{else}}
 
