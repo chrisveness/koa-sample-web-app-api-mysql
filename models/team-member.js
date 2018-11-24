@@ -6,6 +6,9 @@
 
 'use strict';
 
+const Debug = require('debug'); // small debugging utility
+const debug = Debug('app:db');  // debug db updates
+
 const Log        = require('../lib/log.js');
 const ModelError = require('./modelerror.js');
 
@@ -29,10 +32,12 @@ class TeamMember {
      * Creates new TeamMember record (member joining team).
      *
      * @param   {Object} values - Member details.
-     * @returns {number} New member id.
+     * @returns {number} New TeamMember id.
      * @throws  Error on validation or referential integrity errors.
      */
     static async insert(values) {
+        debug('TeamMember.insert');
+
         if (values.JoinedOn instanceof Date) {
             values.JoinedOn = values.JoinedOn.toISOString().replace('T', ' ').split('.')[0];
         }
@@ -40,7 +45,6 @@ class TeamMember {
         try {
 
             const [ result ] = await global.db.query('Insert Into TeamMember Set ?', [ values ]);
-            //console.log('TeamMember.insert', result.insertId, new Date); // eg audit trail?
             return result.insertId;
 
         } catch (e) {
@@ -69,10 +73,11 @@ class TeamMember {
      * @throws Error on validation or referential integrity errors.
      */
     static async update(id, values) {
+        debug('TeamMember.update', id);
+
         try {
 
             await global.db.query('Update TeamMember Set ? Where TeamMemberId = ?', [ values, id ]);
-            //console.log('TeamMember.update', id, new Date); // eg audit trail?
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -98,10 +103,11 @@ class TeamMember {
      * @throws Error on referential integrity errors.
      */
     static async delete(id) {
+        debug('TeamMember.delete', id);
+
         try {
 
             await global.db.query('Delete From TeamMember Where TeamMemberId = :id', { id });
-            //console.log('TeamMember.delete', id, new Date); // eg audit trail?
 
         } catch (e) {
             switch (e.code) {

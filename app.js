@@ -10,16 +10,17 @@
 'use strict';
 /* eslint no-shadow:off *//* app is already declared in the upper scope */
 
-const Koa      = require('koa');            // Koa framework
-const body     = require('koa-body');       // body parser
-const compose  = require('koa-compose');    // middleware composer
-const compress = require('koa-compress');   // HTTP compression
-const session  = require('koa-session');    // session for flash messages
-const mysql    = require('mysql2/promise'); // fast mysql driver
-const MongoDB  = require('mongodb');        // MongoDB driver for Node.js
-const debug    = require('debug')('app');   // small debugging utility
+const Koa      = require('koa');              // Koa framework
+const body     = require('koa-body');         // body parser
+const compose  = require('koa-compose');      // middleware composer
+const compress = require('koa-compress');     // HTTP compression
+const session  = require('koa-session');      // session for flash messages
+const mysql    = require('mysql2/promise');   // fast mysql driver
+const MongoDB  = require('mongodb');          // MongoDB driver for Node.js
+const Debug    = require('debug');            // small debugging utility
 
 const MongoClient = MongoDB.MongoClient;
+const debug = Debug('app:req'); // debug each request
 
 const app = new Koa();
 
@@ -61,7 +62,7 @@ app.use(session(app));
 
 // sometimes useful to be able to track each request...
 app.use(async function(ctx, next) {
-    debug(ctx.request.method + ' ' + ctx.request.url);
+    debug(ctx.request.method.padEnd(4) + ' ' + ctx.request.url);
     await next();
 });
 

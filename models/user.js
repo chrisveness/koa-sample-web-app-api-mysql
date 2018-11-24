@@ -6,6 +6,9 @@
 
 'use strict';
 
+const Debug = require('debug'); // small debugging utility
+const debug = Debug('app:db');  // debug db updates
+
 const Log        = require('../lib/log.js');
 const ModelError = require('./modelerror.js');
 
@@ -58,10 +61,11 @@ class User {
      * @throws  Error on validation or referential integrity errors.
      */
     static async insert(values) {
+        debug('User.insert', values.Email);
+
         try {
 
             const [ result ] = await global.db.query('Insert Into User Set ?', [ values ]);
-            //console.log('User.insert', result.insertId, new Date); // eg audit trail?
             return result.insertId;
 
         } catch (e) {
@@ -90,10 +94,11 @@ class User {
      * @throws Error on referential integrity errors.
      */
     static async update(id, values) {
+        debug('User.update', id);
+
         try {
 
             await global.db.query('Update User Set ? Where UserId = ?', [ values, id ]);
-            //console.log('User.update', id, new Date); // eg audit trail?
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -119,10 +124,11 @@ class User {
      * @throws Error
      */
     static async delete(id) {
+        debug('User.delete', id);
+
         try {
 
             await global.db.query('Delete From User Where UserId = id', { id });
-            //console.log('User.delete', id, new Date); // eg audit trail?
 
         } catch (e) {
             switch (e.code) {

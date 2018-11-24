@@ -6,6 +6,9 @@
 
 'use strict';
 
+const Debug = require('debug'); // small debugging utility
+const debug = Debug('app:db');  // debug db updates
+
 const Log        = require('../lib/log.js');
 const ModelError = require('./modelerror.js');
 
@@ -58,6 +61,8 @@ class Member {
      * @throws  Error on validation or referential integrity errors.
      */
     static async insert(values) {
+        debug('Member.insert', values.Email);
+
         // validation - somewhat artificial example serves to illustrate principle of app-level validation
         if (values.Firstname==null && values.Lastname==null) {
             throw new ModelError(403, 'Firstname or Lastname must be supplied');
@@ -66,7 +71,6 @@ class Member {
         try {
 
             const [ result ] = await global.db.query('Insert Into Member Set ?', [ values ]);
-            //console.log('Member.insert', result.insertId, new Date); // eg audit trail?
             return result.insertId;
 
         } catch (e) {
@@ -95,6 +99,8 @@ class Member {
      * @throws Error on validation or referential integrity errors.
      */
     static async update(id, values) {
+        debug('Member.update', id);
+
         // validation - somewhat artificial example serves to illustrate principle
         if (values.Firstname==null && values.Lastname==null) {
             throw new ModelError(403, 'Firstname or Lastname must be supplied');
@@ -103,7 +109,6 @@ class Member {
         try {
 
             await global.db.query('Update Member Set ? Where MemberId = ?', [ values, id ]);
-            //console.log('Member.update', id, new Date); // eg audit trail?
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -129,10 +134,11 @@ class Member {
      * @throws Error on referential integrity errors.
      */
     static async delete(id) {
+        debug('Member.delete', id);
+
         try {
 
             await global.db.query('Delete From Member Where MemberId = :id', { id });
-            //console.log('Member.delete', id, new Date); // eg audit trail?
 
         } catch (e) {
             switch (e.code) {
