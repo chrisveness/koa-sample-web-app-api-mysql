@@ -129,6 +129,7 @@ class Team {
         try {
 
             await global.db.query('Delete From Team Where TeamId =  :id', { id });
+            return true;
 
         } catch (e) {
             switch (e.code) {

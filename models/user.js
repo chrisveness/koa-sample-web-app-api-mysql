@@ -129,6 +129,7 @@ class User {
         try {
 
             await global.db.query('Delete From User Where UserId = id', { id });
+            return true;
 
         } catch (e) {
             switch (e.code) {

@@ -108,6 +108,7 @@ class TeamMember {
         try {
 
             await global.db.query('Delete From TeamMember Where TeamMemberId = :id', { id });
+            return true;
 
         } catch (e) {
             switch (e.code) {

@@ -9,9 +9,10 @@
 const supertest = require('supertest');   // SuperAgent driven library for testing HTTP servers
 const expect    = require('chai').expect; // BDD/TDD assertion library
 const dotenv    = require('dotenv');      // load environment variables from a .env file into process.env
+const yaml      = require('js-yaml');     // JS object to YAML
 dotenv.config();
 
-const app = require('../app.js');
+const app = require('../../app.js');
 
 const testuser = process.env.TESTUSER;
 const testpass = process.env.TESTPASS;
@@ -89,23 +90,41 @@ describe(`API app (${app.env})`, function() {
             });
 
             it('gets a member (json)', async function() {
-                const response = await appApi.get('/members/'+id).auth(jwt, { type: 'bearer' });
+                const response = await appApi.get('/members/'+id).auth(jwt, { type: 'bearer' }); // set host, no accept header
                 expect(response.status).to.equal(200, response.text);
+                expect(response.headers['content-type']).to.equal('application/json; charset=utf-8');
                 expect(response.body).to.be.an('object');
                 expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
                 expect(response.body.Email).to.equal('test@user.com');
                 expect(response.body.Firstname).to.equal('Test');
                 expect(response.body.Active).to.be.true;
+                expect(response.body.Active).not.to.equal(1); // note Active is stored as bit(1)
             });
 
             it('gets a member (xml)', async function() {
-                const hdrs = { Host: 'api.localhost', Accept: 'application/xml' }; // set host & accepts headers
+                const hdrs = { Host: 'api.localhost', Accept: 'application/xml' }; // set host & accept headers
                 const response = await appApi.get('/members/'+id).set(hdrs).auth(jwt, { type: 'bearer' });
                 expect(response.status).to.equal(200, response.text);
+                expect(response.headers['content-type']).to.equal('application/xml');
                 expect(response.text.slice(0, 38)).to.equal('<?xml version="1.0" encoding="UTF-8"?>');
                 expect(response.text.match(/<Email>(.*)<\/Email>/)[1]).to.equal('test@user.com');
                 expect(response.text.match(/<Firstname>(.*)<\/Firstname>/)[1]).to.equal('Test');
                 expect(response.text.match(/<Active>(.*)<\/Active>/)[1]).to.equal('true');
+                expect(response.text.match(/<Active>(.*)<\/Active>/)[1]).not.to.equal('1'); // note Active is stored as bit(1)
+            });
+
+            it('gets a member (yaml)', async function() {
+                const hdrs = { Host: 'api.localhost', Accept: 'text/yaml' }; // set host & accept headers
+                const response = await appApi.get('/members/'+id).set(hdrs).auth(jwt, { type: 'bearer' });
+                expect(response.status).to.equal(200, response.text);
+                expect(response.headers['content-type']).to.equal('text/yaml; charset=utf-8');
+                const body = yaml.load(response.text);
+                expect(body).to.be.an('object');
+                expect(body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
+                expect(body.Email).to.equal('test@user.com');
+                expect(body.Firstname).to.equal('Test');
+                expect(body.Active).to.be.true;
+                expect(body.Active).not.to.equal(1); // note Active is stored as bit(1)
             });
 
             it('gets a member (filtered)', async function() {

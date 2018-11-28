@@ -139,6 +139,7 @@ class Member {
         try {
 
             await global.db.query('Delete From Member Where MemberId = :id', { id });
+            return true;
 
         } catch (e) {
             switch (e.code) {

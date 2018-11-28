@@ -13,8 +13,11 @@
     "start": "forever --minUptime 1000 --spinSleepTime 1000 app.js",
     "start-dev": "nodemon -e js,json,html -r dotenv/config app.js",
     "start-devtools": "nodemon --inspect -e js,json,html -r dotenv/config app.js",
-    "test": "mocha --exit test/*.js",
+    "test": "npm run test-node && npm run test-frontend",
+    "test-node": "mocha --exit test/*/*.js",
+    "test-frontend": "node -r dotenv/config app.js & pid=$!; cypress run; status=$?; kill -9 $pid; rm -r ./cypress; exit $status",
     "lint": "eslint --ignore-pattern app-api/apidoc .",
+    "cover": "nyc --reporter=html npm test; rm -r ./.nyc_output",
     "apidoc": "apidoc -i app-api -o app-api/apidoc/apidoc"
   },
   "engines": {
@@ -48,6 +51,7 @@
     "node-fetch": "^2.1.1",
     "nodejs-info": "^1.0.1",
     "nodemailer": "^4.3.1",
+    "nyc": "^13.1.0",
     "scrypt-kdf": "^1.0.1",
     "useragent": "^2.3.0",
     "xmlify": "^1.1.0"
@@ -55,6 +59,7 @@
   "devDependencies": {
     "apidoc": "^0.17.5",
     "chai": "^4.1.2",
+    "cypress": "^3.1.2",
     "dotenv": "^6.1.0",
     "eslint": "^4.19.1",
     "mocha": "^5.0.5",
