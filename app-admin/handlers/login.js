@@ -4,12 +4,10 @@
 /* All functions here either render or redirect, or throw.                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Scrypt from 'scrypt-kdf';   // scrypt key derivation function
+import jwt    from 'jsonwebtoken'; // JSON Web Token implementation
 
-const Scrypt = require('scrypt-kdf');   // scrypt key derivation function
-const jwt    = require('jsonwebtoken'); // JSON Web Token implementation
-
-const User = require('../../models/user.js');
+import User from '../../models/user.js';
 
 
 class LoginHandlers {
@@ -98,4 +96,4 @@ class LoginHandlers {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = LoginHandlers;
+export default LoginHandlers;

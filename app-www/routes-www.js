@@ -4,11 +4,11 @@
 
 /* eslint space-in-parens: off */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
 
-const router = require('koa-router')(); // router middleware for koa
+const router = new Router();
 
-const www = require('./handlers-www.js');
+import www from './handlers-www.js';
 
 
 router.get( '/',        www.index);          // render index page
@@ -19,4 +19,4 @@ router.post('/contact', www.processContact); // process contact request
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

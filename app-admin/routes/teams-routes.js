@@ -2,11 +2,11 @@
 /*  Members routes                                                                                */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
 
-const router = require('koa-router')(); // router middleware for koa
+const router = new Router();
 
-const teams = require('../handlers/teams.js');
+import teams from '../handlers/teams.js';
 
 
 router.get('/teams',               teams.list);          // render list members page
@@ -22,4 +22,4 @@ router.post('/teams/:id/delete',   teams.processDelete); // process delete membe
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

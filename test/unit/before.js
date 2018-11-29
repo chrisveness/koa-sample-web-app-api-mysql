@@ -8,7 +8,7 @@
 /* 'mocha test/unit/*.js'!                                                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-const mysql = require('mysql2/promise'); // fast mysql driver
+import mysql from 'mysql2/promise'; // fast mysql driver
 
 
 before(async function() {
@@ -22,4 +22,4 @@ before(async function() {
     await global.db.query('SET SESSION sql_mode = "TRADITIONAL"');
 });
 
-module.exports = before;
+export default before;

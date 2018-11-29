@@ -4,13 +4,13 @@
 /* Note these tests do not mock out database components, but operate on the live db.              */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-const expect  = require('chai').expect; // BDD/TDD assertion library
-const dotenv  = require('dotenv');      // load environment variables from a .env file into process.env
+import { expect } from 'chai';   // BDD/TDD assertion library
+import dotenv     from 'dotenv'; // load environment variables from a .env file into process.env
 dotenv.config();
 
-const Member = require('../../models/member.js');
+import Member from '../../models/member.js';
 
-require('./before.js');
+import './before.js';
 
 
 describe('Member model', function() {

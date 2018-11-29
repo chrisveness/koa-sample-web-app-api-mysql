@@ -2,22 +2,20 @@
 /* 'Admin' app - basic pages for adding/editing/deleting members & teams                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Koa        from 'koa';            // koa framework
+import handlebars from 'koa-handlebars'; // handlebars templating
+import flash      from 'koa-flash';      // flash messages
+import lusca      from 'koa-lusca';      // security header middleware
+import serve      from 'koa-static';     // static file serving middleware
+import convert    from 'koa-convert';    // until  koa-flash, koa-lusca updated to v2
+import jwt        from 'jsonwebtoken';   // JSON Web Token implementation
+import Router     from 'koa-router';     // router middleware for koa
 
+const router = new Router();
 
-const Koa        = require('koa');            // koa framework
-const handlebars = require('koa-handlebars'); // handlebars templating
-const flash      = require('koa-flash');      // flash messages
-const lusca      = require('koa-lusca');      // security header middleware
-const serve      = require('koa-static');     // static file serving middleware
-const convert    = require('koa-convert');    // until  koa-flash, koa-lusca updated to v2
-const jwt        = require('jsonwebtoken');   // JSON Web Token implementation
-const koaRouter  = require('koa-router');     // router middleware for koa
-const router = koaRouter();
-
-const HandlebarsHelpers = require('../lib/handlebars-helpers.js');
-const Log               = require('../lib/log.js');
-const ssl               = require('../lib/middleware-ssl.js');
+import HandlebarsHelpers from '../lib/handlebars-helpers.js';
+import Log               from '../lib/log.js';
+import ssl               from '../lib/middleware-ssl.js';
 
 
 const app = new Koa(); // admin app
@@ -156,9 +154,13 @@ app.use(verifyJwt);
 
 // public (unsecured) modules first
 
-app.use(require('./routes/index-routes.js'));
-app.use(require('./routes/login-routes.js'));
-app.use(require('./routes/password-routes.js'));
+import routesIndex   from './routes/index-routes.js';
+import routesLogin   from './routes/login-routes.js';
+import routesPasswd  from './routes/password-routes.js';
+
+app.use(routesIndex);
+app.use(routesLogin);
+app.use(routesPasswd);
 
 
 // verify user is signed in...
@@ -176,10 +178,14 @@ app.use(async function isSignedIn(ctx, next) {
 
 // ... as subsequent modules require authentication
 
-app.use(require('./routes/members-routes.js'));
-app.use(require('./routes/teams-routes.js'));
-app.use(require('./routes/ajax-routes.js'));
-app.use(require('./routes/dev-routes.js'));
+import routesMembers from './routes/members-routes.js';
+import routesTeams   from './routes/teams-routes.js';
+import routesAjax    from './routes/ajax-routes.js';
+import routesDev     from './routes/dev-routes.js';
+app.use(routesMembers);
+app.use(routesTeams);
+app.use(routesAjax);
+app.use(routesDev);
 
 
 // serve static apidoc files (http://admin.localhost/apidoc) (note login required)
@@ -253,4 +259,4 @@ async function verifyJwt(ctx, next) {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = app;
+export default app;

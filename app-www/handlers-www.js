@@ -4,10 +4,10 @@
 /* All functions here either render or redirect, or throw.                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import fs       from 'fs-extra';    // fs with extra methods & promise interface
+import markdown from 'markdown-it'; // markdown parser
 
-const fs = require('fs-extra');      // fs with extra methods & promise interface
-const md = require('markdown-it')(); // markdown parser
+const md = markdown();
 
 
 class Www {
@@ -48,4 +48,4 @@ class Www {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = Www;
+export default Www;

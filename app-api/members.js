@@ -2,10 +2,8 @@
 /*  API handlers - Members                                                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
-
-const Member       = require('../models/member.js');
-const castBoolean  = require('./cast-boolean.js');
+import Member      from '../models/member.js';
+import castBoolean from './cast-boolean.js';
 
 
 class MembersHandlers {
@@ -174,4 +172,4 @@ class MembersHandlers {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = MembersHandlers;
+export default MembersHandlers;

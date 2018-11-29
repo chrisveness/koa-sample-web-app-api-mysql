@@ -2,13 +2,13 @@
 /*  Route to handle authentication /auth element                                                  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
+import jwt    from 'jsonwebtoken'; // JSON Web Token implementation
+import Scrypt from 'scrypt-kdf';   // scrypt key derivation function
 
-const router = require('koa-router')(); // router middleware for koa
-const jwt    = require('jsonwebtoken'); // JSON Web Token implementation
-const Scrypt = require('scrypt-kdf');   // scrypt key derivation function
+const router = new Router();
 
-const User   = require('../models/user.js');
+import User   from '../models/user.js';
 
 
 /**
@@ -52,4 +52,4 @@ router.get('/auth', async function getAuth(ctx) {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

@@ -4,16 +4,16 @@
 
 /* eslint space-in-parens: off */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
 
-const router = require('koa-router')(); // router middleware for koa
+const router = new Router();
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 /*  Password reset routes                                                                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-const passwordReset = require('../handlers/password-reset.js');
+import passwordReset from '../handlers/password-reset.js';
 
 router.get( '/password/reset-request',         passwordReset.request);        // render request password page
 router.post('/password/reset-request',         passwordReset.processRequest); // send password reset e-mail
@@ -25,4 +25,4 @@ router.post('/password/reset/:token',          passwordReset.processReset);   //
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

@@ -4,10 +4,10 @@
 
 /* eslint no-shadow:off */
 
-const expect     = require('chai').expect; // BDD/TDD assertion library
-const dateFormat = require('dateformat');  // Steven Levithan's dateFormat()
+import { expect } from 'chai';       // BDD/TDD assertion library
+import dateFormat from 'dateformat'; // Steven Levithan's dateFormat()
 
-const validationErrors = require('../../lib/validation-errors.js');
+import validationErrors from '../../lib/validation-errors.js';
 
 const test = it; // just an alias
 

@@ -4,15 +4,13 @@
 /* These tests require api.localhost to be set in /etc/hosts.                                     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
-
-const supertest = require('supertest');   // SuperAgent driven library for testing HTTP servers
-const expect    = require('chai').expect; // BDD/TDD assertion library
-const dotenv    = require('dotenv');      // load environment variables from a .env file into process.env
-const yaml      = require('js-yaml');     // JS object to YAML
+import supertest  from 'supertest'; // SuperAgent driven library for testing HTTP servers
+import { expect } from 'chai';      // BDD/TDD assertion library
+import yaml       from 'js-yaml';   // JS object to YAML
+import dotenv     from 'dotenv';    // load environment variables from a .env file into process.env
 dotenv.config();
 
-const app = require('../../app.js');
+import app from '../../app.js';
 
 const testuser = process.env.TESTUSER;
 const testpass = process.env.TESTPASS;

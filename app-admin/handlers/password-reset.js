@@ -4,13 +4,11 @@
 /* GET functions render template pages; POST functions process post requests then redirect.       */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import crypto from 'crypto';     // nodejs.org/api/crypto.html
+import Scrypt from 'scrypt-kdf'; // scrypt key derivation function
 
-const crypto = require('crypto');     // nodejs.org/api/crypto.html
-const Scrypt = require('scrypt-kdf'); // scrypt key derivation function
-
-const User = require('../../models/user.js');
-const Mail = require('../../lib/mail.js');
+import User from '../../models/user.js';
+import Mail from '../../lib/mail.js';
 
 /*
  * Password reset sequence is:
@@ -60,7 +58,7 @@ class PasswordResetHandlers {
 
         // send e-mail with generated token
         const context = { firstname: user.Firstname, host: ctx.request.host, token: token };
-        const info = await Mail.send(email, 'password-reset.email', context, ctx);
+        await Mail.send(email, 'password-reset.email', context, ctx);
 
         ctx.response.set('X-Reset-Token', token); // for testing
 
@@ -156,4 +154,4 @@ async function userForResetToken(token) {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = PasswordResetHandlers;
+export default PasswordResetHandlers;

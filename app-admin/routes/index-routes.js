@@ -2,9 +2,9 @@
 /*  Route to handle '/' root element                                                              */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
 
-const router = require('koa-router')(); // router middleware for koa
+const router = new Router();
 
 
 router.get('/', async function getIndexPage(ctx) {
@@ -14,4 +14,4 @@ router.get('/', async function getIndexPage(ctx) {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

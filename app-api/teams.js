@@ -2,9 +2,7 @@
 /*  API handlers - Teams                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
-
-const Team = require('../models/team.js');
+import Team from '../models/team.js';
 
 
 class TeamsHandlers {
@@ -168,4 +166,4 @@ class TeamsHandlers {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = TeamsHandlers;
+export default TeamsHandlers;

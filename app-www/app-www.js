@@ -2,16 +2,15 @@
 /* 'www' app - publicly available parts of the site                                               */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Koa        from 'koa';            // koa framework
+import handlebars from 'koa-handlebars'; // handlebars templating
+import flash      from 'koa-flash';      // flash messages
+import lusca      from 'koa-lusca';      // security header middleware
+import serve      from 'koa-static';     // static file serving middleware
+import convert    from 'koa-convert';    // until  koa-flash, koa-lusca updated to v2
 
-const Koa        = require('koa');            // koa framework
-const handlebars = require('koa-handlebars'); // handlebars templating
-const flash      = require('koa-flash');      // flash messages
-const lusca      = require('koa-lusca');      // security header middleware
-const serve      = require('koa-static');     // static file serving middleware
-
-const Log = require('../lib/log.js');
-const ssl = require('../lib/middleware-ssl.js');
+import Log from '../lib/log.js';
+import ssl from '../lib/middleware-ssl.js';
 
 
 const app = new Koa(); // www app
@@ -83,19 +82,19 @@ app.use(async function cleanPost(ctx, next) {
 
 
 // flash messages
-app.use(flash()); // note koa-flash@1.0.0 is v1 middleware which generates deprecation notice
+app.use(convert(flash())); // note koa-flash@1.0.0 is v1 middleware which generates deprecation notice
 
 
 // lusca security headers
 const luscaCspTrustedCdns = 'ajax.googleapis.com cdnjs.cloudflare.com maxcdn.bootstrapcdn.com';
 const luscaCspDefaultSrc = `'self' 'unsafe-inline' ${luscaCspTrustedCdns}`; // 'unsafe-inline' required for <style> blocks
-app.use(lusca({ // note koa-lusca@2.2.0 is v1 middleware which generates deprecation notice
+app.use(convert(lusca({ // note koa-lusca@2.2.0 is v1 middleware which generates deprecation notice
     csp:           { policy: { 'default-src': luscaCspDefaultSrc } }, // Content-Security-Policy
     cto:           'nosniff',                                         // X-Content-Type-Options
     hsts:          { maxAge: 31536000, includeSubDomains: true },     // HTTP Strict-Transport-Security (1 year)
     xframe:        'SAMEORIGIN',                                      // X-Frame-Options
     xssProtection: true,                                              // X-XSS-Protection
-}));
+})));
 
 
 // add the domain (host without subdomain) into koa ctx (used in navpartial template)
@@ -112,7 +111,9 @@ app.use(async function ctxAddDomain(ctx, next) {
 app.use(ssl({ trustProxy: true }));
 
 
-app.use(require('./routes-www.js'));
+import routesWww from './routes-www.js';
+app.use(routesWww);
+
 
 // end of the line: 404 status for any resource not found
 app.use(function notFound(ctx) { // note no 'next'
@@ -122,4 +123,4 @@ app.use(function notFound(ctx) { // note no 'next'
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = app;
+export default app;

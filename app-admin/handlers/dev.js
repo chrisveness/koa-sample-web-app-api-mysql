@@ -2,11 +2,8 @@
 /* Dev tools handlers.                                                                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
-
-
-const nodeinfo   = require('nodejs-info'); // node info
-const dateFormat = require('dateformat');  // Steven Levithan's dateFormat()
+import nodeinfo   from 'nodejs-info'; // node info
+import dateFormat from 'dateformat';  // Steven Levithan's dateFormat()
 
 
 class Dev {
@@ -129,4 +126,4 @@ class Dev {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = Dev;
+export default Dev;

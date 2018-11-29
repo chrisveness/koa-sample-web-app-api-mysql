@@ -2,11 +2,11 @@
 /*  Login routes                                                                                  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
 
-const router = require('koa-router')(); // router middleware for koa
+const router = new Router();
 
-const login = require('../handlers/login.js');
+import login from '../handlers/login.js';
 
 
 // note url allowed after '/login' to redirect to after successful login
@@ -18,4 +18,4 @@ router.post(/\/login(.*)/, login.postLogin);   // process login
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

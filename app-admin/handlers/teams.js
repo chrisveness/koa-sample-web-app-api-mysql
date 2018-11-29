@@ -4,12 +4,10 @@
 /* All functions here either render or redirect, or throw.                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Team       from '../../models/team.js';
+import TeamMember from '../../models/team-member.js';
 
-const Team       = require('../../models/team.js');
-const TeamMember = require('../../models/team-member.js');
-
-const validationErrors = require('../../lib/validation-errors.js');
+import validationErrors from '../../lib/validation-errors.js';
 
 
 class TeamsHandlers {
@@ -24,7 +22,7 @@ class TeamsHandlers {
         // "Where field1 = :field1 And field2 = :field2"
         let sql = 'Select * From Team';
         if (ctx.request.querystring) {
-            const filter = Object.keys(ctx.request.query).map(q => `${q} = :${q}` ).join(' and ');
+            const filter = Object.keys(ctx.request.query).map(q => `${q} = :${q}`).join(' and ');
             sql += ' Where '+filter;
         }
         sql +=  ' Order By Name';
@@ -260,4 +258,4 @@ class TeamsHandlers {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = TeamsHandlers;
+export default TeamsHandlers;

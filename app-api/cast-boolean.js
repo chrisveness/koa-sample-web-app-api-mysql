@@ -14,8 +14,6 @@
 /* Posted values should have 'true'/'false'/'' translated to true/false/null.                     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
-
 
 class CastBoolean {
 
@@ -72,4 +70,4 @@ class CastBoolean {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = CastBoolean;
+export default CastBoolean;

@@ -4,12 +4,9 @@
 /* All functions here either render or redirect, or throw.                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
-
-const Member     = require('../../models/member.js');
-const TeamMember = require('../../models/team-member.js');
-
-const validationErrors = require('../../lib/validation-errors.js');
+import Member           from '../../models/member.js';
+import TeamMember       from '../../models/team-member.js';
+import validationErrors from '../../lib/validation-errors.js';
 
 
 class MembersHandlers {
@@ -264,4 +261,4 @@ class MembersHandlers {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = MembersHandlers;
+export default MembersHandlers;

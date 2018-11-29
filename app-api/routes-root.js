@@ -2,9 +2,9 @@
 /*  Route to handle root element: return uri's for available resources & note on authentication   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
 
-const router = require('koa-router')(); // router middleware for koa
+const router = new Router();
 
 
 router.get('/', function getRoot(ctx) {
@@ -18,4 +18,4 @@ router.get('/', function getRoot(ctx) {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

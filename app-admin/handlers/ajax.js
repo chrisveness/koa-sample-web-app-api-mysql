@@ -10,9 +10,7 @@
 /* Being placed after auth test in the middleware stack, ajax calls are password-protected.       */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
-
-const fetch = require('node-fetch'); // window.fetch in node.js
+import fetch from 'node-fetch'; // window.fetch in node.js
 
 const handler = {};
 
@@ -54,4 +52,4 @@ handler.ajaxApiPassthrough = async function(ctx) {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = handler;
+export default handler;

@@ -9,15 +9,13 @@
 /* A GET on a collection which returns no results returns a 204 / No Content response.            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Koa       from 'koa';          // Koa framework
+import jwt       from 'jsonwebtoken'; // JSON Web Token implementation
+import xmlify    from 'xmlify';       // JS object to XML
+import yaml      from 'js-yaml';      // JS object to YAML
 
-const Koa       = require('koa');          // Koa framework
-const jwt       = require('jsonwebtoken'); // JSON Web Token implementation
-const xmlify    = require('xmlify');       // JS object to XML
-const yaml      = require('js-yaml');      // JS object to YAML
-
-const Log = require('../lib/log.js');
-const ssl = require('../lib/middleware-ssl.js');
+import Log from '../lib/log.js';
+import ssl from '../lib/middleware-ssl.js';
 
 
 const app = new Koa(); // API app
@@ -131,8 +129,10 @@ app.use(ssl({ trustProxy: true }));
 
 // public (unsecured) modules first
 
-app.use(require('./routes-root.js'));
-app.use(require('./routes-auth.js'));
+import routesRoot from './routes-root.js';
+import routesAuth from './routes-auth.js';
+app.use(routesRoot);
+app.use(routesAuth);
 
 // remaining routes require JWT auth (obtained from /auth and supplied in bearer authorization header)
 
@@ -157,11 +157,14 @@ app.use(async function verifyJwt(ctx, next) {
     await next();
 });
 
-app.use(require('./routes-members.js'));
-app.use(require('./routes-teams.js'));
-app.use(require('./routes-team-members.js'));
+import routesMembers     from './routes-members.js';
+import routesTeams       from './routes-teams.js';
+import routesTeamMembers from './routes-team-members.js';
+app.use(routesMembers);
+app.use(routesTeams);
+app.use(routesTeamMembers);
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = app;
+export default app;

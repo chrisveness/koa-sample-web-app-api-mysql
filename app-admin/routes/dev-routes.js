@@ -2,11 +2,11 @@
 /*  Routes for dev tools                                                                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
 
-const router = require('koa-router')(); // router middleware for koa
+const router = new Router();
 
-const Dev = require('../handlers/dev.js');
+import Dev from '../handlers/dev.js';
 
 
 router.get('/dev/nodeinfo',   Dev.nodeinfo);
@@ -16,4 +16,4 @@ router.get('/dev/log-error',  Dev.logError);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

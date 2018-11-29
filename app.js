@@ -7,21 +7,20 @@
 /*  - api.   (RESTful CRUD API)                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
 /* eslint no-shadow:off *//* app is already declared in the upper scope */
 
-const Koa      = require('koa');              // Koa framework
-const body     = require('koa-body');         // body parser
-const compose  = require('koa-compose');      // middleware composer
-const compress = require('koa-compress');     // HTTP compression
-const session  = require('koa-session');      // session for flash messages
-const mysql    = require('mysql2/promise');   // fast mysql driver
-const MongoDB  = require('mongodb');          // MongoDB driver for Node.js
-const Debug    = require('debug');            // small debugging utility
+import Koa             from 'koa';            // Koa framework
+import body            from 'koa-body';       // body parser
+import compose         from 'koa-compose';    // middleware composer
+import compress        from 'koa-compress';   // HTTP compression
+import session         from 'koa-session';    // session for flash messages
+import mysql           from 'mysql2/promise'; // fast mysql driver
+import { MongoClient } from 'mongodb';        // MongoDB driver for Node.js
+import Debug           from 'debug';          // small debugging utility
+import dotenv          from 'dotenv';         // load environment variables from a .env file into process.env
 
-const MongoClient = MongoDB.MongoClient;
 const debug = Debug('app:req'); // debug each request
-
+dotenv.config();
 const app = new Koa();
 
 
@@ -79,11 +78,15 @@ app.use(async function subApp(ctx, next) {
     await next();
 });
 
+import appAdmin from './app-admin/app-admin.js';
+import appApi   from './app-api/app-api.js';
+import appWww   from './app-www/app-www.js';
+
 app.use(async function composeSubapp(ctx) { // note no 'next' after composed subapp
     switch (ctx.state.subapp) {
-        case 'admin': await compose(require('./app-admin/app-admin.js').middleware)(ctx); break;
-        case 'api':   await compose(require('./app-api/app-api.js').middleware)(ctx);     break;
-        case 'www':   await compose(require('./app-www/app-www.js').middleware)(ctx);     break;
+        case 'admin': await compose(appAdmin.middleware)(ctx); break;
+        case 'api':   await compose(appApi.middleware)(ctx);   break;
+        case 'www':   await compose(appWww.middleware)(ctx);   break;
         default: // no (recognised) subdomain? canonicalise host to www.host
             // note switch must include all registered subdomains to avoid potential redirect loop
             ctx.response.redirect(ctx.request.protocol+'://'+'www.'+ctx.request.host+ctx.path+ctx.search);
@@ -130,4 +133,4 @@ MongoClient.connect(process.env.DB_MONGO, { useNewUrlParser: true })
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = app;
+export default app;

@@ -4,11 +4,11 @@
 
 /* eslint space-in-parens: off */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
 
-const router = require('koa-router')(); // router middleware for koa
+const router = new Router();
 
-const teams  = require('./team-members.js');
+import teams  from './team-members.js';
 
 
 router.get(   '/team-members/:id',   teams.getTeamMemberById);        // get team membership details
@@ -18,4 +18,4 @@ router.delete('/team-members/:id',   teams.deleteTeamMemberById);     // delete 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

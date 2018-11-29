@@ -4,13 +4,11 @@
 /* All database modifications go through the model; most querying is in the handlers.             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
+import Debug from 'debug';     // small debugging utility
+const debug = Debug('app:db'); // debug db updates
 
-const Debug = require('debug'); // small debugging utility
-const debug = Debug('app:db');  // debug db updates
-
-const Log        = require('../lib/log.js');
-const ModelError = require('./modelerror.js');
+import Log        from '../lib/log.js';
+import ModelError from './modelerror.js';
 
 
 class Member {
@@ -159,4 +157,4 @@ class Member {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = Member;
+export default Member;

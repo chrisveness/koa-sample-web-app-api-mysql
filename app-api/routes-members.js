@@ -4,11 +4,11 @@
 
 /* eslint space-in-parens: off */
 
-'use strict';
+import Router from 'koa-router'; // router middleware for koa
 
-const router = require('koa-router')(); // router middleware for koa
+const router = new Router();
 
-const members = require('./members.js');
+import members from './members.js';
 
 
 router.get(   '/members',     members.getMembers);       // list members
@@ -20,4 +20,4 @@ router.delete('/members/:id', members.deleteMemberById); // delete member
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = router.middleware();
+export default router.middleware();

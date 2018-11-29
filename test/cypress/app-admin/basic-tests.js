@@ -4,7 +4,7 @@
 /* To run tests interactively, use 'open cypress' command.                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-/* global Cypress, cy, expect */
+/* global Cypress, cy */
 
 
 describe('Basic front-end tests', function () {

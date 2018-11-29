@@ -2,9 +2,7 @@
 /*  API handlers - Teams/Members                                                                  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
-
-const TeamMember = require('../models/team-member.js');
+import TeamMember from '../models/team-member.js';
 
 
 class TeamsMembersHandlers {
@@ -88,4 +86,4 @@ class TeamsMembersHandlers {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = TeamsMembersHandlers;
+export default TeamsMembersHandlers;

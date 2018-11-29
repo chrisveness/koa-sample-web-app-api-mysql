@@ -2,8 +2,6 @@
 /* ModelError - error thrown by model includes http status to return when error is thrown in API  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-'use strict';
-
 
 /**
  * Extend Error with ModelError which includes (http) status.
@@ -21,4 +19,4 @@ class ModelError extends Error {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-module.exports = ModelError;
+export default ModelError;
