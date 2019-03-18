@@ -94,7 +94,7 @@ POST), or throw an error.
 
 The API returns JSON or XML (or plain text) according to the *Accepts* request header.
 
-The main *app-api.js* sets up the database connection, content negotiation, JWT authentication,  
+The main *app-api.js* sets up the database connection, content negotiation, JWT authentication,
 4xx/500 handling, etc (JWT authentication is supplied in Bearer Authorization HTTP headers).
 
 Routes are grouped into members, teams, team membership, and authentication. All but the simplest of
@@ -163,8 +163,11 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 .
 ├── app-admin
 │   ├── handlers
+│   │   ├── ajax.js
+│   │   ├── dev.js
 │   │   ├── login.js
 │   │   ├── members.js
+│   │   ├── password-reset.js
 │   │   └── teams.js
 │   ├── routes
 │   │   ├── ajax-routes.js
@@ -173,6 +176,7 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   │   ├── login-routes.js
 │   │   ├── logs-routes.js
 │   │   ├── members-routes.js
+│   │   ├── password-routes.js
 │   │   └── teams-routes.js
 │   ├── templates
 │   │   ├── partials
@@ -181,6 +185,8 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   │   ├── 400-bad-request.html
 │   │   ├── 404-not-found.html
 │   │   ├── 500-internal-server-error.html
+│   │   ├── dev-logs-access.html
+│   │   ├── dev-logs-error.html
 │   │   ├── index.html
 │   │   ├── login.html
 │   │   ├── logs.html
@@ -189,6 +195,11 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   │   ├── members-edit.html
 │   │   ├── members-list.html
 │   │   ├── members-view.html
+│   │   ├── password-reset.email.html
+│   │   ├── password-reset.html
+│   │   ├── password-reset-confirm.html
+│   │   ├── password-reset-request.html
+│   │   ├── password-reset-reqeust-confirm.html
 │   │   ├── teams-add.html
 │   │   ├── teams-delete.html
 │   │   ├── teams-edit.html
@@ -197,6 +208,7 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   └── app-admin.js
 ├── app-api
 │   ├── app-api.js
+│   ├── cast-boolean.js
 │   ├── members.js
 │   ├── routes-auth.js
 │   ├── routes-members.js
@@ -216,8 +228,11 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   ├── handlers-www.js
 │   └── routes-www.js
 ├── lib
-│   └── lib.js
-├── logs
+│   ├── handlebars-helpers.js
+│   ├── log.js
+│   ├── mail.js
+│   ├── middleware-ssl.js
+│   └── validation-errors.js
 ├── models
 │   ├── member.js
 │   ├── modelerror.js
@@ -225,15 +240,27 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   ├── team-member.js
 │   └── user.js
 ├── public
-│   └── css
-│       ├── admin.css
-│       ├── base.css
-│       └── www.css
+│   ├── css
+│   │   ├── admin.css
+│   │   ├── base.css
+│   │   └── www.css
+│   ├── favicon.ico
+│   └── robots.txt
 ├── test
-│   ├── admin.js
-│   └── api.js
-├─ app.js
+│   ├── cypress
+│   │   ├── app-admin
+│   │   │   └── basic-test.js
+│   │   └── plugins.js
+│   ├── integration
+│   │   ├── app-admin-tests.js
+│   │   └── app-api-tests.js
+│   └── unit
+│       ├── before.js
+│       ├── model-member-tests.js
+│       └── validation-error-tests.js
 ├─ .env
+├─ app.js
+├─ cypress.json
 ├─ LICENSE
 ├─ package.json
 └─ README.md
