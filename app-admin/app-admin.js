@@ -225,7 +225,8 @@ async function verifyJwt(ctx, next) {
                 if (payload.remember) options.expires = new Date(Date.now() + 1000*60*60*24*7); // remember-me for 7d
                 ctx.cookies.set('koa:jwt', replacementToken, options);
             } catch (e) {
-                if (e.message == 'invalid token') ctx.throw(401, 'Invalid authentication'); // verify (both!) failed
+                if (e.message == 'invalid token') ctx.throw(401, 'Invalid JWT'); // verify (both!) failed
+                if (e.message == 'jwt malformed') ctx.throw(401, 'Invalid JWT'); // verify (both!) failed
                 ctx.throw(e.status||500, e.message); // Internal Server Error
             }
         }

@@ -128,6 +128,7 @@ app.use(async function verifyJwt(ctx, next) {
         ctx.state.user.Role = roles[payload.role]; // for authorisation checks
     } catch (e) {
         if (e.message == 'invalid token') ctx.throw(401, 'Invalid JWT'); // Unauthorized
+        if (e.message == 'jwt malformed') ctx.throw(401, 'Invalid JWT'); // Unauthorized
         ctx.throw(e.status||500, e.message); // Internal Server Error
     }
 

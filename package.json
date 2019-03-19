@@ -53,7 +53,7 @@
     "nodejs-info": "^1.2.0",
     "nodemailer": "^4.7.0",
     "nyc": "^13.1.0",
-    "scrypt-kdf": "^1.0.1",
+    "scrypt-kdf": "^2.0.0",
     "useragent": "^2.3.0",
     "xmlify": "^1.1.0"
   },

@@ -55,9 +55,10 @@ class LoginHandlers {
         const passwordHash = user ? user.Password : '0123456789abcdef'.repeat(8);
         let passwordMatch = null;
         try {
-            passwordMatch = await Scrypt.verify(passwordHash, body.password);
+            passwordMatch = await Scrypt.verify(Buffer.from(passwordHash, 'base64'), body.password);
         } catch (e) {
-            user = null; // e.g. "Invalid key"
+            if (e instanceof RangeError) user = null; // "Invalid key"
+            if (!(e instanceof RangeError)) throw e;
         }
 
         if (!user || !passwordMatch) {
