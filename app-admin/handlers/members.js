@@ -6,6 +6,7 @@
 
 import Member           from '../../models/member.js';
 import TeamMember       from '../../models/team-member.js';
+import Db               from '../../lib/mysqldb.js';
 import validationErrors from '../../lib/validation-errors.js';
 
 
@@ -28,7 +29,7 @@ class MembersHandlers {
 
         try {
 
-            const [ members ] = await ctx.state.db.query(sql, ctx.request.query);
+            const [ members ] = await Db.query(sql, ctx.request.query);
 
             await ctx.render('members-list', { members });
 
@@ -53,7 +54,7 @@ class MembersHandlers {
         const sql = `Select TeamMemberId, TeamId, Name
                      From Team Inner Join TeamMember Using (TeamId)
                      Where MemberId = :id`;
-        const [ teams ] = await ctx.state.db.query(sql, { id: ctx.params.id });
+        const [ teams ] = await Db.query(sql, { id: ctx.params.id });
 
         const context = member;
         context.teams = teams;
@@ -84,7 +85,7 @@ class MembersHandlers {
                       From TeamMember Inner Join Team Using (TeamId)
                       Where MemberId = :id
                       Order By Name`;
-        const [ memberOfTeams ] = await ctx.state.db.query(sqlT, { id: ctx.params.id });
+        const [ memberOfTeams ] = await Db.query(sqlT, { id: ctx.params.id });
         member.memberOfTeams = memberOfTeams;
 
         // teams this member is not a member of (for add picklist)
@@ -94,7 +95,7 @@ class MembersHandlers {
                       From Team 
                       Where TeamId Not In (${teams.join(',')}) 
                       Order By Name`;
-        const [ notMemberOfTeams ] = await ctx.state.db.query(sqlM, teams);
+        const [ notMemberOfTeams ] = await Db.query(sqlM, teams);
         member.notMemberOfTeams = notMemberOfTeams;
 
         const context = member;

@@ -7,6 +7,7 @@
 import Debug from 'debug';     // small debugging utility
 const debug = Debug('app:db'); // debug db updates
 
+import Db         from '../lib/mysqldb.js';
 import Log        from '../lib/log.js';
 import ModelError from './modelerror.js';
 
@@ -20,7 +21,7 @@ class Team {
      * @returns {Object} Team details.
      */
     static async get(id) {
-        const [ teams ] = await global.db.query('Select * From Team Where TeamId = :id', { id });
+        const [ teams ] = await Db.query('Select * From Team Where TeamId = :id', { id });
         const team = teams[0];
         return team;
     }
@@ -38,7 +39,7 @@ class Team {
 
             const sql = `Select * From Team Where ${field} = :${field} Order By Name`;
 
-            const [ teams ] = await global.db.query(sql, { [field]: value });
+            const [ teams ] = await Db.query(sql, { [field]: value });
 
             return teams;
 
@@ -63,7 +64,7 @@ class Team {
 
         try {
 
-            const [ result ] = await global.db.query('Insert Into Team Set ?', [ values ]);
+            const [ result ] = await Db.query('Insert Into Team Set ?', [ values ]);
             return result.insertId;
 
         } catch (e) {
@@ -96,7 +97,7 @@ class Team {
 
         try {
 
-            await global.db.query('Update Team Set ? Where TeamId = ?', [ values, id ]);
+            await Db.query('Update Team Set ? Where TeamId = ?', [ values, id ]);
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -126,7 +127,7 @@ class Team {
 
         try {
 
-            await global.db.query('Delete From Team Where TeamId =  :id', { id });
+            await Db.query('Delete From Team Where TeamId =  :id', { id });
             return true;
 
         } catch (e) {

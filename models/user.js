@@ -7,6 +7,7 @@
 import Debug from 'debug';     // small debugging utility
 const debug = Debug('app:db'); // debug db updates
 
+import Db         from '../lib/mysqldb.js';
 import Log        from '../lib/log.js';
 import ModelError from './modelerror.js';
 
@@ -20,7 +21,7 @@ class User {
      * @returns {Object} User details.
      */
     static async get(id) {
-        const [ users ] = await global.db.query('Select * From User Where UserId = :id', { id });
+        const [ users ] = await Db.query('Select * From User Where UserId = :id', { id });
         const user = users[0];
         return user;
     }
@@ -38,7 +39,7 @@ class User {
 
             const sql = `Select * From User Where ${field} = :${field} Order By Firstname, Lastname`;
 
-            const [ users ] = await global.db.query(sql, { [field]: value });
+            const [ users ] = await Db.query(sql, { [field]: value });
 
             return users;
 
@@ -63,7 +64,7 @@ class User {
 
         try {
 
-            const [ result ] = await global.db.query('Insert Into User Set ?', [ values ]);
+            const [ result ] = await Db.query('Insert Into User Set ?', [ values ]);
             return result.insertId;
 
         } catch (e) {
@@ -96,7 +97,7 @@ class User {
 
         try {
 
-            await global.db.query('Update User Set ? Where UserId = ?', [ values, id ]);
+            await Db.query('Update User Set ? Where UserId = ?', [ values, id ]);
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -126,7 +127,7 @@ class User {
 
         try {
 
-            await global.db.query('Delete From User Where UserId = id', { id });
+            await Db.query('Delete From User Where UserId = id', { id });
             return true;
 
         } catch (e) {

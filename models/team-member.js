@@ -7,9 +7,9 @@
 import Debug from 'debug';     // small debugging utility
 const debug = Debug('app:db'); // debug db updates
 
+import Db         from '../lib/mysqldb.js';
 import Log        from '../lib/log.js';
 import ModelError from './modelerror.js';
-
 
 
 class TeamMember {
@@ -21,7 +21,7 @@ class TeamMember {
      * @returns {Object} TeamMember details.
      */
     static async get(id) {
-        const [ teamMembers ] = await global.db.query('Select * From TeamMember Where TeamMemberId =  :id', { id });
+        const [ teamMembers ] = await Db.query('Select * From TeamMember Where TeamMemberId =  :id', { id });
         return teamMembers[0];
     }
 
@@ -42,7 +42,7 @@ class TeamMember {
 
         try {
 
-            const [ result ] = await global.db.query('Insert Into TeamMember Set ?', [ values ]);
+            const [ result ] = await Db.query('Insert Into TeamMember Set ?', [ values ]);
             return result.insertId;
 
         } catch (e) {
@@ -75,7 +75,7 @@ class TeamMember {
 
         try {
 
-            await global.db.query('Update TeamMember Set ? Where TeamMemberId = ?', [ values, id ]);
+            await Db.query('Update TeamMember Set ? Where TeamMemberId = ?', [ values, id ]);
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -105,7 +105,7 @@ class TeamMember {
 
         try {
 
-            await global.db.query('Delete From TeamMember Where TeamMemberId = :id', { id });
+            await Db.query('Delete From TeamMember Where TeamMemberId = :id', { id });
             return true;
 
         } catch (e) {

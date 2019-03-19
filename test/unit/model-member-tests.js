@@ -10,8 +10,6 @@ dotenv.config();
 
 import Member from '../../models/member.js';
 
-import './before.js';
-
 
 describe('Member model', function() {
     let memberId = null;

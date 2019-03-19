@@ -14,8 +14,6 @@ import body            from 'koa-body';       // body parser
 import compose         from 'koa-compose';    // middleware composer
 import compress        from 'koa-compress';   // HTTP compression
 import session         from 'koa-session';    // session for flash messages
-import mysql           from 'mysql2/promise'; // fast mysql driver
-import { MongoClient } from 'mongodb';        // MongoDB driver for Node.js
 import Debug           from 'debug';          // small debugging utility
 import dotenv          from 'dotenv';         // load environment variables from a .env file into process.env
 
@@ -98,37 +96,8 @@ app.use(async function composeSubapp(ctx) { // note no 'next' after composed sub
 /* create server - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 
-app.on('mongodbReady', function() {
-    app.listen(process.env.PORT||3000);
-    console.info(`${process.version} listening on port ${process.env.PORT||3000} (${app.env}/${dbConfig.database})`);
-});
-
-
-/* database connections - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-
-// MySQL connection pool (set up on app initialisation)
-const dbConfigKeyVal = process.env.DB_CONNECTION.split(';').map(v => v.trim().split('='));
-const dbConfig = dbConfigKeyVal.reduce((config, v) => { config[v[0].toLowerCase()] = v[1]; return config; }, {});
-global.connectionPool = mysql.createPool(dbConfig); // put in global to pass to sub-apps
-
-
-// MongoDB connection pool (set up on app initialisation) - mongo has no synchronous connect, so emit
-// 'mongodbReady' when connected (note mongodbReady lister has to be set before event is emitted)
-MongoClient.connect(process.env.DB_MONGO, { useNewUrlParser: true })
-    .then(client => {
-        global.mongoDb = client.db(client.s.options.dbName);
-        // if empty db, create capped collections for logs (if not createCollection() calls do nothing)
-        global.mongoDb.createCollection('log-access', { capped: true, size: 100*1e3, max: 100 });
-        global.mongoDb.createCollection('log-error',  { capped: true, size: 100*4e3, max: 100 });
-    })
-    .then(() => {
-        app.emit('mongodbReady');
-    })
-    .catch(err => {
-        console.error(`Mongo connection error: ${err.message}`);
-        process.exit(1);
-    });
+app.listen(process.env.PORT||3000);
+console.info(`${process.version} listening on port ${process.env.PORT||3000} (${app.env})`);
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */

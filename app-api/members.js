@@ -3,6 +3,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 import Member      from '../models/member.js';
+import Db          from '../lib/mysqldb.js';
 import castBoolean from './cast-boolean.js';
 
 
@@ -34,7 +35,7 @@ class MembersHandlers {
             }
             sql +=  ' Order By Firstname, Lastname';
 
-            const result = await ctx.state.db.query(sql, ctx.request.query);
+            const result = await Db.query(sql, ctx.request.query);
             const [ members ] = castBoolean.fromMysql(result);
 
             if (members.length == 0) { ctx.response.status = 204; return; } // No Content (preferred to returning 200 with empty list)
@@ -68,7 +69,7 @@ class MembersHandlers {
      * @apiError   404/NotFound             Member not found.
      */
     static async getMemberById(ctx) {
-        const result = await global.db.query('Select * From Member Where MemberId = :id', { id: ctx.params.id });
+        const result = await Db.query('Select * From Member Where MemberId = :id', { id: ctx.params.id });
         const [ members ] = castBoolean.fromMysql(result);
         const member = members[0];
 
@@ -79,7 +80,7 @@ class MembersHandlers {
 
         // team membership
         const sql = 'Select TeamId As _id, concat("/teams/",TeamId) As _uri From TeamMember Where MemberId = :id';
-        const [ teams ] = await ctx.state.db.query(sql, { id: ctx.params.id });
+        const [ teams ] = await Db.query(sql, { id: ctx.params.id });
         member.Teams = teams;
 
         ctx.response.body = member;

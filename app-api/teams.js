@@ -3,6 +3,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 import Team from '../models/team.js';
+import Db   from '../lib/mysqldb.js';
 
 
 class TeamsHandlers {
@@ -33,7 +34,7 @@ class TeamsHandlers {
             }
             sql +=  ' Order By Name';
 
-            const [ teams ] = await ctx.state.db.query(sql, ctx.request.query);
+            const [ teams ] = await Db.query(sql, ctx.request.query);
 
             if (teams.length == 0) { ctx.response.status = 204; return; } // No Content (preferred to returning 200 with empty list)
 
@@ -75,7 +76,7 @@ class TeamsHandlers {
 
         // team membership
         const sql = 'Select MemberId As _id, concat("/members/",MemberId) As _uri From TeamMember Where TeamId = :id';
-        const [ members ] = await ctx.state.db.query(sql,  { id: ctx.params.id });
+        const [ members ] = await Db.query(sql,  { id: ctx.params.id });
         team.Members = members;
 
         ctx.response.body = team;

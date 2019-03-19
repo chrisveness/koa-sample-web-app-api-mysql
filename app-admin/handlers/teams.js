@@ -4,9 +4,9 @@
 /* All functions here either render or redirect, or throw.                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-import Team       from '../../models/team.js';
-import TeamMember from '../../models/team-member.js';
-
+import Team             from '../../models/team.js';
+import TeamMember       from '../../models/team-member.js';
+import Db               from '../../lib/mysqldb.js';
 import validationErrors from '../../lib/validation-errors.js';
 
 
@@ -29,7 +29,7 @@ class TeamsHandlers {
 
         try {
 
-            const [ teams ] = await ctx.state.db.query(sql, ctx.request.query);
+            const [ teams ] = await Db.query(sql, ctx.request.query);
 
             await ctx.render('teams-list', { teams });
 
@@ -54,7 +54,7 @@ class TeamsHandlers {
         const sql = `Select TeamMemberId, MemberId, Firstname, Lastname
                      From Member Inner Join Team Using (MemberId)
                      Where TeamId = :id`;
-        const [ members ] = await ctx.state.db.query(sql, { id: ctx.params.id });
+        const [ members ] = await Db.query(sql, { id: ctx.params.id });
 
         const context = team;
         context.members = members;
@@ -85,7 +85,7 @@ class TeamsHandlers {
                       From TeamMember Inner Join Member Using (MemberId)
                       Where TeamId = :id
                       Order By Firstname, Lastname`;
-        const [ teamMembers ] = await ctx.state.db.query(sqlT, { id: ctx.params.id });
+        const [ teamMembers ] = await Db.query(sqlT, { id: ctx.params.id });
         team.teamMembers = teamMembers;
 
         // members not in this team (for add picklist)
@@ -95,7 +95,7 @@ class TeamsHandlers {
                       From Member
                       Where MemberId Not In (`+members.join(',')+`)
                       Order By Firstname, Lastname`;
-        const [ notTeamMembers ] = await ctx.state.db.query(sqlM, members);
+        const [ notTeamMembers ] = await Db.query(sqlM, members);
         team.notTeamMembers = notTeamMembers;
 
         const context = team;

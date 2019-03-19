@@ -14,6 +14,8 @@
 /* Posted values should have 'true'/'false'/'' translated to true/false/null.                     */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
+import Db from '../lib/mysqldb.js';
+
 
 class CastBoolean {
 
@@ -25,7 +27,7 @@ class CastBoolean {
      * @returns {Array} [rows, fields] Same as ‘results’, but with properly cast booleans.
      *
      * @example
-     *   const result = await ctx.state.db.query('Select * From User');
+     *   const result = await Db.query('Select * From User');
      *   const [users] = castBoolean.fromMysql(result);
      */
     static fromMysql(result) {
@@ -55,7 +57,7 @@ class CastBoolean {
      */
     static async fromStrings(table, values) {
         const castValues = values;
-        const fields = await global.db.query('Describe '+table);
+        const fields = await Db.query('Describe '+table);
         fields[0].forEach(field => {
             const boolean = field.Type=='tinyint(1)' || field.Type=='bit(1)';
             if (boolean && field.Field in values) {

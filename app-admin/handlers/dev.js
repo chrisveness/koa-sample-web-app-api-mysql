@@ -5,6 +5,8 @@
 import nodeinfo   from 'nodejs-info'; // node info
 import dateFormat from 'dateformat';  // Steven Levithan's dateFormat()
 
+import Db from '../../lib/mongodb.js';
+
 
 class Dev {
 
@@ -21,7 +23,7 @@ class Dev {
      */
     static async logAccess(ctx) {
         // access logging uses capped collection log-access (size: 1000×1e3, max: 1000)
-        const log = global.mongoDb.collection('log-access');
+        const log = await Db.collection('log-access');
 
         const entriesAll = (await log.find({}).sort({ $natural: -1 }).toArray());
 
@@ -75,7 +77,7 @@ class Dev {
      */
     static async logError(ctx) {
         // error logging uses capped collection log-error (size: 1000×4e3, max: 1000)
-        const log = global.mongoDb.collection('log-error');
+        const log = await Db.collection('log-error');
 
         const entriesAll = (await log.find({}).sort({ $natural: -1 }).toArray());
 
