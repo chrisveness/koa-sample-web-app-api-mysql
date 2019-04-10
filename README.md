@@ -283,8 +283,8 @@ variables and not stored in the file system.
 
 A .env file for this project might look something like:
 
-    DB_CONNECTION = Host=eu-cdbr-west-01.cleardb.com; User=abcdef12345678; Password=abcdef12; Database=heroku_abcdef012345678
-    DB_MONGO = mongodb://heroku_abcdefgh:abcdefghijklmnoparstuvwxyz@ds123456.mlab.com:12345/heroku_abcdefgh
+    DB_MYSQL_CONNECTION = Host=eu-cdbr-west-01.cleardb.com; User=abcdef12345678; Password=abcdef12; Database=heroku_abcdef012345678
+    DB_MONGO_CONNECTION = mongodb://heroku_abcdefgh:abcdefghijklmnoparstuvwxyz@ds123456.mlab.com:12345/heroku_abcdefgh
 
     SMTP_CONNECTION = Host=smtp.gmail.com; Port=587; User=me@gmail.com; Pass=mypassword
 
