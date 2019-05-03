@@ -101,13 +101,14 @@ app.use(convert(flash())); // note koa-flash@1.0.0 is v1 middleware which genera
 // lusca security headers
 const luscaCspTrustedCdns = 'ajax.googleapis.com cdnjs.cloudflare.com maxcdn.bootstrapcdn.com';
 const luscaCspDefaultSrc = `'self' 'unsafe-inline' ${luscaCspTrustedCdns}`; // 'unsafe-inline' required for <style> blocks
-app.use(convert(lusca({ // note koa-lusca@2.2.0 is v1 middleware which generates deprecation notice
-    csp:           { policy: { 'default-src': luscaCspDefaultSrc } }, // Content-Security-Policy
-    cto:           'nosniff',                                         // X-Content-Type-Options
-    hsts:          { maxAge: 60*60*24*365, includeSubDomains: true }, // HTTP Strict-Transport-Security
-    xframe:        'SAMEORIGIN',                                      // X-Frame-Options
-    xssProtection: true,                                              // X-XSS-Protection
-})));
+app.use(lusca({
+    csp:            { policy: { 'default-src': luscaCspDefaultSrc } }, // Content-Security-Policy
+    cto:            'nosniff',                                         // X-Content-Type-Options
+    hsts:           { maxAge: 60*60*24*365, includeSubDomains: true }, // HTTP Strict-Transport-Security
+    xframe:         'SAMEORIGIN',                                      // X-Frame-Options
+    xssProtection:  true,                                              // X-XSS-Protection
+    referrerPolicy: 'strict-origin-when-cross-origin',                 // Referrer-Policy
+}));
 
 
 // add the domain (host without subdomain) into koa ctx (used in index.html)
