@@ -1,0 +1,15 @@
+language: node_js
+
+node_js:
+- "lts/*"
+- "node"
+
+os:
+- linux
+- osx
+- windows
+
+addons:
+  hosts:
+    - admin.localhost
+    - api.localhost
