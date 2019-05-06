@@ -21,6 +21,10 @@ describe('Member model', function() {
         Active:    true,
     };
 
+    before(function() {
+        if (!process.env.DB_MYSQL_CONNECTION) throw new Error('No DB_MYSQL_CONNECTION available');
+    });
+
     it('creates member', async function() {
         memberId = await Member.insert(values);
         console.info('\tmember id', memberId);

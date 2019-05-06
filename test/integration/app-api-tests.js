@@ -22,6 +22,12 @@ const appApi = supertest.agent(app.listen()).host('api.localhost');
 describe(`API app (${app.env})`, function() {
     let jwt = null;
 
+    before(function() {
+        if (!process.env.DB_MYSQL_CONNECTION) throw new Error('No DB_MYSQL_CONNECTION available');
+        if (!process.env.TESTUSER) throw new Error('No TESTUSER available');
+        if (!process.env.TESTPASS) throw new Error('No TESTPASS available');
+    });
+
     describe('/auth', function() {
         it('returns 404 on unrecognised email', async function() {
             const response = await appApi.get('/auth').query({ username: 'xxx@user.com', password: testpass });

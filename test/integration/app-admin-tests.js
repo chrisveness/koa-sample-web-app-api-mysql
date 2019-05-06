@@ -22,6 +22,13 @@ const appAdmin = supertest.agent(app.listen()).host('admin.localhost');
 describe(`Admin app (${app.env})`, function() {
     this.timeout(5e3); // 5 sec
 
+    before(function() {
+        if (!process.env.DB_MYSQL_CONNECTION) throw new Error('No DB_MYSQL_CONNECTION available');
+        if (!process.env.DB_MONGO_CONNECTION) throw new Error('No DB_MONGO_CONNECTION available');
+        if (!process.env.TESTUSER) throw new Error('No TESTUSER available');
+        if (!process.env.TESTPASS) throw new Error('No TESTPASS available');
+    });
+
     describe('password reset', function() {
         let resetToken = null;
 
@@ -37,6 +44,7 @@ describe(`Admin app (${app.env})`, function() {
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal('/password/reset-request-confirm');
             resetToken = response.headers['x-reset-token'];
+            expect(resetToken).to.be.a('string');
             console.info('\treset token', resetToken);
         });
 
