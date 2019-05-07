@@ -13,3 +13,7 @@ addons:
   hosts:
     - admin.localhost
     - api.localhost
+
+jobs:
+  allow_failures:
+    - os: windows # https://travis-ci.community/t/current-known-issues-please-read-this-before-posting-a-new-topic/264/9#post_10
