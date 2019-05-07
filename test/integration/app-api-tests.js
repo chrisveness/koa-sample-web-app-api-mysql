@@ -12,7 +12,7 @@ dotenv.config();
 
 import app from '../../app.js';
 
-const testuser = process.env.TESTUSER;
+const testuser = process.env.TESTUSER; // must already exist in database
 const testpass = process.env.TESTPASS;
 
 
@@ -20,6 +20,7 @@ const appApi = supertest.agent(app.listen()).host('api.localhost');
 
 
 describe(`API app (${app.env})`, function() {
+    const testEmail = `test-${Date.now().toString(36)}@user.com`; // unique e-mail for concurrent tests
     let jwt = null;
 
     before(function() {
@@ -83,12 +84,12 @@ describe(`API app (${app.env})`, function() {
         describe('CRUD', function() {
             let id = null;
             it('adds a member', async function() {
-                const values = { Firstname: 'Test', Lastname: 'User', Email: 'test@user.com', Active: 'true' };
+                const values = { Firstname: 'Test', Lastname: 'User', Email: testEmail, Active: 'true' };
                 const response = await appApi.post('/members').auth(jwt, { type: 'bearer' }).send(values);
                 expect(response.status).to.equal(201, response.text);
                 expect(response.body).to.be.an('object');
                 expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-                expect(response.body.Email).to.equal('test@user.com');
+                expect(response.body.Email).to.equal(testEmail);
                 expect(response.headers.location).to.equal('/members/'+response.body.MemberId);
                 id = response.body.MemberId;
             });
@@ -99,7 +100,7 @@ describe(`API app (${app.env})`, function() {
                 expect(response.headers['content-type']).to.equal('application/json; charset=utf-8');
                 expect(response.body).to.be.an('object');
                 expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-                expect(response.body.Email).to.equal('test@user.com');
+                expect(response.body.Email).to.equal(testEmail);
                 expect(response.body.Firstname).to.equal('Test');
                 expect(response.body.Active).to.be.true;
                 expect(response.body.Active).not.to.equal(1); // note Active is stored as bit(1)
@@ -111,7 +112,7 @@ describe(`API app (${app.env})`, function() {
                 expect(response.status).to.equal(200, response.text);
                 expect(response.headers['content-type']).to.equal('application/xml');
                 expect(response.text.slice(0, 38)).to.equal('<?xml version="1.0" encoding="UTF-8"?>');
-                expect(response.text.match(/<Email>(.*)<\/Email>/)[1]).to.equal('test@user.com');
+                expect(response.text.match(/<Email>(.*)<\/Email>/)[1]).to.equal(testEmail);
                 expect(response.text.match(/<Firstname>(.*)<\/Firstname>/)[1]).to.equal('Test');
                 expect(response.text.match(/<Active>(.*)<\/Active>/)[1]).to.equal('true');
                 expect(response.text.match(/<Active>(.*)<\/Active>/)[1]).not.to.equal('1'); // note Active is stored as bit(1)
@@ -125,7 +126,7 @@ describe(`API app (${app.env})`, function() {
                 const body = yaml.load(response.text);
                 expect(body).to.be.an('object');
                 expect(body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-                expect(body.Email).to.equal('test@user.com');
+                expect(body.Email).to.equal(testEmail);
                 expect(body.Firstname).to.equal('Test');
                 expect(body.Active).to.be.true;
                 expect(body.Active).not.to.equal(1); // note Active is stored as bit(1)
@@ -145,7 +146,7 @@ describe(`API app (${app.env})`, function() {
             });
 
             it('updates a member', async function() {
-                const values = { Firstname: 'Updated', Lastname: 'User', Email: 'test@user.com' };
+                const values = { Firstname: 'Updated', Lastname: 'User', Email: testEmail };
                 const response = await appApi.patch('/members/'+id).auth(jwt, { type: 'bearer' }).send(values);
                 expect(response.status).to.equal(200, response.text);
                 expect(response.body).to.be.an('object');
@@ -154,11 +155,11 @@ describe(`API app (${app.env})`, function() {
             });
 
             it('fails to add member with duplicate e-mail', async function() {
-                const values = { Firstname: 'Test', Lastname: 'User', Email: 'test@user.com' };
+                const values = { Firstname: 'Test', Lastname: 'User', Email: testEmail };
                 const response = await appApi.post('/members').auth(jwt, { type: 'bearer' }).send(values);
                 expect(response.status).to.equal(409, response.text);
                 expect(response.body).to.be.an('object');
-                expect(response.body.message).to.equal("Duplicate entry 'test@user.com' for key 'Email'");
+                expect(response.body.message).to.equal(`Duplicate entry '${testEmail}' for key 'Email'`);
             });
 
             it('deletes a member', async function() {
@@ -166,7 +167,7 @@ describe(`API app (${app.env})`, function() {
                 expect(response.status).to.equal(200, response.text);
                 expect(response.body).to.be.an('object');
                 expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-                expect(response.body.Email).to.equal('test@user.com');
+                expect(response.body.Email).to.equal(testEmail);
                 expect(response.body.Firstname).to.equal('Updated');
             });
 
@@ -177,7 +178,7 @@ describe(`API app (${app.env})`, function() {
             });
 
             it('fails to update deleted member', async function() {
-                const values = { Firstname: 'Updated', Lastname: 'User', Email: 'test@user.com' };
+                const values = { Firstname: 'Updated', Lastname: 'User', Email: testEmail };
                 const response = await appApi.patch('/members/'+id).auth(jwt, { type: 'bearer' }).send(values);
                 expect(response.status).to.equal(404, response.text);
             });

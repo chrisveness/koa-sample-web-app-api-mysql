@@ -12,7 +12,7 @@ dotenv.config();
 
 import app from '../../app.js';
 
-const testuser = process.env.TESTUSER;
+const testuser = process.env.TESTUSER; // must already exist in database
 const testpass = process.env.TESTPASS;
 
 
@@ -21,6 +21,8 @@ const appAdmin = supertest.agent(app.listen()).host('admin.localhost');
 
 describe(`Admin app (${app.env})`, function() {
     this.timeout(5e3); // 5 sec
+
+    const testEmail = `test-${Date.now().toString(36)}@user.com`; // unique e-mail for concurrent tests
 
     before(function() {
         if (!process.env.DB_MYSQL_CONNECTION) throw new Error('No DB_MYSQL_CONNECTION available');
@@ -197,11 +199,12 @@ describe(`Admin app (${app.env})`, function() {
         });
 
         it('adds new member', async function() {
-            const values = { Firstname: 'Test', Lastname: 'User', Email: 'test@user.com' };
+            const values = { Firstname: 'Test', Lastname: 'User', Email: testEmail };
             const response = await appAdmin.post('/members/add').send(values);
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal('/members');
             id = response.headers['x-insert-id'];
+            console.info('\t', testEmail, id);
         });
 
         it('lists members including test member', async function() {
@@ -236,7 +239,7 @@ describe(`Admin app (${app.env})`, function() {
         });
 
         it('edits member', async function() {
-            const values = { Firstname: 'Test-bis', Lastname: 'User', Email: 'test@user.com' };
+            const values = { Firstname: 'Test-bis', Lastname: 'User', Email: testEmail };
             const response = await appAdmin.post(`/members/${id}/edit`).send(values);
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal('/members');
@@ -277,12 +280,12 @@ describe(`Admin app (${app.env})`, function() {
         });
 
         it('adds new member', async function() {
-            const values = { Firstname: 'Test', Lastname: 'User', Email: 'test@user.com' };
+            const values = { Firstname: 'Test', Lastname: 'User', Email: testEmail };
             const response = await appAdmin.post('/ajax/members').send(values);
             expect(response.status).to.equal(201);
             expect(response.body).to.be.an('object');
             expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-            expect(response.body.Email).to.equal('test@user.com');
+            expect(response.body.Email).to.equal(testEmail);
             id = response.body.MemberId;
         });
 
@@ -298,7 +301,7 @@ describe(`Admin app (${app.env})`, function() {
             expect(response.status).to.equal(200);
             expect(response.body).to.be.an('object');
             expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-            expect(response.body.Email).to.equal('test@user.com');
+            expect(response.body.Email).to.equal(testEmail);
             expect(response.body.Firstname).to.equal('Test');
         });
 
@@ -307,7 +310,7 @@ describe(`Admin app (${app.env})`, function() {
             expect(response.status).to.equal(200);
             expect(response.body).to.be.an('object');
             expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-            expect(response.body.Email).to.equal('test@user.com');
+            expect(response.body.Email).to.equal(testEmail);
             expect(response.body.Firstname).to.equal('Test');
         });
     });

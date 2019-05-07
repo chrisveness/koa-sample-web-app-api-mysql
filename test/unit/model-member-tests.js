@@ -17,7 +17,7 @@ describe('Member model', function() {
     const values = {
         Firstname: 'test',
         Lastname:  'user',
-        Email:     'test@user.com',
+        Email:     `test-${Date.now().toString(36)}@user.com`, // unique e-mail for concurrent tests
         Active:    true,
     };
 
@@ -27,7 +27,7 @@ describe('Member model', function() {
 
     it('creates member', async function() {
         memberId = await Member.insert(values);
-        console.info('\tmember id', memberId);
+        console.info('\t', values.Email, memberId);
     });
 
     it('fails to create duplicate member', async function() {
@@ -35,7 +35,7 @@ describe('Member model', function() {
             await Member.insert(values);
             throw new Error('Member.insert should fail validation');
         } catch (e) {
-            expect(e.message).to.equal("Duplicate entry 'test@user.com' for key 'Email'");
+            expect(e.message).to.equal(`Duplicate entry '${values.Email}' for key 'Email'`);
         }
     });
 
@@ -81,7 +81,7 @@ describe('Member model', function() {
             await Member.insert(vals);
             throw new Error('Member.insert should fail validation');
         } catch (e) {
-            expect(e.message).to.equal("Duplicate entry 'test@user.com' for key 'Email'");
+            expect(e.message).to.equal(`Duplicate entry '${values.Email}' for key 'Email'`);
         }
     });
 
