@@ -9,10 +9,13 @@
 /* A GET on a collection which returns no results returns a 204 / No Content response.            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-import Koa       from 'koa';          // Koa framework
-import jwt       from 'jsonwebtoken'; // JSON Web Token implementation
-import xmlify    from 'xmlify';       // JS object to XML
-import yaml      from 'js-yaml';      // JS object to YAML
+import Koa    from 'koa';          // Koa framework
+import jwt    from 'jsonwebtoken'; // JSON Web Token implementation
+import xmlify from 'xmlify';       // JS object to XML
+import yaml   from 'js-yaml';      // JS object to YAML
+import Debug  from 'debug';        // small debugging utility
+
+const debug = Debug('app:req'); // debug each request
 
 import Log from '../lib/log.js';
 import ssl from '../lib/middleware-ssl.js';
@@ -23,6 +26,7 @@ const app = new Koa(); // API app
 
 // log requests (into mongodb capped collection)
 app.use(async function logAccess(ctx, next) {
+    debug(ctx.request.method.padEnd(4) + ' ' + ctx.request.url);
     const t1 = Date.now();
     await next();
     const t2 = Date.now();
