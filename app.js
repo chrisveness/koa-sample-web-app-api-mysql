@@ -15,10 +15,9 @@ import compose         from 'koa-compose';    // middleware composer
 import compress        from 'koa-compress';   // HTTP compression
 import session         from 'koa-session';    // session for flash messages
 import Debug           from 'debug';          // small debugging utility
-import dotenv          from 'dotenv';         // load environment variables from a .env file into process.env
 
 const debug = Debug('app:req'); // debug each request
-dotenv.config();
+
 const app = new Koa();
 
 
