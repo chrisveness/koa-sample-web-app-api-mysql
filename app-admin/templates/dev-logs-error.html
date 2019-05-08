@@ -15,6 +15,7 @@
         }
         label:first-child { display: inline-block; min-width: 8em; }
         .toggle { color: #999999; cursor: pointer; }
+        td.status5xx { color: #cc3333; font-weight: bold; }
     </style>
     <script>
         'use strict';
@@ -66,7 +67,7 @@
         <td title="{{qs}}">{{path}}</td>
         <td class="nowrap">{{db}}</td>
         <td class="grey">{{user}}</td>
-        <td title="{{redir}}">{{status}}</td>
+        <td class="{{codes}}" title="{{redir}}">{{status}}</td>
         <td class="grey nowrap">{{ua}}</td>
         <td class="grey nowrap" title="{{ip}}">{{os}}</td>
         <td class="toggle {{showstack}}" title="stack trace">▼</td>
