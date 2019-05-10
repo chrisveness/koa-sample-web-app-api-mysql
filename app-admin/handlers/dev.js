@@ -50,14 +50,14 @@ class Dev {
         for (const e of entriesFiltered) {
             const fields = {
                 time:   dateFormat(e._id.getTimestamp(), 'UTC:yyyy-mm-dd HH:MM:ss'),
-                host:   e.host.replace('koa-sample-app.movable-type.co.uk', ''),
-                path:   e.url.split('?')[0] + (e.url.split('?').length>1 ? '?…' : ''),
-                qs:     e.url.split('?')[1],
-                codes:  `status${e.status.toString().slice(0,1)}xx`,
-                os:     Number(e.ua.os.major) ? `${e.ua.os.family} ${e.ua.os.major}` : e.ua.os.family,
-                ua:     Number(e.ua.major) ? e.ua.family+'-'+ e.ua.major : e.ua.family,
+                host:  e.host.replace('koa-sample-app.movable-type.co.uk', ''),
+                path:  e.url.split('?')[0] + (e.url.split('?').length>1 ? '?…' : ''),
+                qs:    e.url.split('?')[1],
+                codes: `status${e.status.toString().slice(0,1)}xx`,
+                os:    Number(e.ua.os.major) ? `${e.ua.os.family} ${e.ua.os.major}` : e.ua.os.family,
+                ua:    Number(e.ua.major) ? e.ua.family+'-'+ e.ua.major : e.ua.family,
                 domain: await Ip.getDomain(e.ip) || e.ip,
-                speed:  e.ms>500 ? 'slow' : e.ms>100 ? 'medium' : '',
+                speed: e.ms>500 ? 'slow' : e.ms>100 ? 'medium' : '',
             };
             entries.push(Object.assign({}, e, fields));
         }
