@@ -24,6 +24,13 @@
                 this.form.submit(); // autosubmit form on change
             });
 
+            document.querySelectorAll('td[data-pathfull]').forEach(el => el.onclick = function() {
+                // swap displayed text and data-pathfull
+                const tmp = this.textContent;
+                this.textContent = this.dataset.pathfull;
+                this.dataset.pathfull = tmp;
+            });
+
             // toggle stack trace displays
             document.querySelectorAll('.toggle').forEach(el => el.onclick = function() {
                 this.parentElement.nextElementSibling.classList.toggle('hide');
@@ -64,17 +71,16 @@
         <td class="nowrap">{{time}}</td>
         <td>{{method}}</td>
         <td class="grey">{{host}}</td>
-        <td title="{{qs}}">{{path}}</td>
-        <td class="nowrap">{{db}}</td>
+        <td title="{{qs}}" {{#if pathFull}}data-pathfull="{{pathFull}}"{{/if}}>{{path}}</td>
         <td class="grey">{{user}}</td>
         <td class="{{codes}}" title="{{redir}}">{{status}}</td>
         <td class="grey nowrap">{{ua}}</td>
-        <td class="grey nowrap" title="{{ip}}">{{os}}</td>
+        <td class="grey nowrap" title="{{domain}}">{{os}}</td>
         <td class="toggle {{showstack}}" title="stack trace">▼</td>
     </tr>
     {{#if stack}}
     <tr class="hide">
-        <td colspan="10"><pre>{{stack}}</pre></td>
+        <td colspan="9"><pre>{{stack}}</pre></td>
     </tr>
     {{/if}}
     {{/entries}}

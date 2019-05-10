@@ -20,6 +20,13 @@
             document.querySelectorAll('input,select').forEach(el => el.onchange = function() {
                 this.form.submit(); // autosubmit form on change
             });
+
+            document.querySelectorAll('td[data-pathfull]').forEach(el => el.onclick = function() {
+                // swap displayed text and data-pathfull
+                const tmp = this.textContent;
+                this.textContent = this.dataset.pathfull;
+                this.dataset.pathfull = tmp;
+            });
         });
     </script>
 </head>
@@ -62,7 +69,7 @@
 </form>
 
 <p class="grey">Hover mouse over host to see referrer; hover mouse over URL to see query strings;
-    hover mouse over platform to see originating ip.</p>
+    click abbreviated URLs to see full URL; hover mouse over platform to see originating domain.</p>
 
 <table class="small">
     {{#entries}}
@@ -70,12 +77,11 @@
         <td class="nowrap">{{time}}</td>
         <td>{{method}}</td>
         <td class="grey" title="{{referrer}}">{{host}}</td>
-        <td title="{{qs}}">{{path}}</td>
-        <td class="nowrap">{{db}}</td>
+        <td title="{{qs}}" {{#if pathFull}}data-pathfull="{{pathFull}}"{{/if}}>{{path}}</td>
         <td class="grey">{{user}}</td>
         <td class="{{codes}}" title="{{redir}}">{{status}}</td>
         <td class="grey nowrap">{{ua}}</td>
-        <td class="grey nowrap" title="{{ip}}">{{os}}</td>
+        <td class="grey nowrap" title="{{domain}}">{{os}}</td>
         <td class="align-right {{speed}}">{{ms}}<span class="grey">ms</span></td>
     </tr>
     {{/entries}}
