@@ -23,7 +23,8 @@ class LoginHandlers {
      * If user is already logged in, login details are shown in place of login form.
      */
     static async getLogin(ctx) {
-        await ctx.render('login');
+        const context = ctx.flash.formdata || {}; // failed login? fill in previous values
+        await ctx.render('login', context);
     }
 
 
