@@ -4,10 +4,10 @@
 /* These tests require admin.localhost to be set in /etc/hosts.                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-import supertest  from 'supertest'; // SuperAgent driven library for testing HTTP servers
-import { expect } from 'chai';      // BDD/TDD assertion library
-import { JSDOM }  from 'jsdom';     // JavaScript implementation of DOM and HTML standards
-import dotenv     from 'dotenv';    // load environment variables from a .env file into process.env
+import supertest           from 'supertest'; // SuperAgent driven library for testing HTTP servers
+import { expect }          from 'chai';      // BDD/TDD assertion library
+import { JSDOM as JsDom }  from 'jsdom';     // JavaScript implementation of DOM and HTML standards
+import dotenv              from 'dotenv';    // load environment variables from a .env file into process.env
 dotenv.config();
 
 import app from '../../app.js';
@@ -37,7 +37,7 @@ describe(`Admin app (${app.env})`, function() {
         it('sees password reset request page', async function() {
             const response = await appAdmin.get('/password/reset-request');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('input').name).to.equal('email');
         });
 
@@ -53,21 +53,21 @@ describe(`Admin app (${app.env})`, function() {
         it('sees password reset request confirmation page', async function() {
             const response = await appAdmin.get('/password/reset-request-confirm');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('title').textContent).to.equal('Reset password request');
         });
 
         it('sees password reset page', async function() {
             const response = await appAdmin.get(`/password/reset/${resetToken}`);
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('input').name).to.equal('password');
         });
 
         it('throws out invalid token', async function() {
             const response = await appAdmin.get('/password/reset/not-a-good-token');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('p').textContent).to.equal('This password reset link is either invalid, expired, or previously used.');
         });
 
@@ -76,7 +76,7 @@ describe(`Admin app (${app.env})`, function() {
             const expiredTimestamp = (parseInt(timestamp, 36) - 60*60*24 - 1).toString(36);
             const response = await appAdmin.get(`/password/reset/${expiredTimestamp}-${hash}`);
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('p').textContent).to.equal('This password reset link is either invalid, expired, or previously used.');
         });
 
@@ -85,7 +85,7 @@ describe(`Admin app (${app.env})`, function() {
             const [ timestamp ] = resetToken.split('-'); // (we don't need the hash here)
             const response = await appAdmin.get(`/password/reset/${timestamp}-abcdefgh`);
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('p').textContent).to.equal('This password reset link is either invalid, expired, or previously used.');
         });
 
@@ -106,7 +106,7 @@ describe(`Admin app (${app.env})`, function() {
         it('sees password reset confirmation page', async function() {
             const response = await appAdmin.get('/password/reset/confirm');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('title').textContent).to.equal('Reset password');
         });
     });
@@ -123,7 +123,7 @@ describe(`Admin app (${app.env})`, function() {
         it('has home page with login link in nav when not logged-in', async function() {
             const response = await appAdmin.get('/');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('title').textContent.slice(0, 14)).to.equal('Koa Sample App');
             expect(document.querySelectorAll('nav ul li').length).to.equal(2); // nav should be just '/', 'login'
         });
@@ -131,7 +131,7 @@ describe(`Admin app (${app.env})`, function() {
         it('has login page with login fields when not logged-in', async function() {
             const response = await appAdmin.get('/login');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelectorAll('input')).to.have.lengthOf(3);
         });
 
@@ -142,7 +142,7 @@ describe(`Admin app (${app.env})`, function() {
             expect(responsePost.headers.location).to.equal('/login');
             const responseGet = await appAdmin.get('/login');
             expect(responseGet.status).to.equal(200);
-            const document = new JSDOM(responseGet.text).window.document;
+            const document = new JsDom(responseGet.text).window.document;
             expect(document.querySelector('button').nextElementSibling.textContent).to.equal('E-mail / password not recognised');
             expect(document.querySelector('input[name=username').value).to.equal('no-user-by-this-name');
         });
@@ -158,7 +158,7 @@ describe(`Admin app (${app.env})`, function() {
         it('shows logged in user on login page when logged-in', async function() {
             const response = await appAdmin.get('/login');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('#name').textContent).to.equal('Admin User');
         });
 
@@ -166,7 +166,7 @@ describe(`Admin app (${app.env})`, function() {
             // get from location supplied by login redirect
             const response = await appAdmin.get(location);
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('title').textContent.slice(0, 14)).to.equal('Koa Sample App');
             // nav should be '/', 'members', 'teams', 'logout'
             expect(document.querySelectorAll('nav ul li').length).to.equal(4);
@@ -179,7 +179,7 @@ describe(`Admin app (${app.env})`, function() {
         it('gets add new member page', async function() {
             const response = await appAdmin.get('/members/add');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('input').name).to.equal('Firstname'); // 1st input
         });
 
@@ -193,7 +193,7 @@ describe(`Admin app (${app.env})`, function() {
         it('fails to add new new member with bad e-mail - reports error', async function() {
             const response = await appAdmin.get('/members/add');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('p.error-msg').textContent).to.equal('Error – “Email” must be an email');
             expect(document.querySelector('input[name=Email').value).to.equal('this is not a valid e-mail'); // prefills form
         });
@@ -210,7 +210,7 @@ describe(`Admin app (${app.env})`, function() {
         it('lists members including test member', async function() {
             const response = await appAdmin.get('/members');
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.getElementById(id).querySelector('a').textContent).to.equal('Test');
         });
 
@@ -222,7 +222,7 @@ describe(`Admin app (${app.env})`, function() {
         it('gets details of test member', async function() {
             const response = await appAdmin.get('/members/'+id);
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('h1').textContent).to.equal('Test User');
         });
 
@@ -234,7 +234,7 @@ describe(`Admin app (${app.env})`, function() {
         it('gets edit member page', async function() {
             const response = await appAdmin.get(`/members/${id}/edit`);
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('h1').textContent).to.equal('Edit member');
         });
 
@@ -248,14 +248,14 @@ describe(`Admin app (${app.env})`, function() {
         it('sees updated details', async function() {
             const response = await appAdmin.get(`/members/${id}/edit`);
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('input[name=Firstname]').value).to.equal('Test-bis');
         });
 
         it('gets delete member page', async function() {
             const response = await appAdmin.get(`/members/${id}/delete`);
             expect(response.status).to.equal(200);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('h1').textContent).to.equal('Delete member');
         });
 
@@ -316,14 +316,14 @@ describe(`Admin app (${app.env})`, function() {
     });
 
     describe('dev', function() {
-        it('sees dev/log pages', async function() {
-            const responseAccess = await appAdmin.get('/dev/log-access');
-            expect(responseAccess.status).to.equal(200);
-            // NOTE: log-error populates IP domain cache which causes subsequent unit tests to fail,
-            // so leave out of regular tests (only helps coverage stats, really!)
-            //const responseError = await appAdmin.get('/dev/log-error');
-            //expect(responseError.status).to.equal(200);
-        });
+        // it('sees dev/log pages', async function() {
+        //     const responseAccess = await appAdmin.get('/dev/log-access');
+        //     expect(responseAccess.status).to.equal(200);
+        //     // NOTE: log-error populates IP domain cache which causes subsequent unit tests to fail,
+        //     // so leave out of regular tests (only helps coverage stats, really!)
+        //     //const responseError = await appAdmin.get('/dev/log-error');
+        //     //expect(responseError.status).to.equal(200);
+        // });
 
         it('sees dev/nodeinfo page', async function() {
             const response = await appAdmin.get('/dev/nodeinfo');
@@ -335,14 +335,14 @@ describe(`Admin app (${app.env})`, function() {
         it('returns 404 for non-existent page', async function() {
             const response = await appAdmin.get('/zzzzzz');
             expect(response.status).to.equal(404);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('h1').textContent).to.equal(':(');
         });
 
         it('returns 404 for non-existent member', async function() {
             const response = await appAdmin.get('/members/999999');
             expect(response.status).to.equal(404);
-            const document = new JSDOM(response.text).window.document;
+            const document = new JsDom(response.text).window.document;
             expect(document.querySelector('h1').textContent).to.equal(':(');
         });
 
