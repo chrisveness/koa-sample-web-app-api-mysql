@@ -229,9 +229,10 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   └── routes-www.js
 ├── lib
 │   ├── handlebars-helpers.js
+│   ├── ip.js
 │   ├── log.js
 │   ├── mail.js
-│   ├── middleware-ssl.js
+│   ├── middleware.js
 │   ├── mongodb.js
 │   ├── mysqldb.js
 │   └── validation-errors.js
