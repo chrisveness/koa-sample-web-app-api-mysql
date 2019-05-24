@@ -46,7 +46,7 @@ router.get('/auth', async function getAuth(ctx) {
         id:   user.UserId,                         // to get user details
         role: user.Role.slice(0, 1).toLowerCase(), // make role available without db query
     };
-    const token = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
+    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
     ctx.response.body = { jwt: token, root: 'Auth' };
 });
 

@@ -79,7 +79,7 @@ class LoginHandlers {
             role:     user.Role.slice(0, 1).toLowerCase(),  // make role available without db query
             remember: body['remember-me'] ? true : false,   // whether token can be renewed
         };
-        const token = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
+        const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
 
         // record the jwt payload in ctx.state.user
         ctx.state.user = payload;
