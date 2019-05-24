@@ -45,8 +45,11 @@ class Member {
 
         } catch (e) {
             switch (e.code) {
-                case 'ER_BAD_FIELD_ERROR': throw new ModelError(403, 'Unrecognised Member field '+field);
-                default: Log.exception('Member.getBy', e); throw new ModelError(500, e.message);
+                case 'ER_BAD_FIELD_ERROR':
+                    throw new ModelError(403, 'Unrecognised Member field '+field);
+                default:
+                    Log.exception('Member.getBy', e);
+                    throw new ModelError(500, e.message);
             }
         }
     }
@@ -142,9 +145,7 @@ class Member {
 
         } catch (e) {
             switch (e.code) {
-                case 'ER_ROW_IS_REFERENCED_': // trailing underscore?
-                case 'ER_ROW_IS_REFERENCED_2':
-                    // related record exists in TeamMember
+                case 'ER_ROW_IS_REFERENCED_2': // related record exists in TeamMember
                     throw new ModelError(403, 'Member belongs to team(s)'); // Forbidden
                 default:
                     Log.exception('Member.delete', e);

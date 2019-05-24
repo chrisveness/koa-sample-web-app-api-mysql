@@ -132,9 +132,7 @@ class Team {
 
         } catch (e) {
             switch (e.code) {
-                case 'ER_ROW_IS_REFERENCED_': // trailing underscore?
-                case 'ER_ROW_IS_REFERENCED_2':
-                    // related record exists in TeamMember
+                case 'ER_ROW_IS_REFERENCED_2': // related record exists in TeamMember
                     throw new ModelError(403, 'Cannot delete team with members'); // Forbidden
                 default:
                     Log.exception('Team.delete', e);

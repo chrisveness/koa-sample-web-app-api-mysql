@@ -109,9 +109,8 @@ class TeamMember {
             return true;
 
         } catch (e) {
-            switch (e.code) {
+            switch (e.code) { // just use default MySQL messages for now
                 case 'ER_ROW_IS_REFERENCED_2':
-                    // recognised errors for TeamMember.update - just use default MySQL messages for now
                     throw new ModelError(403, e.message); // Forbidden
                 default:
                     Log.exception('TeamMember.delete', e);

@@ -45,8 +45,11 @@ class User {
 
         } catch (e) {
             switch (e.code) {
-                case 'ER_BAD_FIELD_ERROR': throw new ModelError(403, 'Unrecognised User field '+field);
-                default: Log.exception('User.getBy', e); throw new ModelError(500, e.message);
+                case 'ER_BAD_FIELD_ERROR':
+                    throw new ModelError(403, 'Unrecognised User field '+field);
+                default:
+                    Log.exception('User.getBy', e);
+                    throw new ModelError(500, e.message);
             }
         }
     }
@@ -127,7 +130,7 @@ class User {
 
         try {
 
-            await Db.query('Delete From User Where UserId = id', { id });
+            await Db.query('Delete From User Where UserId = :id', { id });
             return true;
 
         } catch (e) {
@@ -138,7 +141,6 @@ class User {
             }
         }
     }
-
 
 }
 
