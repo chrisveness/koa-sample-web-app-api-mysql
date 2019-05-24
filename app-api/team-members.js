@@ -45,7 +45,7 @@ class TeamsMembersHandlers {
      * @apiError   403/Forbidden             Admin auth required.
      */
     static async postTeamMembers(ctx) {
-        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.auth.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         const id = await TeamMember.insert(ctx.request.body);
 
@@ -68,7 +68,7 @@ class TeamsMembersHandlers {
      * @apiError   404/NotFound         Team-member not found.
      */
     static async deleteTeamMemberById(ctx) {
-        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.auth.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         // return deleted team-member details
         const teamMember = await TeamMember.get(ctx.params.id);

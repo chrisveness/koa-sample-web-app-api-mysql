@@ -102,7 +102,7 @@ class MembersHandlers {
      * @apiError   403/Forbidden             Admin auth required.
      */
     static async postMembers(ctx) {
-        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.auth.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         ctx.request.body = await castBoolean.fromStrings('Member', ctx.request.body);
 
@@ -130,7 +130,7 @@ class MembersHandlers {
      * @apiError   404/NotFound              Member not found.
      */
     static async patchMemberById(ctx) {
-        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.auth.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         ctx.request.body = await castBoolean.fromStrings('Member', ctx.request.body);
 
@@ -156,7 +156,7 @@ class MembersHandlers {
      * @apiError   404/NotFound         Member not found.
      */
     static async deleteMemberById(ctx) {
-        if (ctx.state.user.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
+        if (ctx.state.auth.Role != 'admin') ctx.throw(403, 'Admin auth required'); // Forbidden
 
         // return deleted member details
         const member = await Member.get(ctx.params.id);

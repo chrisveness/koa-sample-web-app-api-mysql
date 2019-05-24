@@ -9,8 +9,8 @@ import lusca      from 'koa-lusca';      // security header middleware
 import serve      from 'koa-static';     // static file serving middleware
 import convert    from 'koa-convert';    // until  koa-flash, koa-lusca updated to v2
 
-import Log from '../lib/log.js';
-import ssl from '../lib/middleware-ssl.js';
+import Log        from '../lib/log.js';
+import Middleware from '../lib/middleware.js';
 
 
 const app = new Koa(); // www app
@@ -109,7 +109,7 @@ app.use(async function ctxAddDomain(ctx, next) {
 
 
 // force use of SSL (redirect http protocol to https)
-app.use(ssl({ trustProxy: true }));
+app.use(Middleware.ssl({ trustProxy: true }));
 
 
 import routesWww from './routes-www.js';

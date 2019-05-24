@@ -8,7 +8,6 @@ import flash      from 'koa-flash';      // flash messages
 import lusca      from 'koa-lusca';      // security header middleware
 import serve      from 'koa-static';     // static file serving middleware
 import convert    from 'koa-convert';    // until  koa-flash, koa-lusca updated to v2
-import jwt        from 'jsonwebtoken';   // JSON Web Token implementation
 import Router     from 'koa-router';     // router middleware for koa
 import Debug      from 'debug';          // small debugging utility
 
@@ -18,7 +17,7 @@ const router = new Router();
 
 import HandlebarsHelpers from '../lib/handlebars-helpers.js';
 import Log               from '../lib/log.js';
-import ssl               from '../lib/middleware-ssl.js';
+import Middleware        from '../lib/middleware.js';
 
 
 const app = new Koa(); // admin app
@@ -126,12 +125,12 @@ app.use(async function ctxAddDomain(ctx, next) {
 
 
 // force use of SSL (redirect http protocol to https)
-app.use(ssl({ trustProxy: true }));
+app.use(Middleware.ssl({ trustProxy: true }));
 
 
 // check if user is signed in; leaves id in ctx.state.user.id if JWT verified
 // (do this before login routes, as login page indicates if user is already logged in)
-app.use(verifyJwt);
+app.use(Middleware.verifyJwt());
 
 
 // public (unsecured) modules first
@@ -187,58 +186,6 @@ app.use(function notFound(ctx) { // note no 'next'
     ctx.throw(404);
 });
 
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-
-
-/**
- * Verify the JSON Web Token authentication supplied in (signed) cookie.
- *
- * If the token verifies, record the payload in ctx.state.user: the UserId is held in ctx.state.user.id.
- *
- * Issued tokens have 24-hour validity. If the cookie contains an expired token, and the user logged
- * with using the 'remember-me' option, then issue a replacement 24-hour token, and renew the cookie
- * for a further 7 days. The 'remember-me' function will lapse after 7 days inactivity.
- */
-async function verifyJwt(ctx, next) {
-    const roles = { g: 'guest', a: 'admin', s: 'su' };
-
-    const token = ctx.cookies.get('koa:jwt', { signed: true });
-
-    if (token) {
-        try {
-            const  payload = jwt.verify(token, 'koa-sample-app-signature-key'); // throws on invalid token
-
-            // valid token: accept it...
-            ctx.state.user = payload;                  // for user id  to look up user details
-            ctx.state.user.Role = roles[payload.role]; // for authorisation checks
-            ctx.state.user.jwt = token;                // for ajax->api calls
-        } catch (err) {
-            // verify failed - retry with ignore expire option
-            try {
-                const payload = jwt.verify(token, 'koa-sample-app-signature-key', { ignoreExpiration: true });
-
-                // valid token except for exp: accept it...
-                ctx.state.user = Object.assign({}, payload); // (preserve original payload for reuse)
-                ctx.state.user.Role = roles[payload.role];
-                ctx.state.user.jwt = token;
-
-                // ... and re-issue a replacement token for a further 24 hours
-                delete payload.exp;
-                const replacementToken = jwt.sign(payload, 'koa-sample-app-signature-key', { expiresIn: '24h' });
-                const options = { signed: true };
-                if (payload.remember) options.expires = new Date(Date.now() + 1000*60*60*24*7); // remember-me for 7d
-                ctx.cookies.set('koa:jwt', replacementToken, options);
-            } catch (e) {
-                if (e.message == 'invalid token') ctx.throw(401, 'Invalid JWT'); // verify (both!) failed
-                if (e.message == 'jwt malformed') ctx.throw(401, 'Invalid JWT'); // verify (both!) failed
-                ctx.throw(e.status||500, e.message); // Internal Server Error
-            }
-        }
-    }
-
-    await next();
-}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 

@@ -17,8 +17,8 @@ import Debug  from 'debug';        // small debugging utility
 
 const debug = Debug('app:req'); // debug each request
 
-import Log from '../lib/log.js';
-import ssl from '../lib/middleware-ssl.js';
+import Log        from '../lib/log.js';
+import Middleware from '../lib/middleware.js';
 
 
 const app = new Koa(); // API app
@@ -105,7 +105,7 @@ app.use(async function handleErrors(ctx, next) {
 
 
 // force use of SSL (redirect http protocol to https)
-app.use(ssl({ trustProxy: true }));
+app.use(Middleware.ssl({ trustProxy: true }));
 
 
 // public (unsecured) modules first
@@ -117,27 +117,7 @@ app.use(routesAuth);
 
 // remaining routes require JWT auth (obtained from /auth and supplied in bearer authorization header)
 
-app.use(async function verifyJwt(ctx, next) {
-    if (!ctx.request.header.authorization) ctx.throw(401, 'Authorisation required');
-    const [ scheme, token ] = ctx.request.header.authorization.split(' ');
-    if (scheme != 'Bearer') ctx.throw(401, 'Invalid authorisation');
-
-    const roles = { g: 'guest', a: 'admin', s: 'su' };
-
-    try {
-        const payload = jwt.verify(token, 'koa-sample-app-signature-key'); // throws on invalid token
-
-        // valid token: accept it...
-        ctx.state.user = payload;                  // for user id  to look up user details
-        ctx.state.user.Role = roles[payload.role]; // for authorisation checks
-    } catch (e) {
-        if (e.message == 'invalid token') ctx.throw(401, 'Invalid JWT'); // Unauthorized
-        if (e.message == 'jwt malformed') ctx.throw(401, 'Invalid JWT'); // Unauthorized
-        ctx.throw(e.status||500, e.message); // Internal Server Error
-    }
-
-    await next();
-});
+app.use(Middleware.verifyJwtApi());
 
 import routesMembers     from './routes-members.js';
 import routesTeams       from './routes-teams.js';
