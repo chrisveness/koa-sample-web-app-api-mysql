@@ -52,7 +52,7 @@ class TeamsHandlers {
 
         // team members
         const sql = `Select TeamMemberId, MemberId, Firstname, Lastname
-                     From Member Inner Join Team Using (MemberId)
+                     From Member Inner Join TeamMember Using (MemberId)
                      Where TeamId = :id`;
         const [ members ] = await Db.query(sql, { id: ctx.params.id });
 
