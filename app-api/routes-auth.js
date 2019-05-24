@@ -28,13 +28,15 @@ import User   from '../models/user.js';
  * @apiSuccess jwt                       JSON Web Token be used for subsequent Authorization header
  */
 router.get('/auth', async function getAuth(ctx) {
-    let [ user ] = await User.getBy('Email', ctx.request.query.username);
+    const { username, password } = ctx.request.query;
+    if (!username || !password) ctx.throw(401, 'Username/password not supplied');
+    let [ user ] = await User.getBy('Email', username);
 
-    // always invoke verify() (whether email found or not) to mitigate against timing attacks on login function
+    // always invoke verify() (whether email found or not) to mitigate against timing attacks on authentication function
     const passwordHash = user ? user.Password : '0123456789abcdef'.repeat(8);
     let passwordMatch = null;
     try {
-        passwordMatch = await Scrypt.verify(Buffer.from(passwordHash, 'base64'), ctx.request.query.password);
+        passwordMatch = await Scrypt.verify(Buffer.from(passwordHash, 'base64'), password);
     } catch (e) {
         if (e instanceof RangeError) user = null; // "Invalid key"
         if (!(e instanceof RangeError)) throw e;
