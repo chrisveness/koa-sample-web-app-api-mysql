@@ -14,9 +14,6 @@ import body            from 'koa-body';       // body parser
 import compose         from 'koa-compose';    // middleware composer
 import compress        from 'koa-compress';   // HTTP compression
 import session         from 'koa-session';    // session for flash messages
-import Debug           from 'debug';          // small debugging utility
-
-const debug = Debug('app:req'); // debug each request
 
 const app = new Koa();
 
@@ -54,13 +51,6 @@ app.keys = [ 'koa-sample-app' ];
 
 // session for flash messages (uses signed session cookies, with no server storage)
 app.use(session(app));
-
-
-// sometimes useful to be able to track each request...
-app.use(async function(ctx, next) {
-    debug(ctx.request.method.padEnd(4) + ' ' + ctx.request.url);
-    await next();
-});
 
 
 // select sub-app (admin/api) according to host subdomain (could also be by analysing request.url);

@@ -8,6 +8,9 @@ import flash      from 'koa-flash';      // flash messages
 import lusca      from 'koa-lusca';      // security header middleware
 import serve      from 'koa-static';     // static file serving middleware
 import convert    from 'koa-convert';    // until  koa-flash, koa-lusca updated to v2
+import Debug      from 'debug';          // small debugging utility
+
+const debug = Debug('app:req'); // debug each request
 
 import Log        from '../lib/log.js';
 import Middleware from '../lib/middleware.js';
@@ -23,6 +26,7 @@ app.use(serve('public', { maxage: maxage }));
 
 // log requests (excluding static files, into mongodb capped collection)
 app.use(async function logAccess(ctx, next) {
+    debug(ctx.request.method.padEnd(4) + ' ' + ctx.request.url);
     const t1 = Date.now();
     await next();
     const t2 = Date.now();
