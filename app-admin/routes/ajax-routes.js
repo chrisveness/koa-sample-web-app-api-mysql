@@ -15,14 +15,14 @@ import ajax from '../handlers/ajax.js';
 
 
 /*
- * App-specific ajax routes go here; this sample app has none.
+ * App-specific ajax routes go here; this sample app has none (except /dev/ajax).
  */
 
 
 /*
  * ajaxApiPassthrough() makes generic api functionality available to ajax calls.
  */
-router.all(/\/ajax\/(.*)/, ajax.ajaxApiPassthrough);
+router.all(/^\/ajax\/(.*)/, ajax.ajaxApiPassthrough);
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */

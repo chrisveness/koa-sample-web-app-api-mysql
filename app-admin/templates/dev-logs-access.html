@@ -16,7 +16,7 @@
     </style>
     <script>
         'use strict';
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             document.querySelectorAll('input,select').forEach(el => el.onchange = function() {
                 this.form.submit(); // autosubmit form on change
             });
@@ -27,6 +27,23 @@
                 this.textContent = this.dataset.pathfull;
                 this.dataset.pathfull = tmp;
             });
+
+            // replace ip addresses with domains (asynchronously)
+            document.querySelectorAll('td.ip-domain').forEach(td => td.style.cursor = 'wait');
+            const Ips = Array.from(document.querySelectorAll('td.ip-domain')).map(td => td.title);
+            const IpsDistinct = [ ...new Set(Ips) ];
+            for (const ip of IpsDistinct) {
+                const headers = { Accept: 'application/json' };
+                const credentials = 'same-origin';
+                const response = await fetch(`/dev/ajax/ip-domain/${ip}`, { method: 'GET', headers, credentials });
+                if (response.ok) {
+                    const body = await response.json();
+                    document.querySelectorAll(`td.ip-domain[title="${ip}"]`).forEach(td => td.style.cursor = 'default');
+                    document.querySelectorAll(`td.ip-domain[title="${ip}"]`).forEach(td => td.title = body.domain);
+                } else {
+                    alert(response.statusText);
+                }
+            }
         });
     </script>
 </head>
@@ -69,7 +86,7 @@
 </form>
 
 <p class="grey">Hover mouse over host to see referrer; hover mouse over URL to see query strings;
-    click abbreviated URLs to see full URL; hover mouse over platform to see originating domain.</p>
+    click abbreviated URLs to see full URL; hover mouse over platform to see originating ip/domain.</p>
 
 <table class="small">
     {{#entries}}
@@ -81,7 +98,7 @@
         <td class="grey">{{user}}</td>
         <td class="{{codes}}" title="{{redir}}">{{status}}</td>
         <td class="grey nowrap">{{ua}}</td>
-        <td class="grey nowrap" title="{{domain}}">{{os}}</td>
+        <td class="grey nowrap ip-domain" title="{{ip}}">{{os}}</td>
         <td class="align-right {{speed}}">{{ms}}<span class="grey">ms</span></td>
     </tr>
     {{/entries}}

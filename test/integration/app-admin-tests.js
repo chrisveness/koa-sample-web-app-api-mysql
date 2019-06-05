@@ -316,14 +316,17 @@ describe(`Admin app (${app.env})`, function() {
     });
 
     describe('dev', function() {
-        // it('sees dev/log pages', async function() {
-        //     const responseAccess = await appAdmin.get('/dev/log-access');
-        //     expect(responseAccess.status).to.equal(200);
-        //     // NOTE: log-error populates IP domain cache which causes subsequent unit tests to fail,
-        //     // so leave out of regular tests (only helps coverage stats, really!)
-        //     //const responseError = await appAdmin.get('/dev/log-error');
-        //     //expect(responseError.status).to.equal(200);
-        // });
+        it('sees dev/log pages', async function() {
+            const responseAccess = await appAdmin.get('/dev/log-access');
+            expect(responseAccess.status).to.equal(200);
+            const responseError = await appAdmin.get('/dev/log-error');
+            expect(responseError.status).to.equal(200);
+            const responseIp = await appAdmin.get('/dev/ajax/ip-domain/8.8.8.8');
+            expect(responseIp.status).to.equal(200);
+            expect(responseIp.body).to.be.an('object');
+            expect(responseIp.body).to.contain.keys('domain');
+            expect(responseIp.body.domain).to.equal('google-public-dns-a.google.com');
+        });
 
         it('sees dev/nodeinfo page', async function() {
             const response = await appAdmin.get('/dev/nodeinfo');
