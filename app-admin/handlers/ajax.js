@@ -33,8 +33,8 @@ class AjaxHandlers {
 
         const body = JSON.stringify(ctx.request.body) == '{}' ? null : JSON.stringify(ctx.request.body);
         const hdrs = {
-            'Content-Type': 'application/json',
-            'Accept': ctx.request.header.accept || '*/*',
+            'Content-Type':  'application/json',
+            'Accept':        ctx.request.header.accept || '*/*',
             'Authorization': 'Bearer ' + ctx.state.user.jwt,
         };
 
@@ -42,7 +42,7 @@ class AjaxHandlers {
             const response = await fetch(url, {
                 method:  ctx.request.method,
                 body:    body,
-                headers: hdrs
+                headers: hdrs,
             });
             const json = response.headers.get('content-type').match(/application\/json/);
             ctx.response.status = response.status;

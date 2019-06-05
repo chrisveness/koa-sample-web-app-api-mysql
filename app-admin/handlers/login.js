@@ -6,9 +6,6 @@
 
 import Scrypt from 'scrypt-kdf';   // scrypt key derivation function
 import jwt    from 'jsonwebtoken'; // JSON Web Token implementation
-import Debug  from 'debug';        // small debugging utility
-
-const debug = Debug('app:middleware');
 
 import User from '../../models/user.js';
 

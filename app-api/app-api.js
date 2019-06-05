@@ -10,7 +10,6 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 import Koa    from 'koa';          // Koa framework
-import jwt    from 'jsonwebtoken'; // JSON Web Token implementation
 import xmlify from 'xmlify';       // JS object to XML
 import yaml   from 'js-yaml';      // JS object to YAML
 import Debug  from 'debug';        // small debugging utility
