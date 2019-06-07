@@ -5,8 +5,9 @@
 import nodeinfo   from 'nodejs-info'; // node info
 import dateFormat from 'dateformat';  // Steven Levithan's dateFormat()
 
-import Db from '../../lib/mongodb.js';
-import Ip from '../../lib/ip.js';
+import MongoDb from '../../lib/mongodb.js';
+import MySqlDb from '../../lib/mysqldb.js';
+import Ip      from '../../lib/ip.js';
 
 
 class DevHandlers {
@@ -24,7 +25,7 @@ class DevHandlers {
      */
     static async logAccess(ctx) {
         // access logging uses capped collection log-access (size: 1000×1e3, max: 1000)
-        const log = await Db.collection('log-access');
+        const log = await MongoDb.collection('log-access');
 
         const entriesAll = (await log.find({}).sort({ $natural: -1 }).toArray());
 
@@ -89,7 +90,7 @@ class DevHandlers {
      */
     static async logError(ctx) {
         // error logging uses capped collection log-error (size: 1000×4e3, max: 1000)
-        const log = await Db.collection('log-error');
+        const log = await MongoDb.collection('log-error');
 
         const entriesAll = (await log.find({}).sort({ $natural: -1 }).toArray());
 
@@ -153,6 +154,35 @@ class DevHandlers {
     static async ajaxIpDomain(ctx) {
         const domain = await Ip.getDomain(ctx.params.ip);
         ctx.response.body = { domain: domain || ctx.params.ip };
+    }
+
+
+    /**
+     * GET /dev/table/:table - Show table fields & foreign key constraints (tables this table
+     * references and is referenced by).
+     */
+    static async tableInspector(ctx) {
+        const params = MySqlDb.connectionParams();
+
+        const [ fields ] = await MySqlDb.query(`describe ${ctx.params.table}`);
+        for (const field of fields) if (field.Default == null) field.Default = 'NULL';
+
+        const sqlRefs = `
+            select table_name, column_name, referenced_table_name, referenced_column_name, constraint_name
+            from information_schema.key_column_usage
+            where referenced_table_schema = :schema
+              and table_name = :table`;
+        const [ refs ] = await MySqlDb.query(sqlRefs, { schema: params.database, table: ctx.params.table });
+
+        const sqlRefd = `
+            select referenced_table_name, referenced_column_name, table_name, column_name, constraint_name
+            from information_schema.key_column_usage
+            where referenced_table_schema = :schema
+              and referenced_table_name = :table`;
+        const [ refd ] = await MySqlDb.query(sqlRefd, { schema: params.database, table: ctx.params.table });
+
+        const context = { table: ctx.params.table, fields, refs, refd };
+        await ctx.render('dev-table', context);
     }
 
 }

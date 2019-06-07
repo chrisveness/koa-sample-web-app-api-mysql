@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Table: {{table}}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <style>
+        table { font-size: 80%; }
+        td, th { padding: 0 0.4em 0 0; }
+        th { font-style: italic; }
+    </style>
+</head>
+<body>
+
+<header>
+
+{{>navpartial}}
+
+</header>
+
+<main>
+
+<h1>Table <i>{{table}}</i></h1>
+
+<table>
+    <tr>
+        <th>Field</th>
+        <th>Type</th>
+        <th>Null</th>
+        <th>Key</th>
+        <th>Default</th>
+        <th>Extra</th>
+    </tr>
+    {{#fields}}
+    <tr>
+        <td>{{Field}}</td>
+        <td>{{Type}}</td>
+        <td>{{Null}}</td>
+        <td>{{Key}}</td>
+        <td>{{Default}}</td>
+        <td>{{Extra}}</td>
+    </tr>
+    {{/fields}}
+</table>
+
+<p>‘{{table}}’ references:</p>
+<table>
+    {{#each refs}}
+    <tr>
+        <td>{{table_name}}.{{column_name}}</td>
+        <td class="nowrap">⚞—</td>
+        <td><a href="/dev/table/{{referenced_table_name}}">{{referenced_table_name}}</a>.{{referenced_column_name}}</td>
+        <td>({{constraint_name}})</td>
+    </tr>
+    {{else}}
+    <tr><td>—</td></tr>
+    {{/each}}
+</table>
+
+<p>‘{{table}}’ is referenced by:</p>
+<table>
+    {{#each refd}}
+    <tr>
+        <td>{{referenced_table_name}}.{{referenced_column_name}}</td>
+        <td class="nowrap">—⚟</td>
+        <td><a href="/dev/table/{{table_name}}">{{table_name}}</a>.{{column_name}}</td>
+        <td>({{constraint_name}})</td>
+    </tr>
+    {{else}}
+    <tr><td>—</td></tr>
+    {{/each}}
+</table>
+
+</main>
+
+</body>
+</html>
