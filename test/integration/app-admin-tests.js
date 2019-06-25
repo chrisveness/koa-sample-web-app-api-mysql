@@ -325,7 +325,7 @@ describe(`Admin app (${app.env})`, function() {
             expect(responseIp.status).to.equal(200);
             expect(responseIp.body).to.be.an('object');
             expect(responseIp.body).to.contain.keys('domain');
-            expect(responseIp.body.domain).to.equal('google-public-dns-a.google.com');
+            expect(responseIp.body.domain).to.equal('dns.google');
         });
 
         it('sees dev/nodeinfo page', async function() {
