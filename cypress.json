@@ -1,5 +1,0 @@
-{
-    "integrationFolder": "test/cypress/app-admin",
-    "pluginsFile": "test/cypress/plugins.js",
-    "video": false
-}

@@ -13,9 +13,11 @@
     "start": "forever --minUptime 1000 --spinSleepTime 1000 -c 'node -r esm' app.js",
     "start-dev": "nodemon -e js,json,html -r dotenv/config -r esm app.js",
     "start-devtools": "nodemon --inspect -e js,json,html -r dotenv/config -r esm app.js",
-    "test": "npm run test-node && npm run test-frontend",
-    "test-node": "mocha --exit -r esm test/*/*.js",
-    "test-frontend": "node -r dotenv/config -r esm app.js & pid=$!; cypress run; status=$?; kill -9 $pid; rm -r ./cypress; exit $status",
+    "test": "npm run test-unit && npm run test-intgn && npm run test-frontend",
+    "test-node": "npm run test-unit && npm run test-intgn",
+    "test-unit": "mocha --exit -r esm test/unit/*.js",
+    "test-intgn": "mocha --exit -r esm test/integration/*.js",
+    "test-frontend": "testcafe chrome,firefox test/frontend/*.js --app 'node -r dotenv/config -r esm app.js'",
     "lint": "eslint --ignore-pattern app-api/apidoc .",
     "cover": "nyc --reporter=html npm test; rm -r ./.nyc_output",
     "apidoc": "apidoc -i app-api -o app-api/apidoc/apidoc"
@@ -59,13 +61,13 @@
   "devDependencies": {
     "apidoc": "^0.17.0",
     "chai": "^4.0.0",
-    "cypress": "^3.0.0",
     "dotenv": "^8.0.0",
     "eslint": "^5.0.0",
     "mocha": "^6.0.0",
     "nodemon": "^1.0.0",
     "nyc": "^14.0.0",
-    "supertest": "^4.0.0"
+    "supertest": "^4.0.0",
+    "testcafe": "^1.0.0"
   },
   "eslintConfig": {
     "env": {

@@ -250,10 +250,8 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   ├── favicon.ico
 │   └── robots.txt
 ├── test
-│   ├── cypress
-│   │   ├── app-admin
-│   │   │   └── basic-test.js
-│   │   └── plugins.js
+│   ├── frontend
+│   │   └── basic-test.js
 │   ├── integration
 │   │   ├── app-admin-tests.js
 │   │   └── app-api-tests.js
@@ -262,7 +260,6 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │       └── validation-error-tests.js
 ├─ .env
 ├─ app.js
-├─ cypress.json
 ├─ LICENSE
 ├─ package.json
 └─ README.md
