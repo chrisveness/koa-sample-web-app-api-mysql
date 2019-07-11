@@ -286,9 +286,6 @@ A .env file for this project might look something like:
 
     SMTP_CONNECTION = service=gmail; auth.user=me@gmail.com; auth.pass=mypassword
 
-    TESTUSER = guest@user.com
-    TESTPASS = guest
-
 ## Database schema
 
 ```sql

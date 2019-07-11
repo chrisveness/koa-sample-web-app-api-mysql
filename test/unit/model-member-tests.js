@@ -17,7 +17,7 @@ describe('Member model', function() {
     const values = {
         Firstname: 'test',
         Lastname:  'user',
-        Email:     `test-${Date.now().toString(36)}@user.com`, // unique e-mail for concurrent tests
+        Email:     `test-${Date.now().toString(36)}@example.net`, // unique e-mail for concurrent tests
         Active:    true,
     };
 
@@ -35,7 +35,7 @@ describe('Member model', function() {
             await Member.insert(values);
             throw new Error('Member.insert should fail validation');
         } catch (e) {
-            expect(e.message).to.equal(`Duplicate entry '${values.Email}' for key 'Email'`);
+            expect(e.message).to.equal(`Duplicate entry '${values.Email.slice(0, 24)}' for key 'Email'`);
         }
     });
 
@@ -81,7 +81,7 @@ describe('Member model', function() {
             await Member.insert(vals);
             throw new Error('Member.insert should fail validation');
         } catch (e) {
-            expect(e.message).to.equal(`Duplicate entry '${values.Email}' for key 'Email'`);
+            expect(e.message).to.equal(`Duplicate entry '${values.Email.slice(0, 24)}' for key 'Email'`);
         }
     });
 

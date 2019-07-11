@@ -4,31 +4,43 @@
 /* These tests require admin.localhost to be set in /etc/hosts.                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-import supertest           from 'supertest'; // SuperAgent driven library for testing HTTP servers
-import { expect }          from 'chai';      // BDD/TDD assertion library
-import { JSDOM as JsDom }  from 'jsdom';     // JavaScript implementation of DOM and HTML standards
-import dotenv              from 'dotenv';    // load environment variables from a .env file into process.env
+import supertest          from 'supertest';  // SuperAgent driven library for testing HTTP servers
+import { expect }         from 'chai';       // BDD/TDD assertion library
+import Scrypt             from 'scrypt-kdf'; // scrypt key derivation function
+import { JSDOM as JsDom } from 'jsdom';      // JavaScript implementation of DOM and HTML standards
+import dotenv             from 'dotenv';     // load environment variables from a .env file into process.env
 dotenv.config();
 
-import app from '../../app.js';
-
-const testuser = process.env.TESTUSER; // must already exist in database
-const testpass = process.env.TESTPASS;
-
+import app  from '../../app.js';
+import User from '../../models/user.js';
 
 const appAdmin = supertest.agent(app.listen()).host('admin.localhost');
 
 
 describe(`Admin app (${app.env})`, function() {
     this.timeout(5e3); // 5 sec
+    
+    const testAdmin = {
+        username: `user-${Date.now().toString(36)}@example.net`,
+        password: Date.now().toString(16),
+    };
+    const testMember = `member-${Date.now().toString(36)}@example.net`;
 
-    const testEmail = `test-${Date.now().toString(36)}@user.com`; // unique e-mail for concurrent tests
-
-    before(function() {
+    before(async function() {
         if (!process.env.DB_MYSQL_CONNECTION) throw new Error('No DB_MYSQL_CONNECTION available');
         if (!process.env.DB_MONGO_CONNECTION) throw new Error('No DB_MONGO_CONNECTION available');
-        if (!process.env.TESTUSER) throw new Error('No TESTUSER available');
-        if (!process.env.TESTPASS) throw new Error('No TESTPASS available');
+        testAdmin.userId = await User.insert({
+            Firstname: 'Test',
+            Lastname:  'User',
+            Email:     testAdmin.username,
+            Password:  (await Scrypt.kdf(testAdmin.password, { logN: 15 })).toString('base64'),
+            Role:      'admin',
+        });
+        console.info('\tadmin user', testAdmin.userId, testAdmin.username, '/', testAdmin.password);
+    });
+
+    after(async function() {
+        await User.delete(testAdmin.userId);
     });
 
     describe('password reset', function() {
@@ -42,7 +54,7 @@ describe(`Admin app (${app.env})`, function() {
         });
 
         it('makes password reset request', async function() {
-            const response = await appAdmin.post('/password/reset-request').send({ email: testuser });
+            const response = await appAdmin.post('/password/reset-request').send({ email: testAdmin.username });
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal('/password/reset-request-confirm');
             resetToken = response.headers['x-reset-token'];
@@ -90,14 +102,14 @@ describe(`Admin app (${app.env})`, function() {
         });
 
         it('chokes on different passwords', async function() {
-            const values = { password: testpass, passwordConfirm: 'definitely-no-the-correct-password' };
+            const values = { password: testAdmin.password, passwordConfirm: 'definitely-no-the-correct-password' };
             const response = await appAdmin.post(`/password/reset/${resetToken}`).send(values);
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal(`/password/reset/${resetToken}`);
         });
 
         it('resets password', async function() {
-            const values = { password: testpass, passwordConfirm: testpass };
+            const values = { password: testAdmin.password, passwordConfirm: testAdmin.password };
             const response = await appAdmin.post(`/password/reset/${resetToken}`).send(values);
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal('/password/reset/confirm');
@@ -148,7 +160,7 @@ describe(`Admin app (${app.env})`, function() {
         });
 
         it('logs in, and redirects to /', async function() {
-            const values = { username: testuser, password: testpass };
+            const values = { username: testAdmin.username, password: testAdmin.password };
             const response = await appAdmin.post('/login').send(values);
             expect(response.status).to.equal(302);
             location = response.headers.location;
@@ -159,7 +171,7 @@ describe(`Admin app (${app.env})`, function() {
             const response = await appAdmin.get('/login');
             expect(response.status).to.equal(200);
             const document = new JsDom(response.text).window.document;
-            expect(document.querySelector('#name').textContent).to.equal('Admin User');
+            expect(document.querySelector('#name').textContent).to.equal('Test User');
         });
 
         it('has home page with full nav links when logged-in', async function() {
@@ -187,7 +199,7 @@ describe(`Admin app (${app.env})`, function() {
             const values = { Firstname: 'Test', Lastname: 'User', Email: 'this is not a valid e-mail' };
             const response = await appAdmin.post('/members/add').send(values);
             expect(response.status).to.equal(302);
-            expect(response.headers.location).to.equal('/members/add');
+            expect(response.headers.location).to.equal('/members/add'); // err msg is in (encrypted) flash cookie
         });
 
         it('fails to add new new member with bad e-mail - reports error', async function() {
@@ -199,12 +211,12 @@ describe(`Admin app (${app.env})`, function() {
         });
 
         it('adds new member', async function() {
-            const values = { Firstname: 'Test', Lastname: 'User', Email: testEmail };
+            const values = { Firstname: 'Test', Lastname: 'User', Email: testMember };
             const response = await appAdmin.post('/members/add').send(values);
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal('/members');
             id = response.headers['x-insert-id'];
-            console.info('\t', testEmail, id);
+            console.info('\t', testMember, id);
         });
 
         it('lists members including test member', async function() {
@@ -239,7 +251,7 @@ describe(`Admin app (${app.env})`, function() {
         });
 
         it('edits member', async function() {
-            const values = { Firstname: 'Test-bis', Lastname: 'User', Email: testEmail };
+            const values = { Firstname: 'Test-bis', Lastname: 'User', Email: testMember };
             const response = await appAdmin.post(`/members/${id}/edit`).send(values);
             expect(response.status).to.equal(302);
             expect(response.headers.location).to.equal('/members');
@@ -280,12 +292,12 @@ describe(`Admin app (${app.env})`, function() {
         });
 
         it('adds new member', async function() {
-            const values = { Firstname: 'Test', Lastname: 'User', Email: testEmail };
+            const values = { Firstname: 'Test', Lastname: 'User', Email: testMember };
             const response = await appAdmin.post('/ajax/members').send(values);
             expect(response.status).to.equal(201);
             expect(response.body).to.be.an('object');
             expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-            expect(response.body.Email).to.equal(testEmail);
+            expect(response.body.Email).to.equal(testMember);
             id = response.body.MemberId;
         });
 
@@ -301,7 +313,7 @@ describe(`Admin app (${app.env})`, function() {
             expect(response.status).to.equal(200);
             expect(response.body).to.be.an('object');
             expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-            expect(response.body.Email).to.equal(testEmail);
+            expect(response.body.Email).to.equal(testMember);
             expect(response.body.Firstname).to.equal('Test');
         });
 
@@ -310,7 +322,7 @@ describe(`Admin app (${app.env})`, function() {
             expect(response.status).to.equal(200);
             expect(response.body).to.be.an('object');
             expect(response.body).to.contain.keys('MemberId', 'Firstname', 'Lastname', 'Email');
-            expect(response.body.Email).to.equal(testEmail);
+            expect(response.body.Email).to.equal(testMember);
             expect(response.body.Firstname).to.equal('Test');
         });
     });
