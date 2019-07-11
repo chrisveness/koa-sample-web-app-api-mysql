@@ -4,6 +4,11 @@ node_js:
   - "lts/*"
   - "node"
 
+os:
+  - linux
+  - osx
+  - windows
+
 addons:
   chrome: stable
   firefox: latest
@@ -14,16 +19,3 @@ addons:
 jobs:
   allow_failures:
     - os: windows # https://travis-ci.community/t/current-known-issues-please-read-this-before-posting-a-new-topic/264/9#post_10
-
-dist: xenial
-
-services: xvfb
-
-matrix:
-  include:
-    - os: linux
-      script: "npm test"          # testcafe only runs on linux (requires xvfb)
-    - os: osx
-      script: "npm run test-node"
-    - os: windows
-      script: "npm run test-node"
