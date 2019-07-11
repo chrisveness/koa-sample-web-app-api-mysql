@@ -33,9 +33,9 @@ class PasswordResetHandlers {
 
 
     /**
-     * POST /password/reset-request - process request password reset
+     * POST /password/reset-request - process request password reset.
      *
-     * Send e-mail with password reset link
+     * Send e-mail with password reset link.
      */
     static async processRequest(ctx) {
         const email = ctx.request.body.email;
@@ -58,7 +58,7 @@ class PasswordResetHandlers {
 
         // send e-mail with generated token
         const context = { firstname: user.Firstname, host: ctx.request.host, token: token };
-        await Mail.send(email, 'password-reset.email', context, ctx);
+        await Mail.send(`"${user.Firstname} ${user.Lastname}" <${email}>`, 'password-reset.email', context, ctx);
 
         ctx.response.set('X-Reset-Token', token); // for testing
 
