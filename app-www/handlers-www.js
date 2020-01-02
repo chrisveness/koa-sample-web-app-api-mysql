@@ -4,8 +4,8 @@
 /* All functions here either render or redirect, or throw.                                        */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-import fs       from 'fs-extra';    // fs with extra methods & promise interface
-import markdown from 'markdown-it'; // markdown parser
+import { promises as fs } from 'fs'; // nodejs.org/api/fs.html
+import markdown from 'markdown-it';  // markdown parser
 
 const md = markdown();
 
