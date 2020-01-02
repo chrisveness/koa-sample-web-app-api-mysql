@@ -12,79 +12,9 @@
         table button { background: none; border: none; padding: 0; }
         table button:hover { cursor: pointer; }
     </style>
+    <script src="/js/members-edit.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            'use strict';
-            var doc = document; doc.qrySel = doc.querySelector; doc.qrySelAll = doc.querySelectorAll;
-
-            doc.qrySel('button.add-membership').onclick = function() {
-                const select = doc.qrySel('select.add-membership');
-                select.classList.toggle('hide');
-                select.focus();
-            };
-
-            doc.qrySel('select.add-membership').onchange = addMembership;
-
-            doc.qrySelAll('button.delete-membership').forEach(button => button.onclick = deleteMembership);
-
-            async function addMembership(event) {
-                const select = event.target;
-                var values = JSON.stringify({
-                    MemberId: {{MemberId}},
-                TeamId:   this.value,
-                    JoinedOn: new Date().toISOString().replace('T',' ').split('.')[0],
-            });
-                const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
-                const credentials = 'same-origin';
-                const response = await fetch('/ajax/team-members', { method: 'POST', body: values, headers, credentials });
-                if (response.ok) {
-                    // add new row (cloned from 1st membership row), remove entry from select
-                    const body = await response.json();
-                    const thisRow = select.closest('tr');
-                    if (thisRow.nextElementSibling) {
-                        const newRow = thisRow.nextElementSibling.cloneNode(true);
-                        newRow.id = select.value;
-                        newRow.children[0].textContent = select.options[select.selectedIndex].label;
-                        newRow.querySelector('button').value = body.TeamMemberId;
-                        newRow.querySelector('button').onclick = deleteMembership; // onclick doesn't get cloned
-                        thisRow.insertAdjacentElement('afterend', newRow);
-                        select.remove(select.selectedIndex);
-                        select.classList.add('hide');
-                    } else {
-                        // no tr to clone - cop out & reload page for now...
-                        window.location.reload();
-                    }
-                } else {
-                    alert(response.statusText)
-                }
-            };
-
-            async function deleteMembership(event) {
-                const button = event.target;
-                const teamMembershipId = button.value;
-                const headers = { Accept: 'application/json' };
-                const credentials = 'same-origin';
-                const response = await fetch('/ajax/team-members/'+teamMembershipId, { method: 'DELETE', headers, credentials });
-                if (response.ok) {
-                    const thisRow = button.closest('tr');
-                    const teamId = thisRow.id;
-                    const teamName = thisRow.children[0].textContent;
-                    const selector = button.closest('table').querySelector('select');
-                    const opt = document.createElement('option');
-                    opt.value = teamId;
-                    opt.text = teamName;
-                    selector.add(opt);
-                    thisRow.remove();
-                } else {
-                    alert(response.statusText)
-                }
-            }
-
-            // escape will hide 'add-membership' select if it is displayed
-            document.onkeyup = function(event) {
-                if (event.key == 'Escape') doc.qrySel('select.add-membership').classList.add('hide');
-            }
-        });
+        const memberId = {{MemberId}};
     </script>
 </head>
 <body>
@@ -99,30 +29,30 @@
 
 {{>errpartial}}
 
-<form method="post">
-    <ul>
-        <li>
-            <label for="Firstname">First name</label>
-            <input name="Firstname" id="Firstname" value="{{Firstname}}" autofocus>
-        </li>
-        <li>
-            <label for="Lastname">Last name</label>
-            <input name="Lastname" id="Lastname" value="{{Lastname}}">
-        </li>
-        <li>
-            <label for="Email">E-mail</label>
-            <input name="Email" id="Email" type="email" value="{{Email}}" required>
-        </li>
-        <li>
-            <label for="Active">Active</label>
-            <input name="Active" id="Active" type="checkbox" {{#if Active}}checked{{/if}}>
-        </li>
-        <li>
-            <label></label>
-            <button type="submit" class="fa fa-check-square-o green" title="Update"></button>
-        </li>
-    </ul>
-</form>
+    <form method="post">
+        <ul>
+            <li>
+                <label for="Firstname">First name</label>
+                <input name="Firstname" id="Firstname" value="{{Firstname}}" autofocus>
+            </li>
+            <li>
+                <label for="Lastname">Last name</label>
+                <input name="Lastname" id="Lastname" value="{{Lastname}}">
+            </li>
+            <li>
+                <label for="Email">E-mail</label>
+                <input name="Email" id="Email" type="email" value="{{Email}}" required>
+            </li>
+            <li>
+                <label for="Active">Active</label>
+                <input name="Active" id="Active" type="checkbox" {{#if Active}}checked{{/if}}>
+            </li>
+            <li>
+                <label></label>
+                <button type="submit" class="fa fa-check-square-o green" title="Update"></button>
+            </li>
+        </ul>
+    </form>
 
 <h2>Teams</h2>
 

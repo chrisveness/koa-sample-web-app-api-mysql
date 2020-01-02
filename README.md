@@ -247,6 +247,12 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   │   ├── admin.css
 │   │   ├── base.css
 │   │   └── www.css
+│   ├── js
+│   │   ├── .eslintrc.json
+│   │   ├── dev-logs.js
+│   │   ├── members-edit.js
+│   │   ├── password-reset.js
+│   │   └── teams-edit.js
 │   ├── favicon.ico
 │   └── robots.txt
 ├── test
