@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
@@ -25,19 +24,19 @@
     <ul>
         <li>
             <label for="Firstname">First name</label>
-            <input name="Firstname" id="Firstname" value="{{Firstname}}" autofocus>
+            <input name="Firstname" id="Firstname" value="{{Firstname}}" class="w16" autofocus>
         </li>
         <li>
             <label for="Lastname">Last name</label>
-            <input name="Lastname" id="Lastname" value="{{Lastname}}">
+            <input name="Lastname" id="Lastname" value="{{Lastname}}" class="w16">
         </li>
         <li>
             <label for="Email">E-mail</label>
-            <input name="Email" id="Email" type="email" value="{{Email}}" required>
+            <input name="Email" id="Email" type="email" value="{{Email}}" class="w16" required>
         </li>
         <li>
             <label></label>
-            <button type="submit" class="fa fa-check-square-o green" title="Add"></button>
+            <button type="submit" class="green" title="Add">✔</button>
         </li>
     </ul>
 </form>

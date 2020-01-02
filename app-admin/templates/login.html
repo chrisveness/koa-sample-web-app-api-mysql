@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
@@ -32,11 +31,11 @@
     <ul>
         <li>
             <label for="username">E-mail</label>
-            <input name="username" id="username" type="email" value="{{username}}" required autofocus>
+            <input name="username" id="username" type="email" value="{{username}}" required class="w16" autofocus>
         </li>
         <li>
             <label for="password">Password</label>
-            <input name="password" id="password" type="password" required>
+            <input name="password" id="password" type="password" class="w16" required>
         </li>
         <li>
             <label></label>
@@ -45,7 +44,7 @@
         </li>
         <li>
             <label></label>
-            <button type="submit" class="fa fa-check-square-o green" title="Login"></button>
+            <button type="submit" class="green" title="Login">✔</button>
             {{#if @koa.flash.loginfailmsg}}<span class="error-msg">{{@koa.flash.loginfailmsg}}</span>{{/if}}
         </li>
     </ul>
