@@ -10,15 +10,19 @@
 </head>
 <body>
 
-<h1>Koa Sample App (handlebars templating + RESTful API using MySQL, on Node.js)</h1>
-
+<header>
 {{>navpartial}}
+</header>
 
 <main>
+
+<h1>Koa Sample App (handlebars templating + RESTful API using MySQL, on Node.js)</h1>
 
 <p>This is the web-based  ‘admin’ section of the Koa Sample App
     <a href="http://github.com/chrisveness/koa-sample-web-app-api-mysql">
     github.com/chrisveness/koa-sample-web-app-api-mysql</a>.</p>
+
+<hr>
 
 {{#if @koa.state.user}}
 <p>The functionality is trivial; the point is to showcase the code supporting it.</p>

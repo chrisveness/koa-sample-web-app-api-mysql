@@ -10,12 +10,15 @@
 </head>
 <body>
 
-<h1>Delete member</h1>
-
+<header>
 {{>navpartial}}
-{{>errpartial}}
+</header>
 
 <main>
+
+<h1>Delete member</h1>
+
+{{>errpartial}}
 
 <form method="post">
     <p>Are you sure you want to delete {{Firstname}} {{Lastname}}?

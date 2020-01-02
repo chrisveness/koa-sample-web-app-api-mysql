@@ -31,9 +31,9 @@
                 const select = event.target;
                 var values = JSON.stringify({
                     MemberId: {{MemberId}},
-                    TeamId:   this.value,
+                TeamId:   this.value,
                     JoinedOn: new Date().toISOString().replace('T',' ').split('.')[0],
-                });
+            });
                 const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
                 const credentials = 'same-origin';
                 const response = await fetch('/ajax/team-members', { method: 'POST', body: values, headers, credentials });
@@ -89,12 +89,15 @@
 </head>
 <body>
 
-<h1>Edit member</h1>
-
+<header>
 {{>navpartial}}
-{{>errpartial}}
+</header>
 
 <main>
+
+<h1>Edit member</h1>
+
+{{>errpartial}}
 
 <form method="post">
     <ul>

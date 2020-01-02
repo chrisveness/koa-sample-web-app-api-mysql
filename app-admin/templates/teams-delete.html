@@ -10,14 +10,15 @@
 </head>
 <body>
 
-<h1>Delete team</h1>
-
+<header>
 {{>navpartial}}
-{{>errpartial}}
-
-{{#if _error}}<p class="error-msg">Error – {{_error}}</p>{{/if}}
+</header>
 
 <main>
+
+<h1>Delete team</h1>
+
+{{>errpartial}}
 
 <form method="post">
     <p>Are you sure you want to delete {{Name}}?

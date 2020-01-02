@@ -14,6 +14,12 @@ body {
     padding: 0 0.4em;  /* small l/r margin on narrow range */
 }
 
+/* nav */
+nav    { border-bottom: 1px solid #999999; }
+nav ul { list-style: none; padding: 0; margin: 0.2em 0; }
+nav li { display: inline-block; margin: 0.5em 1em; }
+@media print { nav { display: none; } } /* no need for nav on printouts */
+
 
 /* main */
 main {
@@ -27,17 +33,13 @@ a:hover { text-decoration: underline; }
 
 /* forms: useful defaults */
 form               { margin: 1em 0; }
-fieldset           { border-radius: 0.25em; }
+fieldset           { border-radius: 0.25rem; }
 legend             { margin-left: 1em; padding: 0.5em; }
 label              { display: inline-block; font-style: italic; width: 8em; }
 input[type=number] { text-align: right; }
 input + label      { font-style: normal; width: auto; } /* eg radio/checkbox labels */
 form ul            { list-style: none; padding: 0; }
 form li            { margin: 0.5em 1em; }
-
-/* nav */
-nav ul { list-style: none; padding: 0; }
-nav li { display: inline-block; margin: 0.5em 1em; }
 
 /* lists */
 main ul { font-size: 0.9rem; } /* rem so nested lists remain same size */
@@ -111,7 +113,3 @@ tr.show          { display: table-row; }
 td.show, th.show { display: table-cell; }
 span.show        { display: inline; }
 
-/* no need for nav on printouts */
-@media print {
-    nav { display: none; }
-}

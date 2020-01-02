@@ -11,12 +11,15 @@
 </head>
 <body>
 
-<h1>Login</h1>
-
+<header>
 {{>navpartial}}
-{{>errpartial}}
+</header>
 
 <main>
+
+<h1>Login</h1>
+
+{{>errpartial}}
 
 {{#if @koa.state.user}}
 
