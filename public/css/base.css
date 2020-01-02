@@ -1,14 +1,24 @@
-/* Base stylesheet with useful cross-project defaults */
+/* Base stylesheet with useful cross-project defaults                                             */
+/*                                                                                                */
+/* rem units (= root font-size) used for sizing containers, em units (= element font-size) for    */
+/* local sizing within containers.                                                                */
+
+:root {
+    font-size: calc(0.5em + 1vw); /* basis for rem units: 16px @ w800px, 18px @ w1042px, 20px @ w1200px */
+}
 
 body {
-    background: white;
-    color: #333333;
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 92%;  /* adjust from default 16px (!) to 11pt (@ 96ppi) */
-    line-height: 1.6;
-    margin: 0 auto; /* equal l/r margins */
-    max-width: 1024px; /* subject to design; if unlimited, put eg max 48em on eg main */
-    padding: 0 0.4em; /* small margin is good for phones */
+    font-size: 0.84em; /* smaller text... */
+    line-height: 1.6;  /* ... with space to breathe */
+    padding: 0 0.4em;  /* small l/r margin on narrow range */
+}
+
+
+/* main */
+main {
+    max-width: 48em; /* approx. 96-120 chars; some designs may want to make this shorter */
+    margin: 0 auto;  /* equal l/r margins */
 }
 
 /* links: underline on hover only (normally colour used to indicate links) */
@@ -17,7 +27,7 @@ a:hover { text-decoration: underline; }
 
 /* forms: useful defaults */
 form               { margin: 1em 0; }
-fieldset           { border-radius: 5px; }
+fieldset           { border-radius: 0.25em; }
 legend             { margin-left: 1em; padding: 0.5em; }
 label              { display: inline-block; font-style: italic; width: 8em; }
 input[type=number] { text-align: right; }
@@ -29,7 +39,11 @@ form li            { margin: 0.5em 1em; }
 nav ul { list-style: none; padding: 0; }
 nav li { display: inline-block; margin: 0.5em 1em; }
 
+/* lists */
+main ul { font-size: 0.9rem; } /* rem so nested lists remain same size */
+
 /* tables: useful defaults */
+table  { border-collapse: collapse; }
 tr     { vertical-align: baseline; }
 td, th { padding: 0.2em; }
 th     { color: #666666; font-style: italic; font-weight: normal; text-align: left; }
@@ -44,7 +58,7 @@ th     { color: #666666; font-style: italic; font-weight: normal; text-align: le
 .align-middle   { vertical-align: middle; }
 .align-bottom   { vertical-align: bottom; }
 .border-none    { border: none; }
-.clear-floats   { clear:both; }
+.clear-floats   { clear: both; }
 .display-inline { display: inline; }
 .display-none   { display: none; }
 .float-left     { float: left; }
@@ -62,10 +76,13 @@ th     { color: #666666; font-style: italic; font-weight: normal; text-align: le
 
 /* useful classes */
 .alert         { color: #990000; font-size: 1.2em; font-weight: bold; }
+.blue          { color: #000066; }
 .error-msg     { color: #990000; }
+.green         { color: #006600; }
 .grey          { color: #999999; }
 .pale-grey     { color: #cccccc; }
 .required      { color: #990000; } /* for required form field indicator */
+.red           { color: #660000; }
 .rule-above    { border-top: 1px solid #999999; }
 .rule-above td { border-top: 1px solid #999999; } /* to apply to tr */
 .small         { font-size: 80%; } /* like <small> */
