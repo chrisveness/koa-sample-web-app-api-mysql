@@ -4,14 +4,14 @@
 /* local sizing within containers.                                                                */
 
 :root {
-    font-size: calc(0.5em + 1vw); /* basis for rem units: 16px @ w800px, 18px @ w1042px, 20px @ w1200px */
+    font-size: calc(0.5em + 1vw); /* basis for rem units: 16px @ w800px, 18px @ w1024px, 20px @ w1200px */
 }
 
 body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 0.84em; /* smaller text... */
-    line-height: 1.6;  /* ... with space to breathe */
-    padding: 0 0.4em;  /* small l/r margin on narrow range */
+    font-size: 0.8em; /* smaller text... */
+    line-height: 1.6; /* ... with space to breathe */
+    padding: 0 0.4em; /* small l/r margin on narrow range */
 }
 
 /* nav */
@@ -42,7 +42,8 @@ form ul            { list-style: none; padding: 0; }
 form li            { margin: 0.5em 1em; }
 
 /* lists */
-main ul { font-size: 0.9rem; } /* rem so nested lists remain same size */
+main ul    { font-size: 0.9em; } /* lists slightly smaller font */
+main ul ul { font-size: 1em; }   /* sublists retain same size */
 
 /* tables: useful defaults */
 table  { border-collapse: collapse; }
