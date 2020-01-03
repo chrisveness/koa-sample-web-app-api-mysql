@@ -17,7 +17,7 @@
     "test-node": "npm run test-unit && npm run test-intgn",
     "test-unit": "mocha --exit -r esm test/unit/*.js",
     "test-intgn": "mocha --exit -r esm test/integration/*.js",
-    "test-frontend": "testcafe chrome:headless,firefox:headless test/frontend/*.js --app 'node -r dotenv/config -r esm app.js'",
+    "test-frontend": "testcafe chrome:headless,firefox:headless test/frontend/*-tests.js --app 'node -r dotenv/config -r esm app.js'",
     "lint": "eslint --ignore-pattern app-api/apidoc .",
     "cover": "nyc --reporter=html npm test; rm -r ./.nyc_output",
     "apidoc": "apidoc -i app-api -o app-api/apidoc/apidoc"
