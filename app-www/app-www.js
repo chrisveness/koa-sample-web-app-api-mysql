@@ -12,8 +12,8 @@ import Debug      from 'debug';          // small debugging utility
 
 const debug = Debug('app:req'); // debug each request
 
-import Log        from '../lib/log.js';
-import Middleware from '../lib/middleware.js';
+import Log from '../lib/log.js';
+import Ssl from '../lib/ssl-middleware.js';
 
 
 const app = new Koa(); // www app
@@ -113,7 +113,7 @@ app.use(async function ctxAddDomain(ctx, next) {
 
 
 // force use of SSL (redirect http protocol to https)
-app.use(Middleware.ssl({ trustProxy: true }));
+app.use(Ssl.force({ trustProxy: true }));
 
 
 import routesWww from './routes-www.js';

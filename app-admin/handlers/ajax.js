@@ -35,7 +35,7 @@ class AjaxHandlers {
         const hdrs = {
             'Content-Type':  'application/json',
             'Accept':        ctx.request.header.accept || '*/*',
-            'Authorization': 'Bearer ' + ctx.state.user.jwt,
+            'Authorization': 'Bearer ' + ctx.state.auth.jwt,
         };
 
         try {

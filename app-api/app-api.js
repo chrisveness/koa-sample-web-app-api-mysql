@@ -16,8 +16,9 @@ import Debug  from 'debug';        // small debugging utility
 
 const debug = Debug('app:req'); // debug each request
 
-import Log        from '../lib/log.js';
-import Middleware from '../lib/middleware.js';
+import Log   from '../lib/log.js';
+import Ssl   from '../lib/ssl-middleware.js';
+import Auth  from './auth.js';
 
 
 const app = new Koa(); // API app
@@ -104,7 +105,7 @@ app.use(async function handleErrors(ctx, next) {
 
 
 // force use of SSL (redirect http protocol to https)
-app.use(Middleware.ssl({ trustProxy: true }));
+app.use(Ssl.force({ trustProxy: true }));
 
 
 // public (unsecured) modules first
@@ -116,7 +117,7 @@ app.use(routesAuth);
 
 // remaining routes require JWT auth (obtained from /auth and supplied in bearer authorization header)
 
-app.use(Middleware.verifyJwtApi());
+app.use(Auth.middleware.verifyJwtApi());
 
 import routesMembers     from './routes-members.js';
 import routesTeams       from './routes-teams.js';

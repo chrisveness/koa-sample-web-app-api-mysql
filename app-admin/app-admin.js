@@ -17,7 +17,8 @@ const router = new Router();
 
 import HandlebarsHelpers from '../lib/handlebars-helpers.js';
 import Log               from '../lib/log.js';
-import Middleware        from '../lib/middleware.js';
+import Ssl               from '../lib/ssl-middleware.js';
+import Login             from './handlers/login.js';
 
 
 const app = new Koa(); // admin app
@@ -125,12 +126,12 @@ app.use(async function ctxAddDomain(ctx, next) {
 
 
 // force use of SSL (redirect http protocol to https)
-app.use(Middleware.ssl({ trustProxy: true }));
+app.use(Ssl.force({ trustProxy: true }));
 
 
-// check if user is signed in; leaves id in ctx.state.user.id if JWT verified
+// check if user is signed in; leaves id in ctx.state.auth.user.id if JWT verified
 // (do this before login routes, as login page indicates if user is already logged in)
-app.use(Middleware.verifyJwt());
+app.use(Login.middleware.verifyJwt());
 
 
 // public (unsecured) modules first
@@ -147,7 +148,7 @@ app.use(routesPasswd);
 // verify user is signed in...
 
 app.use(async function isSignedIn(ctx, next) {
-    if (ctx.state.user) {
+    if (ctx.state.auth) {
         await next();
     } else {
         // authentication failed: redirect to login page

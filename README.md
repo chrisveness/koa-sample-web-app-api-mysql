@@ -208,6 +208,7 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   └── app-admin.js
 ├── app-api
 │   ├── app-api.js
+│   ├── auth.js
 │   ├── cast-boolean.js
 │   ├── members.js
 │   ├── routes-auth.js
@@ -232,9 +233,9 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 │   ├── ip.js
 │   ├── log.js
 │   ├── mail.js
-│   ├── middleware.js
 │   ├── mongodb.js
 │   ├── mysqldb.js
+│   ├── ssl-middleware.js
 │   └── validation-errors.js
 ├── models
 │   ├── member.js

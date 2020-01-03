@@ -124,7 +124,7 @@ class TeamsHandlers {
      * POST /teams/add - process add-team.
      */
     static async processAdd(ctx) {
-        if (ctx.state.user.Role != 'admin') {
+        if (ctx.state.auth.user.Role != 'admin') {
             ctx.flash = { _error: 'Team management requires admin privileges' };
             return ctx.response.redirect('/login'+ctx.request.url);
         }
@@ -159,7 +159,7 @@ class TeamsHandlers {
      * POST /teams/:id/edit - process edit-team.
      */
     static async processEdit(ctx) {
-        if (ctx.state.user.Role != 'admin') {
+        if (ctx.state.auth.user.Role != 'admin') {
             ctx.flash = { _error: 'Team management requires admin privileges' };
             return ctx.response.redirect('/login'+ctx.request.url);
         }
@@ -234,7 +234,7 @@ class TeamsHandlers {
      * POST /teams/:id/delete - process delete-team.
      */
     static async processDelete(ctx) {
-        if (ctx.state.user.Role != 'admin') {
+        if (ctx.state.auth.user.Role != 'admin') {
             ctx.flash = { _error: 'Team management requires admin privileges' };
             return ctx.response.redirect('/login'+ctx.request.url);
         }

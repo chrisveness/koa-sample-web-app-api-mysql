@@ -20,10 +20,10 @@
 
 {{>errpartial}}
 
-{{#if @koa.state.user}}
+{{#if @koa.state.auth}}
 
-<p>You are currently logged in as <span id="name">{{@koa.state.user.name}}</span>
-    (with <span id="role">{{@koa.state.user.Role}}</span> privileges).</p>
+<p>You are currently logged in as <span id="name">{{@koa.state.auth.user.name}}</span>
+    (with <span id="role">{{@koa.state.auth.user.Role}}</span> privileges).</p>
 
 {{else}}
 

@@ -124,7 +124,7 @@ class MembersHandlers {
      * POST /members/add - process add-member.
      */
     static async processAdd(ctx) {
-        if (ctx.state.user.Role != 'admin') {
+        if (ctx.state.auth.user.Role != 'admin') {
             ctx.flash = { _error: 'User management requires admin privileges' };
             return ctx.response.redirect('/login'+ctx.request.url);
         }
@@ -161,7 +161,7 @@ class MembersHandlers {
      * POST /members/:id/edit - process edit-member.
      */
     static async processEdit(ctx) {
-        if (ctx.state.user.Role != 'admin') {
+        if (ctx.state.auth.user.Role != 'admin') {
             ctx.flash = { _error: 'User management requires admin privileges' };
             return ctx.response.redirect('/login'+ctx.request.url);
         }
@@ -238,7 +238,7 @@ class MembersHandlers {
      * POST /members/:id/delete - process delete-member.
      */
     static async processDelete(ctx) {
-        if (ctx.state.user.Role != 'admin') {
+        if (ctx.state.auth.user.Role != 'admin') {
             ctx.flash = { _error: 'User management requires admin privileges' };
             return ctx.response.redirect('/login'+ctx.request.url);
         }
