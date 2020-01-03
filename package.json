@@ -10,7 +10,7 @@
   },
   "main": "app.js",
   "scripts": {
-    "start": "forever --minUptime 1000 --spinSleepTime 1000 -c 'node -r esm' app.js",
+    "start": "node -r esm app.js",
     "start-dev": "nodemon -e js,json,html -r dotenv/config -r esm app.js",
     "start-devtools": "nodemon --inspect -e js,json,html -r dotenv/config -r esm app.js",
     "test": "npm run test-unit && npm run test-intgn && npm run test-frontend",
@@ -29,7 +29,6 @@
     "dateformat": "^3.0.0",
     "debug": "^4.0.0",
     "esm": "^3.0.0",
-    "forever": "^1.0.0",
     "handlebars": "^4.0.0",
     "html-to-text": "^5.0.0",
     "isemail": "^3.0.0",
@@ -47,9 +46,9 @@
     "koa-router": "^7.0.0",
     "koa-session": "^5.0.0",
     "koa-static": "^5.0.0",
-    "markdown-it": "^8.0.0",
+    "markdown-it": "^10.0.0",
     "mongodb": "^3.0.0",
-    "mysql2": "^1.0.0",
+    "mysql2": "^2.0.0",
     "node-fetch": "^2.0.0",
     "nodejs-info": "^1.0.0",
     "nodemailer": "^6.0.0",
@@ -58,13 +57,13 @@
     "xmlify": "^1.0.0"
   },
   "devDependencies": {
-    "apidoc": "^0.17.0",
+    "apidoc": "^0.19.0",
     "chai": "^4.0.0",
     "dotenv": "^8.0.0",
-    "eslint": "^5.0.0",
+    "eslint": "^6.0.0",
     "mocha": "^6.0.0",
-    "nodemon": "^1.0.0",
-    "nyc": "^14.0.0",
+    "nodemon": "^2.0.0",
+    "nyc": "^15.0.0",
     "supertest": "^4.0.0",
     "testcafe": "^1.0.0"
   },
@@ -80,27 +79,77 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-      "array-bracket-spacing": [ "error", "always" ],
-      "comma-dangle": [ "error", "always-multiline" ],
-      "comma-spacing": [ "error" ],
-      "curly": [ "error", "multi-line" ],
-      "indent": [ "error", 4, { "SwitchCase": 1 } ],
-      "key-spacing": [ "error", { "align": "value" } ],
-      "keyword-spacing": [ "error" ],
+      "array-bracket-spacing": [
+        "error",
+        "always"
+      ],
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "comma-spacing": [
+        "error"
+      ],
+      "curly": [
+        "error",
+        "multi-line"
+      ],
+      "indent": [
+        "error",
+        4,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "key-spacing": [
+        "error",
+        {
+          "align": "value"
+        }
+      ],
+      "keyword-spacing": [
+        "error"
+      ],
       "no-case-declarations": "off",
-      "no-console": [ "warn", { "allow": [ "error", "info" ] } ],
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "error",
+            "info"
+          ]
+        }
+      ],
       "no-redeclare": "warn",
       "no-shadow": "warn",
       "no-unused-vars": "warn",
       "no-var": "error",
-      "object-curly-spacing": [ "error", "always" ],
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ],
       "prefer-const": "error",
-      "quotes": [ "error", "single", "avoid-escape" ],
+      "quotes": [
+        "error",
+        "single",
+        "avoid-escape"
+      ],
       "require-await": "error",
-      "semi": [ "error", "always" ],
-      "space-before-blocks": [ "error", "always" ],
-      "space-in-parens": [ "error" ],
-      "strict": [ "error", "global" ]
+      "semi": [
+        "error",
+        "always"
+      ],
+      "space-before-blocks": [
+        "error",
+        "always"
+      ],
+      "space-in-parens": [
+        "error"
+      ],
+      "strict": [
+        "error",
+        "global"
+      ]
     }
   }
 }
