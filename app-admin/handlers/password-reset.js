@@ -7,8 +7,9 @@
 import crypto from 'crypto';     // nodejs.org/api/crypto.html
 import Scrypt from 'scrypt-kdf'; // scrypt key derivation function
 
-import User from '../../models/user.js';
-import Mail from '../../lib/mail.js';
+import User  from '../../models/user.js';
+import Mail  from '../../lib/mail.js';
+import Pwned from '../../lib/pwned.js';
 
 /*
  * Password reset sequence is:
@@ -78,7 +79,7 @@ class PasswordResetHandlers {
             return;
         }
 
-        await ctx.render('password-reset', { valid: true });
+        await ctx.render('password-reset', Object.assign({}, ctx.flash.formdata, { valid: true }));
     }
 
 
@@ -108,6 +109,21 @@ class PasswordResetHandlers {
             ctx.flash = { _error: 'Passwords don’t match' };
             ctx.response.redirect('/password/reset/'+token);
             return;
+        }
+
+        // check if password has been pwned
+        if (ctx.request.body.pwnedNotified != 'yes') {
+            try {
+                const breached = await Pwned.breachCount(ctx.request.body.password);
+                if (breached > 0) {
+                    const pwnedCount = `${Intl.NumberFormat().format(breached)} time${breached>1 ? 's' : ''}`;
+                    ctx.flash = { formdata: ctx.request.body, pwnedCount: pwnedCount, pwnedNotified: 'yes' };
+                    ctx.response.redirect('/password/reset/'+token);
+                    return;
+                }
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         // set the password and clear the password reset token
