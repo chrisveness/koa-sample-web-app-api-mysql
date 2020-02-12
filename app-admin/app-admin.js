@@ -64,7 +64,7 @@ app.use(async function handleErrors(ctx, next) {
                 ctx.response.redirect('/login'+ctx.request.url);
                 break;
             case 404: // Not Found
-                if (err.message == 'Not Found') err.message = null; // personalised 404
+                if (err.message == 'Not Found') err.message = 'Couldn’t find that one!...'; // personalised 404
                 await ctx.render('404-not-found', { err });
                 break;
             case 403: // Forbidden

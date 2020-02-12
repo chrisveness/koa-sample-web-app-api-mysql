@@ -54,7 +54,7 @@ app.use(async function handleErrors(ctx, next) {
         if (app.env == 'production') delete err.stack; // don't leak sensitive info!
         switch (ctx.response.status) {
             case 404: // Not Found
-                if (err.message == 'Not Found') err.message = null; // personalised 404
+                if (err.message == 'Not Found') err.message = 'Couldn’t find that one!...'; // personalised 404
                 await ctx.render('404-not-found', { err });
                 break;
             default:

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <title>Oops!</title>
@@ -16,15 +16,9 @@
 
 <main>
 
-{{#if msg}}
-<p>{{msg}}.</p>
-{{else}}
-<p>Couldn’t find that one!...</p>
-{{/if}}
+<p>{{err.message}}.</p>
 
-{{#if e}}
-<pre class="small grey">{{e.stack}}.</pre>
-{{/if}}
+<pre class="small grey">{{err.stack}}</pre>
 
 </main>
 
