@@ -21,7 +21,7 @@ class TeamMember {
      * @returns {Object} TeamMember details.
      */
     static async get(id) {
-        const [ teamMembers ] = await Db.query('Select * From TeamMember Where TeamMemberId =  :id', { id });
+        const [ teamMembers ] = await Db.execute('Select * From TeamMember Where TeamMemberId =  :id', { id });
         return teamMembers[0];
     }
 
@@ -42,7 +42,7 @@ class TeamMember {
 
         try {
 
-            const [ result ] = await Db.query('Insert Into TeamMember Set ?', [ values ]);
+            const [ result ] = await Db.query('Insert Into TeamMember Set ?', [ values ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
             return result.insertId;
 
         } catch (e) {
@@ -75,7 +75,7 @@ class TeamMember {
 
         try {
 
-            await Db.query('Update TeamMember Set ? Where TeamMemberId = ?', [ values, id ]);
+            await Db.query('Update TeamMember Set ? Where TeamMemberId = ?', [ values, id ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -105,7 +105,7 @@ class TeamMember {
 
         try {
 
-            await Db.query('Delete From TeamMember Where TeamMemberId = :id', { id });
+            await Db.execute('Delete From TeamMember Where TeamMemberId = :id', { id });
             return true;
 
         } catch (e) {

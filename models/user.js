@@ -21,7 +21,7 @@ class User {
      * @returns {Object} User details.
      */
     static async get(id) {
-        const [ users ] = await Db.query('Select * From User Where UserId = :id', { id });
+        const [ users ] = await Db.execute('Select * From User Where UserId = :id', { id });
         const user = users[0];
         return user;
     }
@@ -39,7 +39,7 @@ class User {
 
             const sql = `Select * From User Where ${field} = :${field} Order By Firstname, Lastname`;
 
-            const [ users ] = await Db.query(sql, { [field]: value });
+            const [ users ] = await Db.execute(sql, { [field]: value });
 
             return users;
 
@@ -67,7 +67,7 @@ class User {
 
         try {
 
-            const [ result ] = await Db.query('Insert Into User Set ?', [ values ]);
+            const [ result ] = await Db.query('Insert Into User Set ?', [ values ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
             return result.insertId;
 
         } catch (e) {
@@ -100,7 +100,7 @@ class User {
 
         try {
 
-            await Db.query('Update User Set ? Where UserId = ?', [ values, id ]);
+            await Db.query('Update User Set ? Where UserId = ?', [ values, id ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -130,7 +130,7 @@ class User {
 
         try {
 
-            await Db.query('Delete From User Where UserId = :id', { id });
+            await Db.execute('Delete From User Where UserId = :id', { id });
             return true;
 
         } catch (e) {

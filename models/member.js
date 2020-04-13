@@ -21,7 +21,7 @@ class Member {
      * @returns {Object} Member details.
      */
     static async get(id) {
-        const [ members ] = await Db.query('Select * From Member Where MemberId = :id', { id });
+        const [ members ] = await Db.execute('Select * From Member Where MemberId = :id', { id });
         const member = members[0];
         return member;
     }
@@ -39,7 +39,7 @@ class Member {
 
             const sql = `Select * From Member Where ${field} = :${field} Order By Firstname, Lastname`;
 
-            const [ members ] = await Db.query(sql, { [field]: value });
+            const [ members ] = await Db.execute(sql, { [field]: value });
 
             return members;
 
@@ -72,7 +72,7 @@ class Member {
 
         try {
 
-            const [ result ] = await Db.query('Insert Into Member Set ?', [ values ]);
+            const [ result ] = await Db.query('Insert Into Member Set ?', [ values ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
             return result.insertId;
 
         } catch (e) {
@@ -110,7 +110,7 @@ class Member {
 
         try {
 
-            await Db.query('Update Member Set ? Where MemberId = ?', [ values, id ]);
+            await Db.query('Update Member Set ? Where MemberId = ?', [ values, id ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -140,7 +140,7 @@ class Member {
 
         try {
 
-            await Db.query('Delete From Member Where MemberId = :id', { id });
+            await Db.execute('Delete From Member Where MemberId = :id', { id });
             return true;
 
         } catch (e) {
