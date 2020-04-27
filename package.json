@@ -9,15 +9,16 @@
     "url": "http://github.com/chrisveness/koa-sample-web-app-api-mysql.git"
   },
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "start": "node -r esm app.js",
-    "start-dev": "nodemon -e js,json,html -r dotenv/config -r esm app.js",
-    "start-devtools": "nodemon --inspect -e js,json,html -r dotenv/config -r esm app.js",
+    "start": "node app.js",
+    "start-dev": "nodemon -e js,json,html -r dotenv/config app.js",
+    "start-devtools": "nodemon --inspect -e js,json,html -r dotenv/config app.js",
     "test": "npm run test-unit && npm run test-intgn && npm run test-frontend",
     "test-node": "npm run test-unit && npm run test-intgn",
-    "test-unit": "mocha --exit -r esm test/unit/*.js",
-    "test-intgn": "mocha --exit -r esm test/integration/*.js",
-    "test-frontend": "testcafe chrome:headless,firefox:headless test/frontend/*-tests.js --app 'node -r dotenv/config -r esm app.js'",
+    "test-unit": "mocha --exit test/unit/*.js",
+    "test-intgn": "mocha --exit test/integration/*.js",
+    "test-frontend": "testcafe chrome:headless,firefox:headless test/frontend/*-tests.js --app 'node -r dotenv/config app.js'",
     "lint": "eslint --ignore-pattern app-api/apidoc .",
     "cover": "nyc --reporter=html npm test; rm -r ./.nyc_output",
     "apidoc": "apidoc -i app-api -o app-api/apidoc/apidoc"
@@ -28,12 +29,11 @@
   "dependencies": {
     "dateformat": "^3.0.0",
     "debug": "^4.0.0",
-    "esm": "^3.0.0",
     "handlebars": "^4.0.0",
     "html-to-text": "^5.0.0",
     "isemail": "^3.0.0",
     "js-yaml": "^3.0.0",
-    "jsdom": "^15.0.0",
+    "jsdom": "^16.0.0",
     "jsonwebtoken": "^8.0.0",
     "koa": "^2.0.0",
     "koa-body": "^4.0.0",
@@ -42,7 +42,7 @@
     "koa-convert": "^1.0.0",
     "koa-flash": "^1.0.0",
     "koa-handlebars": "^2.0.0",
-    "koa-lusca": "git://github.com/chrisveness/koa-lusca",
+    "koa-lusca": "koajs/koa-lusca#pull/19/head",
     "koa-router": "^7.0.0",
     "koa-session": "^5.0.0",
     "koa-static": "^5.0.0",
@@ -57,11 +57,11 @@
     "xmlify": "^1.0.0"
   },
   "devDependencies": {
-    "apidoc": "^0.19.0",
-    "chai": "^4.0.0",
+    "apidoc": "^0.20.0",
+    "chai": "chaijs/chai#pull/1317/head",
     "dotenv": "^8.0.0",
     "eslint": "^6.0.0",
-    "mocha": "^6.0.0",
+    "mocha": "^7.0.0",
     "nodemon": "^2.0.0",
     "nyc": "^15.0.0",
     "supertest": "^4.0.0",
@@ -79,77 +79,27 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-      "array-bracket-spacing": [
-        "error",
-        "always"
-      ],
-      "comma-dangle": [
-        "error",
-        "always-multiline"
-      ],
-      "comma-spacing": [
-        "error"
-      ],
-      "curly": [
-        "error",
-        "multi-line"
-      ],
-      "indent": [
-        "error",
-        4,
-        {
-          "SwitchCase": 1
-        }
-      ],
-      "key-spacing": [
-        "error",
-        {
-          "align": "value"
-        }
-      ],
-      "keyword-spacing": [
-        "error"
-      ],
+      "array-bracket-spacing": [ "error", "always" ],
+      "comma-dangle": [ "error", "always-multiline" ],
+      "comma-spacing": [ "error" ],
+      "curly": [ "error", "multi-line" ],
+      "indent": [ "error", 4, { "SwitchCase": 1 } ],
+      "key-spacing": [ "error", { "align": "value" } ],
+      "keyword-spacing": [ "error" ],
       "no-case-declarations": "off",
-      "no-console": [
-        "warn",
-        {
-          "allow": [
-            "error",
-            "info"
-          ]
-        }
-      ],
+      "no-console": [ "warn", { "allow": [ "error", "info" ] } ],
       "no-redeclare": "warn",
       "no-shadow": "warn",
       "no-unused-vars": "warn",
       "no-var": "error",
-      "object-curly-spacing": [
-        "error",
-        "always"
-      ],
+      "object-curly-spacing": [ "error", "always" ],
       "prefer-const": "error",
-      "quotes": [
-        "error",
-        "single",
-        "avoid-escape"
-      ],
+      "quotes": [ "error", "single", "avoid-escape" ],
       "require-await": "error",
-      "semi": [
-        "error",
-        "always"
-      ],
-      "space-before-blocks": [
-        "error",
-        "always"
-      ],
-      "space-in-parens": [
-        "error"
-      ],
-      "strict": [
-        "error",
-        "global"
-      ]
+      "semi": [ "error", "always" ],
+      "space-before-blocks": [ "error", "always" ],
+      "space-in-parens": [ "error" ],
+      "strict": [ "error", "global" ]
     }
   }
 }
