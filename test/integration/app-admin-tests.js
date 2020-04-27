@@ -7,7 +7,7 @@
 import supertest          from 'supertest';  // SuperAgent driven library for testing HTTP servers
 import { expect }         from 'chai';       // BDD/TDD assertion library
 import Scrypt             from 'scrypt-kdf'; // scrypt key derivation function
-import { JSDOM as JsDom } from 'jsdom';      // JavaScript implementation of DOM and HTML standards
+import jsdom from 'jsdom'; const JsDom = jsdom.JSDOM; // JavaScript implementation of DOM and HTML standards TODO: named export not yet available
 import dotenv             from 'dotenv';     // load environment variables from a .env file into process.env
 dotenv.config();
 
@@ -19,7 +19,7 @@ const appAdmin = supertest.agent(app.listen()).host('admin.localhost');
 
 describe(`Admin app (${app.env})`, function() {
     this.timeout(5e3); // 5 sec
-    
+
     const testAdmin = {
         username: `user-${Date.now().toString(36)}@example.net`,
         password: Date.now().toString(16),

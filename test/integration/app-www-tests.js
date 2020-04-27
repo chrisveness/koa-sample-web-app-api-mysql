@@ -6,7 +6,7 @@
 
 import supertest          from 'supertest';  // SuperAgent driven library for testing HTTP servers
 import { expect }         from 'chai';       // BDD/TDD assertion library
-import { JSDOM as JsDom } from 'jsdom';      // JavaScript implementation of DOM and HTML standards
+import jsdom from 'jsdom'; const JsDom = jsdom.JSDOM; // JavaScript implementation of DOM and HTML standards TODO: named export not yet available
 
 import app  from '../../app.js';
 
