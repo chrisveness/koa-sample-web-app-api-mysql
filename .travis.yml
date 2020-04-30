@@ -13,6 +13,7 @@ addons:
   chrome: stable
   firefox: latest
   hosts:
+    - www.localhost
     - admin.localhost
     - api.localhost
 
