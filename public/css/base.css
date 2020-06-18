@@ -3,6 +3,8 @@
 /* rem units (= root font-size) used for sizing containers, em units (= element font-size) for    */
 /* local sizing within containers.                                                                */
 
+@import 'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css';
+
 :root {
     font-size: calc(0.5em + 1vw); /* basis for rem units: 16px @ w800px, 18px @ w1024px, 20px @ w1200px */
 }
