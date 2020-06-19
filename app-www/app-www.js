@@ -3,6 +3,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 import Koa        from 'koa';            // koa framework
+import body       from 'koa-body';       // body parser
 import handlebars from 'koa-handlebars'; // handlebars templating
 import flash      from 'koa-flash';      // flash messages
 import lusca      from 'koa-lusca';      // security header middleware
@@ -51,6 +52,7 @@ app.use(async function handleErrors(ctx, next) {
 
     } catch (err) {
         ctx.response.status = err.status || 500;
+        await Log.error(ctx, err);
         if (app.env == 'production') delete err.stack; // don't leak sensitive info!
         switch (ctx.response.status) {
             case 404: // Not Found
@@ -58,14 +60,18 @@ app.use(async function handleErrors(ctx, next) {
                 await ctx.render('404-not-found', { err });
                 break;
             default:
-            case 500: // Internal Server Error
+            case 500: // Internal Server Error (for uncaught or programming errors)
                 await ctx.render('500-internal-server-error', { err });
                 // ctx.app.emit('error', err, ctx); // github.com/koajs/koa/wiki/Error-Handling
                 break;
         }
-        await Log.error(ctx, err);
     }
 });
+
+
+// parse request body into ctx.request.body
+// - multipart allows parsing of enctype=multipart/form-data
+app.use(body({ multipart: true }));
 
 
 // clean up post data - trim & convert blank fields to null
@@ -90,7 +96,7 @@ const luscaCspDefaultSrc = `'self' 'unsafe-inline' ${luscaCspTrustedCdns}`; // '
 app.use(lusca({
     csp:            { policy: { 'default-src': luscaCspDefaultSrc } }, // Content-Security-Policy
     cto:            'nosniff',                                         // X-Content-Type-Options
-    hsts:           { maxAge: 31536000, includeSubDomains: true },     // HTTP Strict-Transport-Security (1 year)
+    hsts:           { maxAge: 60*60*24*365, includeSubDomains: true }, // HTTP Strict-Transport-Security
     xframe:         'SAMEORIGIN',                                      // X-Frame-Options
     xssProtection:  true,                                              // X-XSS-Protection
     referrerPolicy: 'strict-origin-when-cross-origin',                 // Referrer-Policy

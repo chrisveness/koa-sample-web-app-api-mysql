@@ -3,6 +3,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 import Koa        from 'koa';            // koa framework
+import body       from 'koa-body';       // body parser
 import handlebars from 'koa-handlebars'; // handlebars templating
 import flash      from 'koa-flash';      // flash messages
 import lusca      from 'koa-lusca';      // security header middleware
@@ -13,8 +14,6 @@ import Debug      from 'debug';          // small debugging utility
 
 const debug = Debug('app:req'); // debug each request
 
-const router = new Router();
-
 import HandlebarsHelpers from '../lib/handlebars-helpers.js';
 import Log               from '../lib/log.js';
 import Ssl               from '../lib/ssl-middleware.js';
@@ -22,6 +21,13 @@ import Login             from './handlers/login.js';
 
 
 const app = new Koa(); // admin app
+
+
+// don't search-index admin subdomain
+app.use(async function robots(ctx, next) {
+    await next();
+    ctx.response.set('X-Robots-Tag', 'noindex, nofollow');
+});
 
 
 // serve static files (html, css, js); allow browser to cache for 1 day (note css/js req'd before login)
@@ -79,6 +85,11 @@ app.use(async function handleErrors(ctx, next) {
         }
     }
 });
+
+
+// parse request body into ctx.request.body
+// - multipart allows parsing of enctype=multipart/form-data
+app.use(body({ multipart: true }));
 
 
 // clean up post data - trim & convert blank fields to null
@@ -170,6 +181,7 @@ app.use(serve('app-api/apidoc', { maxage: maxage }));
 
 
 // 404 status for any unrecognised ajax requests (don't throw as don't want to return html page)
+const router = new Router();
 router.all(/\/ajax\/(.*)/, function(ctx) {
     ctx.response.body = { message: 'Not Found' };
     ctx.response.body.root = 'error';

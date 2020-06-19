@@ -9,11 +9,10 @@
 
 /* eslint no-shadow:off *//* app is already declared in the upper scope */
 
-import Koa             from 'koa';            // Koa framework
-import body            from 'koa-body';       // body parser
-import compose         from 'koa-compose';    // middleware composer
-import compress        from 'koa-compress';   // HTTP compression
-import session         from 'koa-session';    // session for flash messages
+import Koa      from 'koa';          // Koa framework
+import compose  from 'koa-compose';  // middleware composer
+import compress from 'koa-compress'; // HTTP compression
+import session  from 'koa-session';  // session for flash messages
 
 const app = new Koa();
 
@@ -34,24 +33,14 @@ app.use(async function responseTime(ctx, next) {
 app.use(compress({}));
 
 
-// only search-index www subdomain
-app.use(async function robots(ctx, next) {
-    await next();
-    if (ctx.request.hostname.slice(0, 3) != 'www') ctx.response.set('X-Robots-Tag', 'noindex, nofollow');
-});
-
-
-// parse request body into ctx.request.body
-// - multipart allows parsing of enctype=multipart/form-data
-app.use(body({ multipart: true }));
-
-
 // set signed cookie keys for JWT cookie & session cookie
 app.keys = [ 'koa-sample-app' ];
 
-// session for flash messages (uses signed session cookies, with no server storage)
+// session for flash messages [& compose] (uses signed session cookies, with no server storage)
 app.use(session(app));
 
+
+/* set up sub-apps - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 // select sub-app (admin/api) according to host subdomain (could also be by analysing request.url);
 // separate sub-apps can be used for modularisation of a large system, for different login/access

@@ -9,10 +9,11 @@
 /* A GET on a collection which returns no results returns a 204 / No Content response.            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-import Koa    from 'koa';          // Koa framework
-import xmlify from 'xmlify';       // JS object to XML
-import yaml   from 'js-yaml';      // JS object to YAML
-import Debug  from 'debug';        // small debugging utility
+import Koa    from 'koa';      // koa framework
+import body   from 'koa-body'; // body parser
+import xmlify from 'xmlify';   // JS object to XML
+import yaml   from 'js-yaml';  // JS object to YAML
+import Debug  from 'debug';    // small debugging utility
 
 const debug = Debug('app:req'); // debug each request
 
@@ -76,6 +77,8 @@ app.use(async function handleErrors(ctx, next) {
 
     } catch (err) {
         ctx.response.status = err.status || 500;
+        await Log.error(ctx, err);
+        if (app.env == 'production') delete err.stack; // don't leak sensitive info!
         switch (ctx.response.status) {
             case 204: // No Content
                 break;
@@ -90,14 +93,28 @@ app.use(async function handleErrors(ctx, next) {
                 break;
             default:
             case 500: // Internal Server Error (for uncaught or programming errors)
-                console.error(ctx.response.status, err.message);
-                ctx.response.body = { message: err.message, root: 'error' };
-                if (app.env != 'production') ctx.response.body.stack = err.stack;
+                ctx.response.body = { message: err.message, stack: err.stack, root: 'error' };
                 // ctx.app.emit('error', err, ctx); // github.com/koajs/koa/wiki/Error-Handling
                 break;
         }
-        await Log.error(ctx, err);
     }
+});
+
+
+// parse request body into ctx.request.body
+// - multipart allows parsing of enctype=multipart/form-data
+app.use(body({ multipart: true }));
+
+
+// clean up post data - trim & convert blank fields to null
+app.use(async function cleanPost(ctx, next) {
+    for (const key in ctx.request.body) {
+        if (typeof ctx.request.body[key] == 'string') {
+            ctx.request.body[key] = ctx.request.body[key].trim();
+            if (ctx.request.body[key] == '') ctx.request.body[key] = null;
+        }
+    }
+    await next();
 });
 
 
