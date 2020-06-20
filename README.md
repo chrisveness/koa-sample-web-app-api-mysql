@@ -1,8 +1,5 @@
 # Koa Sample App (handlebars templating + RESTful API using MySQL, on Node.js)
 
-> *This sample app uses Koa v2 with async/await. The previous version using Koa v1 is still available 
-on the [koa-v1](../../tree/koa-v1) branch.*
-
 This is the result of a self-learning exercise on how to put together a complete Node.js
 MySQL-driven [Koa](http://koajs.com) app.
 
@@ -14,7 +11,9 @@ different bits together.
 While the Koa ‘[hello world](http://koajs.com/#application)’ certainly doesn’t flatter to deceive,
 there’s obviously a long way to go after it. This does some of that. It is a template not a
 mini-tutorial. It puts a lot of the components of a complete system together: neither mini nor
-tutorial!
+tutorial! (For a *slightly* less minimalist *hello world* than Koa’s, my 
+[koa-hello-world](https://github.com/chrisveness/koa-hello-world) includes routing & templates in 17
+lines of JS).
 
 Having worked it all out, this is now largely a ‘note-to-self’ *aide-memoire*, but I hope it might
 help others in a similar situation. No one else will be doing all the same things, but seeing
