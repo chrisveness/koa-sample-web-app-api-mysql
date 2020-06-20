@@ -56,15 +56,16 @@ class Team {
      * Creates new Team record.
      *
      * @param   {Object} values - Team details.
+     * @param   {Object} [connection] - Connection to use (e.g. within transaction); otherwise from pool.
      * @returns {number} New team id.
      * @throws  Error on validation or referential integrity errors.
      */
-    static async insert(values) {
+    static async insert(values, connection=undefined) {
         debug('Team.insert', values.Name);
 
         try {
 
-            const [ result ] = await Db.query('Insert Into Team Set ?', [ values ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
+            const [ result ] = await Db.query('Insert Into Team Set ?', [ values ], connection); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
             return result.insertId;
 
         } catch (e) {
@@ -90,14 +91,15 @@ class Team {
      *
      * @param  {number} id - Team id.
      * @param  {Object} values - Team details.
+     * @param  {Object} [connection] - Connection to use (e.g. within transaction); otherwise from pool.
      * @throws Error on referential integrity errors.
      */
-    static async update(id, values) {
+    static async update(id, values, connection=undefined) {
         debug('Team.update', id);
 
         try {
 
-            await Db.query('Update Team Set ? Where TeamId = ?', [ values, id ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
+            await Db.query('Update Team Set ? Where TeamId = ?', [ values, id ], connection); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -120,14 +122,15 @@ class Team {
      * Delete Team record.
      *
      * @param  {number} id - Team id.
+     * @param  {Object} [connection] - Connection to use (e.g. within transaction); otherwise from pool.
      * @throws Error on referential integrity errors.
      */
-    static async delete(id) {
+    static async delete(id, connection=undefined) {
         debug('Team.delete', id);
 
         try {
 
-            await Db.execute('Delete From Team Where TeamId =  :id', { id });
+            await Db.execute('Delete From Team Where TeamId =  :id', { id }, connection);
             return true;
 
         } catch (e) {

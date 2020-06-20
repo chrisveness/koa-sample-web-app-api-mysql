@@ -30,10 +30,11 @@ class TeamMember {
      * Creates new TeamMember record (member joining team).
      *
      * @param   {Object} values - Member details.
+     * @param   {Object} [connection] - Connection to use (e.g. within transaction); otherwise from pool.
      * @returns {number} New TeamMember id.
      * @throws  Error on validation or referential integrity errors.
      */
-    static async insert(values) {
+    static async insert(values, connection=undefined) {
         debug('TeamMember.insert');
 
         if (values.JoinedOn instanceof Date) {
@@ -42,7 +43,7 @@ class TeamMember {
 
         try {
 
-            const [ result ] = await Db.query('Insert Into TeamMember Set ?', [ values ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
+            const [ result ] = await Db.query('Insert Into TeamMember Set ?', [ values ], connection); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
             return result.insertId;
 
         } catch (e) {
@@ -68,14 +69,15 @@ class TeamMember {
      *
      * @param  {number} id - TeamMember id.
      * @param  {Object} values - TeamMember details.
+     * @param  {Object} [connection] - Connection to use (e.g. within transaction); otherwise from pool.
      * @throws Error on validation or referential integrity errors.
      */
-    static async update(id, values) {
+    static async update(id, values, connection=undefined) {
         debug('TeamMember.update', id);
 
         try {
 
-            await Db.query('Update TeamMember Set ? Where TeamMemberId = ?', [ values, id ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
+            await Db.query('Update TeamMember Set ? Where TeamMemberId = ?', [ values, id ], connection); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -98,14 +100,15 @@ class TeamMember {
      * Delete TeamMember record (cancel team membership).
      *
      * @param  {number} id - TeamMember id.
+     * @param  {Object} [connection] - Connection to use (e.g. within transaction); otherwise from pool.
      * @throws Error on referential integrity errors.
      */
-    static async delete(id) {
+    static async delete(id, connection=undefined) {
         debug('TeamMember.delete', id);
 
         try {
 
-            await Db.execute('Delete From TeamMember Where TeamMemberId = :id', { id });
+            await Db.execute('Delete From TeamMember Where TeamMemberId = :id', { id }, connection);
             return true;
 
         } catch (e) {

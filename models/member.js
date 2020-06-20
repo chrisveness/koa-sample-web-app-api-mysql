@@ -59,10 +59,11 @@ class Member {
      * Creates new Member record.
      *
      * @param   {Object} values - Member details.
+     * @param   {Object} [connection] - Connection to use (e.g. within transaction); otherwise from pool.
      * @returns {number} New member id.
      * @throws  Error on validation or referential integrity errors.
      */
-    static async insert(values) {
+    static async insert(values, connection=undefined) {
         debug('Member.insert', values.Email);
 
         // validation - somewhat artificial example serves to illustrate principle of app-level validation
@@ -72,7 +73,7 @@ class Member {
 
         try {
 
-            const [ result ] = await Db.query('Insert Into Member Set ?', [ values ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
+            const [ result ] = await Db.query('Insert Into Member Set ?', [ values ], connection); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
             return result.insertId;
 
         } catch (e) {
@@ -98,9 +99,10 @@ class Member {
      *
      * @param  {number} id - Member id.
      * @param  {Object} values - Member details.
+     * @param  {Object} [connection] - Connection to use (e.g. within transaction); otherwise from pool.
      * @throws Error on validation or referential integrity errors.
      */
-    static async update(id, values) {
+    static async update(id, values, connection=undefined) {
         debug('Member.update', id);
 
         // validation - somewhat artificial example serves to illustrate principle
@@ -110,7 +112,7 @@ class Member {
 
         try {
 
-            await Db.query('Update Member Set ? Where MemberId = ?', [ values, id ]); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
+            await Db.query('Update Member Set ? Where MemberId = ?', [ values, id ], connection); // TODO: use execute once available: https://github.com/sidorares/node-mysql2/issues/756
 
         } catch (e) {
             switch (e.code) { // just use default MySQL messages for now
@@ -133,14 +135,15 @@ class Member {
      * Delete Member record.
      *
      * @param  {number} id - Member id.
+     * @param  {Object} [connection] - Connection to use (e.g. within transaction); otherwise from pool.
      * @throws Error on referential integrity errors.
      */
-    static async delete(id) {
+    static async delete(id, connection=undefined) {
         debug('Member.delete', id);
 
         try {
 
-            await Db.execute('Delete From Member Where MemberId = :id', { id });
+            await Db.execute('Delete From Member Where MemberId = :id', { id }, connection);
             return true;
 
         } catch (e) {
