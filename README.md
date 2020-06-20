@@ -241,6 +241,7 @@ Then open a browser and go to `http://www.localhost:3000` to run the app.
 ├── models
 │   ├── member.js
 │   ├── modelerror.js
+│   ├── model-super.js
 │   ├── team.js
 │   ├── team-member.js
 │   └── user.js
